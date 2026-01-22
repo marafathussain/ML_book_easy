@@ -367,7 +367,7 @@ While funding and hype collapsed, some researchers quietly made progress:
 - Practical applications emerged in niche areas (fraud detection, process control)
 - Theoretical foundations strengthened
 
-This "quiet period" laid groundwork for the coming revolution.
+This "quiet period" laid the groundwork for the coming revolution.
 
 ### 1.3.6 The Rise of Machine Learning (1993-2010)
 
@@ -379,7 +379,7 @@ Several factors converged to revive AI through machine learning:
 
 **Random Forests (2001)**: Leo Breiman's ensemble method proved robust and accurate across diverse problems.
 
-**Boosting algorithms**: Methods like AdaBoost combined weak learners into strong ones.
+**Boosting algorithms**: Methods like AdaBoost combine weak learners into strong ones.
 
 **2. More data:**
 
@@ -395,7 +395,7 @@ Moore's Law continued: computer performance doubled roughly every 18-24 months. 
 **4. Practical successes:**
 
 Machine learning proved valuable in commercial applications:
-- **Spam filtering**: Email providers used ML to block spam
+- **Spam filtering**: Email providers use ML to block spam
 - **Recommendation systems**: Amazon and Netflix recommended products/movies
 - **Search engines**: Google used ML to rank search results
 - **Fraud detection**: Banks detected fraudulent transactions
@@ -404,9 +404,9 @@ Machine learning proved valuable in commercial applications:
 **5. Rebranding and realistic expectations:**
 
 Instead of promising "artificial intelligence," researchers focused on specific, achievable tasks:
-- "We can classify emails as spam with 99% accuracy"
-- "We can recommend movies you'll enjoy"
-- "We can detect credit card fraud in real-time"
+- "We can classify emails as spam with 99% accuracy."
+- "We can recommend movies you'll enjoy."
+- "We can detect credit card fraud in real-time."
 
 This shift from grand visions to practical applications restored credibility.
 
@@ -422,7 +422,7 @@ This shift from grand visions to practical applications restored credibility.
 
 The modern AI era began with a dramatic demonstration:
 
-**AlexNet (2012)**: A deep convolutional neural network achieved unprecedented accuracy (84.7%) in the ImageNet image recognition challenge, crushing previous methods (74%). This wasn't incremental progress—it was a paradigm shift.
+**AlexNet (2012)**: A deep convolutional neural network achieved unprecedented accuracy (84.7%) in the ImageNet image recognition challenge, crushing previous methods (74%). This wasn't incremental progress, it was a paradigm shift.
 
 **Why did deep learning suddenly work?**
 
@@ -483,7 +483,7 @@ These made deep learning accessible to researchers without needing to implement 
 - Real-time translation
 
 **Games:**
-- AlphaGo defeated world Go champion (2016)—a game with 10^170 possible positions
+- AlphaGo defeated the world Go champion (2016), a game with $10^{170}$ possible positions
 - DeepMind's AlphaZero mastered chess, Go, and shogi through self-play
 - OpenAI Five defeated professional Dota 2 players
 
@@ -506,7 +506,7 @@ We're in the midst of rapid progress:
 - **Multimodal models** process text, images, video, and audio together
 - **AI in science**: Accelerating drug discovery, materials science, climate modeling
 - **Edge AI**: Running sophisticated models on smartphones and embedded devices
-- **AI for biology**: Transforming genomics, proteomics, medical diagnosis
+- **AI for biology**: Transforming genomics, proteomics, and medical diagnosis
 
 **Are we in another bubble?**
 
@@ -544,7 +544,7 @@ Instead, they showed you examples:
 - You saw pictures in books, videos on TV
 
 Your brain learned patterns:
-- Elephants are large, gray, have trunks and big ears
+- Elephants are large, gray, have trunks, and big ears
 - Tigers are orange with black stripes, cat-like
 - Dogs vary widely but have certain characteristic features
 
@@ -656,7 +656,7 @@ For those less comfortable with math: Don't worry! The intuition is what matters
 
 ### 1.4.3 Types of Machine Learning
 
-Machine learning divides into several categories based on the type of learning:
+Machine learning is divided into several categories based on the type of learning:
 
 **1. Supervised Learning**
 
@@ -672,7 +672,7 @@ Machine learning divides into several categories based on the type of learning:
   - Output: Temperature (continuous number)
 
 **How it works:**
-1. Show algorithm many examples with correct answers
+1. Show the algorithm many examples with correct answers
 2. Algorithm learns patterns relating inputs to outputs
 3. Apply to new inputs to predict outputs
 
@@ -695,7 +695,7 @@ Machine learning divides into several categories based on the type of learning:
 **Biological examples:**
 - **Clustering**: Group genes with similar expression patterns
   - Input: Expression levels across conditions
-  - Output: Groups of co-expressed genes (might be in same pathway)
+  - Output: Groups of co-expressed genes (might be in the same pathway)
 
 - **Dimensionality reduction**: Visualize high-dimensional single-cell RNA-seq data
   - Input: Expression of 20,000 genes per cell
@@ -704,7 +704,7 @@ Machine learning divides into several categories based on the type of learning:
 **How it works:**
 1. Algorithm looks for structure in data
 2. Finds groupings, patterns, or compressed representations
-3. No "correct answer"—results need biological interpretation
+3. No "correct answer", results need biological interpretation
 
 **When to use:**
 - No labels available
@@ -721,7 +721,7 @@ Machine learning divides into several categories based on the type of learning:
 
 **3. Semi-Supervised Learning**
 
-**Definition**: Learn from mix of labeled and unlabeled data.
+**Definition**: Learn from a mix of labeled and unlabeled data.
 
 **Why this matters in biology:**
 
