@@ -25,44 +25,7 @@ Biology is experiencing an unprecedented data explosion. Consider these statisti
 
 This data deluge presents both opportunity and challenge. Traditional statistical methods, designed for small, carefully controlled experiments, struggle with datasets where the number of features (genes, proteins, measurements) vastly exceeds the number of samples. This is where machine learning excels: discovering patterns in complex, high-dimensional data that would be impossible to detect manually.
 
-### 1.1.2 What You'll Learn in This Book
-
-This textbook is designed specifically for biologists who want to apply machine learning to their research but may have limited programming or mathematical background. We'll cover:
-
-**Foundations** (Chapters 1-2):
-- The history and evolution of artificial intelligence
-- How machine learning differs from traditional statistics
-- Understanding data structures and quality
-- Exploratory data analysis techniques
-
-**Core Algorithms** (Chapters 3-6):
-- Supervised learning (regression, classification)
-- Unsupervised learning (clustering, dimensionality reduction)
-- Ensemble methods (random forests, gradient boosting)
-- Model evaluation and validation
-
-**Deep Learning** (Chapters 7-9):
-- Neural network fundamentals
-- Convolutional networks for image analysis
-- Recurrent networks for sequence data
-- Practical applications in genomics and imaging
-
-**Applications** (Chapters 10-12):
-- Gene expression analysis
-- Protein structure prediction
-- Medical diagnosis
-- Drug discovery
-- Ecological modeling
-
-**Best Practices** (Throughout):
-- Avoiding common pitfalls
-- Ensuring reproducibility
-- Interpreting results biologically
-- Ethical considerations
-
-Each chapter includes practical examples using real biological datasets, hands-on coding exercises, and conceptual explanations accessible to readers without advanced mathematics.
-
-### 1.1.3 Prerequisites and Approach
+### 1.1.2 Prerequisites and Approach
 
 **What you need:**
 - Basic understanding of biology (undergraduate level)
