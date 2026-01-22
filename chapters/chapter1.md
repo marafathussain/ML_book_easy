@@ -2,7 +2,7 @@
 
 ## 1.1 Introduction: Why Machine Learning Matters in Biology
 
-In the summer of 2020, a team at DeepMind, a London-based artificial intelligence company, announced a breakthrough that stunned the biological community. Their AI system, AlphaFold2, could predict the three-dimensional structure of proteins with accuracy rivaling experimental methods—a problem that had challenged scientists for half a century. What once took months or years of painstaking laboratory work could now be accomplished in hours using machine learning.
+In the summer of 2020, a team at DeepMind, a London-based artificial intelligence company, announced a breakthrough that stunned the biological community. Their AI system, AlphaFold2, could predict the three-dimensional structure of proteins with accuracy rivaling experimental methods, a problem that had challenged scientists for half a century. What once took months or years of painstaking laboratory work could now be accomplished in hours using machine learning.
 
 This wasn't an isolated achievement. Across biology, artificial intelligence (AI) and machine learning (ML) are transforming how we approach fundamental questions:
 
@@ -12,18 +12,18 @@ This wasn't an isolated achievement. Across biology, artificial intelligence (AI
 - **Ecology**: Machine learning processes satellite imagery to track deforestation, monitor wildlife populations, and predict ecosystem changes.
 - **Neuroscience**: Neural networks decode brain signals, enabling brain-computer interfaces that restore movement to paralyzed patients.
 
-Yet for many biologists, artificial intelligence remains mysterious—a "black box" wielded by computer scientists and engineers. This book aims to demystify AI and machine learning, making these powerful tools accessible to biologists regardless of their computational background.
+Yet for many biologists, artificial intelligence remains mysterious, a "black box" wielded by computer scientists and engineers. This book aims to demystify AI and machine learning, making these powerful tools accessible to biologists regardless of their computational background.
 
 ### 1.1.1 The Data Revolution in Biology
 
-Biology is experiencing an unprecedented data explosion. Consider these statistics:
+Biology is experiencing an unprecedented surge in data. Consider these statistics:
 
 - The **GenBank database** doubles in size approximately every 18 months, containing sequences from over 400,000 species as of 2024.
 - A single **RNA-sequencing experiment** can generate expression measurements for 20,000+ genes across hundreds of samples, producing gigabytes of data.
-- **Medical imaging** in a single hospital generates terabytes of scans annually—more than any human could examine in a lifetime.
+- **Medical imaging** in a single hospital generates terabytes of scans annually, more than any human could examine in a lifetime.
 - **Environmental sensors** collect real-time data on temperature, humidity, carbon dioxide, and species presence across global monitoring networks.
 
-This data deluge presents both opportunity and challenge. Traditional statistical methods, designed for small, carefully controlled experiments, struggle with datasets where the number of features (genes, proteins, measurements) vastly exceeds the number of samples. This is where machine learning excels: discovering patterns in complex, high-dimensional data that would be impossible to detect manually.
+This data deluge presents both opportunity and challenge. Traditional statistical methods, designed for small, carefully controlled experiments, struggle with datasets where the number of features (such as genes, proteins, or measurements) vastly exceeds the number of samples. This is where machine learning excels: discovering patterns in complex, high-dimensional data that would be impossible to detect manually.
 
 ### 1.1.2 Prerequisites and Approach
 
@@ -46,11 +46,11 @@ Our pedagogical approach emphasizes understanding over mathematical rigor. We'll
 
 The term "artificial intelligence" means different things to different people. Let's explore several definitions:
 
-**Philosophical definition**: AI is the endeavor to create machines that exhibit behaviors we would call "intelligent" if performed by humans—reasoning, learning, problem-solving, perception, and language understanding.
+**Philosophical definition**: AI is the endeavor to create machines that exhibit behaviors we would call "intelligent" if performed by humans, such as reasoning, learning, problem-solving, perception, and language understanding.
 
 **Engineering definition**: AI is the creation of computer systems that can perform tasks normally requiring human intelligence, such as visual perception, speech recognition, decision-making, and language translation.
 
-**Functional definition**: AI systems take inputs, process them through learned or programmed rules, and produce outputs that accomplish useful tasks—often better, faster, or more consistently than humans.
+**Functional definition**: AI systems take inputs, process them through learned or programmed rules, and produce outputs that accomplish useful tasks, often better, faster, or more consistently than humans.
 
 **For biologists**: AI comprises computational tools that can find patterns in data, make predictions about new observations, and discover relationships too complex for traditional analysis methods.
 
@@ -89,7 +89,7 @@ These terms are often used interchangeably, but they represent nested concepts:
 
 **Deep Learning (Subset of ML)**: Machine learning using neural networks with multiple layers, capable of learning hierarchical representations of data.
 
-**Example**: In medical imaging, early layers might learn edges and textures, middle layers learn cell shapes, and deep layers learn disease patterns—all automatically from training data.
+**Example**: In medical imaging, early layers might learn edges and textures, middle layers might learn cell shapes, and deep layers might learn disease patterns, all automatically from training data.
 
 ### 1.2.3 Traditional Programming vs. Machine Learning
 
