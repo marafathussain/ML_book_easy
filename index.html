@@ -5,36 +5,41 @@
   <title>ML for Biologists</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- PrismJS theme (IDE-like colors) -->
+  <!-- PrismJS theme -->
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css"
   />
-
-  <!-- Optional: line numbers -->
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.css"
   />
 
   <style>
+    :root {
+      --max-width: 900px;
+      --bg-nav: #f6f6f6;
+      --border: #ddd;
+      --link: #0366d6;
+    }
+
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #ffffff;
+      background: #fff;
       color: #222;
     }
 
     #container {
       display: flex;
-      height: 100vh;
+      min-height: 100vh;
     }
 
     nav {
       width: 260px;
       padding: 1.5rem;
-      border-right: 1px solid #ddd;
-      background: #f6f6f6;
+      background: var(--bg-nav);
+      border-right: 1px solid var(--border);
       overflow-y: auto;
     }
 
@@ -46,45 +51,92 @@
     nav a {
       display: block;
       margin: 0.6rem 0;
-      color: #0366d6;
+      color: var(--link);
       text-decoration: none;
       cursor: pointer;
+      font-size: 1rem;
     }
 
     nav a:hover {
       text-decoration: underline;
     }
 
+    #menuToggle {
+      display: none;
+      font-size: 1.1rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 1rem;
+    }
+
     main {
       flex: 1;
-      overflow-y: auto;
       display: flex;
       justify-content: center;
+      overflow-y: auto;
     }
 
     #content {
-      max-width: 900px;
+      max-width: var(--max-width);
       width: 100%;
-      padding: 3rem;
+      padding: clamp(1.2rem, 3vw, 3rem);
       line-height: 1.7;
     }
 
-    h1 { font-size: 2.4rem; }
-    h2 { font-size: 1.9rem; margin-top: 2.5rem; }
-    h3 { font-size: 1.4rem; }
+    h1 {
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+    }
+
+    h2 {
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      margin-top: 2.5rem;
+    }
+
+    h3 {
+      font-size: clamp(1.2rem, 2.5vw, 1.4rem);
+    }
 
     p {
-      font-size: 1.1rem;
+      font-size: clamp(1rem, 2.4vw, 1.1rem);
       margin: 1.2rem 0;
     }
 
     pre {
       border-radius: 6px;
+      -webkit-overflow-scrolling: touch;
     }
 
+    /* ---------- Mobile / Tablet ---------- */
     @media (max-width: 900px) {
+      #container {
+        flex-direction: column;
+      }
+
       nav {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      #menuToggle {
+        display: block;
+      }
+
+      nav.collapsed a {
         display: none;
+      }
+
+      nav.collapsed h2 {
+        display: none;
+      }
+
+      main {
+        justify-content: flex-start;
+      }
+
+      #content {
+        max-width: 100%;
       }
     }
   </style>
@@ -93,11 +145,12 @@
 <body>
 
 <div id="container">
-  <nav>
-    <h2>Contents</h2>
-    <a onclick="loadChapter('chapters/chapter1.md')">Chapter 1</a>
-    <a onclick="loadChapter('chapters/chapter2.md')">Chapter 2</a>
-    <a onclick="loadChapter('chapters/chapter3.md')">Chapter 3</a>
+  <nav class="collapsed">
+    <button id="menuToggle">☰ Contents</button>
+    <h2>Chapters</h2>
+    <a onclick="navigate('chapter1')">Chapter 1</a>
+    <a onclick="navigate('chapter2')">Chapter 2</a>
+    <a onclick="navigate('chapter3')">Chapter 3</a>
   </nav>
 
   <main>
@@ -108,15 +161,15 @@
   </main>
 </div>
 
-<!-- Markdown parser -->
+<!-- Marked -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-<!-- PrismJS -->
+<!-- Prism -->
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
 
-<!-- MathJax configuration -->
+<!-- MathJax -->
 <script>
   window.MathJax = {
     tex: {
@@ -125,37 +178,39 @@
     }
   };
 </script>
-
-<!-- MathJax engine -->
-<script
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
-  async>
-</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
 
 <script>
+  const chapterMap = {
+    chapter1: 'chapters/chapter1.md',
+    chapter2: 'chapters/chapter2.md',
+    chapter3: 'chapters/chapter3.md'
+  };
+
   async function loadChapter(path) {
-    try {
-      const response = await fetch(path);
-      if (!response.ok) throw new Error("Failed to load");
+    const response = await fetch(path);
+    const markdown = await response.text();
+    const content = document.getElementById("content");
 
-      const markdown = await response.text();
-      const html = marked.parse(markdown);
-
-      const content = document.getElementById("content");
-      content.innerHTML = html;
-
-      Prism.highlightAll();
-      MathJax.typeset();
-
-      content.scrollTop = 0;
-    } catch (err) {
-      document.getElementById("content").innerHTML =
-        "<p><strong>Failed to load chapter.</strong></p>";
-    }
+    content.innerHTML = marked.parse(markdown);
+    Prism.highlightAll();
+    MathJax.typeset();
+    window.scrollTo(0, 0);
   }
 
-  // Load first chapter by default
-  loadChapter('chapters/chapter1.md');
+  function navigate(chapter) {
+    location.hash = chapter;
+    loadChapter(chapterMap[chapter]);
+    document.querySelector("nav").classList.add("collapsed");
+  }
+
+  document.getElementById("menuToggle").onclick = () => {
+    document.querySelector("nav").classList.toggle("collapsed");
+  };
+
+  // Load from URL hash or default
+  const initial = location.hash.replace('#', '') || 'chapter1';
+  loadChapter(chapterMap[initial]);
 </script>
 
 </body>
