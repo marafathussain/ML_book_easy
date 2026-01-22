@@ -88,15 +88,21 @@
   <!-- Markdown parser -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-  <!-- Syntax highlighting -->
+  <!-- Highlight.js -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-light.min.css">
   <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/languages/python.min.js"></script>
 
   <script>
-    // Configure marked to add language classes
+    // Configure marked to highlight code with Highlight.js
     marked.setOptions({
-      langPrefix: 'language-'
+      langPrefix: 'language-',
+      highlight: function(code, lang) {
+        if (window.hljs && hljs.getLanguage(lang)) {
+          return hljs.highlight(code, { language: lang }).value;
+        }
+        return code; // fallback: no highlighting
+      }
     });
   </script>
 </head>
@@ -106,6 +112,7 @@
     <h2>Contents</h2>
     <a href="#" onclick="loadChapter('chapters/chapter1.md')">Chapter 1</a>
     <a href="#" onclick="loadChapter('chapters/chapter2.md')">Chapter 2</a>
+    <!-- Add more chapters here -->
   </nav>
 
   <div id="content">
@@ -123,15 +130,8 @@
           return response.text();
         })
         .then(text => {
+          // Render Markdown with highlighting
           document.getElementById('page').innerHTML = marked.parse(text);
-
-          // Highlight code blocks if hljs is loaded
-          if (window.hljs) {
-            document.querySelectorAll('pre code').forEach(block => {
-              hljs.highlightElement(block);
-            });
-          }
-
           document.getElementById('content').scrollTop = 0;
         })
         .catch(err => {
