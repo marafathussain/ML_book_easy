@@ -85,13 +85,20 @@
     }
   </style>
 
+  <!-- Markdown parser -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <!-- Syntax highlighting -->
-  <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css">-->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-light.min.css">
   <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/languages/python.min.js"></script>
+
+  <script>
+    // Configure marked to add language classes
+    marked.setOptions({
+      langPrefix: 'language-'
+    });
+  </script>
 </head>
 <body>
 
@@ -109,7 +116,7 @@
     function loadChapter(file) {
       const base = window.location.pathname.replace(/\/[^/]*$/, '/');
       const url = base + file;
-  
+
       fetch(url)
         .then(response => {
           if (!response.ok) throw new Error('HTTP ' + response.status);
@@ -117,26 +124,24 @@
         })
         .then(text => {
           document.getElementById('page').innerHTML = marked.parse(text);
-  
-          if (window.hljs) {
-              document.querySelectorAll('pre code').forEach(block => {
-                hljs.highlightElement(block);
-              });
-            }
 
-  
+          // Highlight code blocks if hljs is loaded
+          if (window.hljs) {
+            document.querySelectorAll('pre code').forEach(block => {
+              hljs.highlightElement(block);
+            });
+          }
+
           document.getElementById('content').scrollTop = 0;
         })
         .catch(err => {
-          document.getElementById('page').innerHTML =
-            '<p>Failed to load chapter.</p><pre>' + err + '</pre>';
+          document.getElementById('page').innerHTML = '<p>Failed to load chapter.</p><pre>' + err + '</pre>';
         });
     }
-  
+
     // Load first chapter by default
     loadChapter('chapters/chapter1.md');
   </script>
-
 
 </body>
 </html>
