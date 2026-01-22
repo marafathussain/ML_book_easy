@@ -108,7 +108,7 @@
     function loadChapter(file) {
       const base = window.location.pathname.replace(/\/[^/]*$/, '/');
       const url = base + file;
-
+  
       fetch(url)
         .then(response => {
           if (!response.ok) throw new Error('HTTP ' + response.status);
@@ -116,25 +116,23 @@
         })
         .then(text => {
           document.getElementById('page').innerHTML = marked.parse(text);
+  
           document.querySelectorAll('pre code').forEach(block => {
             hljs.highlightElement(block);
           });
+  
           document.getElementById('content').scrollTop = 0;
         })
         .catch(err => {
-          document.getElementById('page').innerHTML = '<p>Failed to load chapter.</p><pre>' + err + '</pre>';
-        });
-    });
-          window.scrollTo(0, 0);
-        })
-        .catch(() => {
-          document.getElementById('page').innerHTML = '<p>Failed to load chapter.</p>';
+          document.getElementById('page').innerHTML =
+            '<p>Failed to load chapter.</p><pre>' + err + '</pre>';
         });
     }
-
+  
     // Load first chapter by default
     loadChapter('chapters/chapter1.md');
   </script>
+
 
 </body>
 </html>
