@@ -108,6 +108,9 @@
         .then(response => response.text())
         .then(text => {
           document.getElementById('page').innerHTML = marked.parse(text);
+          document.querySelectorAll('pre code').forEach(block => {
+          hljs.highlightElement(block);
+          });
           window.scrollTo(0, 0);
         })
         .catch(() => {
@@ -116,7 +119,7 @@
     }
 
     // Load first chapter by default
-    loadChapter('chapters/01-introduction.md');
+    loadChapter('chapters/chapter1.md');
   </script>
 
 </body>
