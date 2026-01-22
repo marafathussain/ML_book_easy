@@ -86,6 +86,11 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- Syntax highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/languages/python.min.js"></script>
 </head>
 <body>
 
@@ -93,9 +98,6 @@
     <h2>Contents</h2>
     <a href="#" onclick="loadChapter('chapters/chapter1.md')">Chapter 1</a>
     <a href="#" onclick="loadChapter('chapters/chapter2.md')">Chapter 2</a>
-    <a href="#" onclick="loadChapter('chapters/03-methods.md')">Chapter 3 (TBP)</a>
-    <a href="#" onclick="loadChapter('chapters/04-results.md')">Chapter 4 (TBP)</a>
-    <a href="#" onclick="loadChapter('chapters/05-discussion.md')">Chapter 5 (TBP)</a>
   </nav>
 
   <div id="content">
@@ -109,7 +111,7 @@
         .then(text => {
           document.getElementById('page').innerHTML = marked.parse(text);
           document.querySelectorAll('pre code').forEach(block => {
-          hljs.highlightElement(block);
+            hljs.highlightElement(block);
           });
           window.scrollTo(0, 0);
         })
