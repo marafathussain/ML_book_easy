@@ -5,7 +5,7 @@
   <title>ML for Biologists</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- PrismJS theme (light, IDE-like) -->
+  <!-- PrismJS theme (IDE-like colors) -->
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css"
@@ -20,7 +20,7 @@
   <style>
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: Georgia, "Times New Roman", serif;
       background: #ffffff;
       color: #222;
     }
@@ -30,73 +30,107 @@
       height: 100vh;
     }
 
-    #sidebar {
+    nav {
       width: 260px;
+      padding: 1.5rem;
       border-right: 1px solid #ddd;
-      padding: 1rem;
+      background: #f6f6f6;
       overflow-y: auto;
-      background: #f7f7f7;
     }
 
-    #sidebar h2 {
+    nav h2 {
       margin-top: 0;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
     }
 
-    #sidebar a {
+    nav a {
       display: block;
-      padding: 0.4rem 0;
+      margin: 0.6rem 0;
       color: #0366d6;
       text-decoration: none;
       cursor: pointer;
     }
 
-    #sidebar a:hover {
+    nav a:hover {
       text-decoration: underline;
     }
 
-    #content {
+    main {
       flex: 1;
-      padding: 2rem;
       overflow-y: auto;
+      display: flex;
+      justify-content: center;
+    }
+
+    #content {
       max-width: 900px;
-      margin: 0 auto;
+      width: 100%;
+      padding: 3rem;
+      line-height: 1.7;
+    }
+
+    h1 { font-size: 2.4rem; }
+    h2 { font-size: 1.9rem; margin-top: 2.5rem; }
+    h3 { font-size: 1.4rem; }
+
+    p {
+      font-size: 1.1rem;
+      margin: 1.2rem 0;
     }
 
     pre {
       border-radius: 6px;
-      padding: 1em;
-      overflow-x: auto;
+    }
+
+    @media (max-width: 900px) {
+      nav {
+        display: none;
+      }
     }
   </style>
 </head>
+
 <body>
 
 <div id="container">
-  <nav id="sidebar">
-    <h2>Chapters</h2>
+  <nav>
+    <h2>Contents</h2>
     <a onclick="loadChapter('chapters/chapter1.md')">Chapter 1</a>
     <a onclick="loadChapter('chapters/chapter2.md')">Chapter 2</a>
     <a onclick="loadChapter('chapters/chapter3.md')">Chapter 3</a>
   </nav>
 
-  <main id="content">
-    <h1>Welcome</h1>
-    <p>Select a chapter to begin reading.</p>
+  <main>
+    <div id="content">
+      <h1>Welcome</h1>
+      <p>Select a chapter to begin.</p>
+    </div>
   </main>
 </div>
 
-<!-- Marked (Markdown parser) -->
+<!-- Markdown parser -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-<!-- Prism core -->
+<!-- PrismJS -->
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
-
-<!-- Prism Python language -->
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
-
-<!-- Optional: line numbers -->
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<!-- MathJax configuration -->
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+
+<!-- MathJax engine -->
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async>
+</script>
 
 <script>
   async function loadChapter(path) {
@@ -105,19 +139,23 @@
       if (!response.ok) throw new Error("Failed to load");
 
       const markdown = await response.text();
+      const html = marked.parse(markdown);
 
-      // Render markdown to HTML
-      document.getElementById("content").innerHTML =
-        marked.parse(markdown);
+      const content = document.getElementById("content");
+      content.innerHTML = html;
 
-      // Prism highlights AFTER content is injected
       Prism.highlightAll();
+      MathJax.typeset();
 
+      content.scrollTop = 0;
     } catch (err) {
       document.getElementById("content").innerHTML =
         "<p><strong>Failed to load chapter.</strong></p>";
     }
   }
+
+  // Load first chapter by default
+  loadChapter('chapters/chapter1.md');
 </script>
 
 </body>
