@@ -128,7 +128,7 @@ Training Data:
 
 ML Algorithm learns: 
   Complex combination of word frequencies, sender patterns, 
-  link structures, etc. that distinguish spam
+  link structures, etc., that distinguish spam
 ```
 
 **Advantages:**
@@ -161,7 +161,7 @@ Understanding where AI came from helps us appreciate where it's going. The histo
 
 In the summer of 1956, John McCarthy, Marvin Minsky, Claude Shannon, and Nathaniel Rochester organized a workshop at Dartmouth College in Hanover, New Hampshire. Their proposal stated:
 
-> "We propose that a 2-month, 10-man study of artificial intelligence be carried out during the summer of 1956 at Dartmouth College... The study is to proceed on the basis of the conjecture that every aspect of learning or any other feature of intelligence can in principle be so precisely described that a machine can be made to simulate it."
+> "We propose that a 2-month, 10-man study of artificial intelligence be carried out during the summer of 1956 at Dartmouth College... The study is to proceed on the basis of the conjecture that every aspect of learning or any other feature of intelligence can, in principle, be so precisely described that a machine can be made to simulate it."
 
 This was the moment the term **"Artificial Intelligence"** was coined. McCarthy deliberately chose this name to distinguish the field from cybernetics and other related areas, and to emphasize the ambitious goal: creating truly intelligent machines.
 
@@ -190,7 +190,7 @@ The years following Dartmouth saw remarkable achievements that seemed to validat
 
 **Logic Theorist (1956)**: Proved 38 of 52 theorems from Principia Mathematica, sometimes finding more elegant proofs than the original authors.
 
-**ELIZA (1964-1966)**: Joseph Weizenbaum's program simulated a psychotherapist by pattern matching and substitution. Though simple, it fooled people into believing they were talking to a human—demonstrating the power of well-crafted interfaces.
+**ELIZA (1964-1966)**: Joseph Weizenbaum's program simulated a psychotherapist by pattern matching and substitution. Though simple, it fooled people into believing they were talking to a human, demonstrating the power of well-crafted interfaces.
 
 **SHRDLU (1970)**: Terry Winograd's system could understand and execute commands in a virtual "blocks world," demonstrating sophisticated natural language understanding within a constrained domain.
 
@@ -207,7 +207,7 @@ The years following Dartmouth saw remarkable achievements that seemed to validat
 
 **Why it matters:**
 
-This optimism shaped the field's trajectory—both its successes and failures. The ambitious goals attracted brilliant researchers and substantial funding, accelerating progress. But the unrealistic timelines and overpromising set the stage for disappointment.
+This optimism shaped the field's trajectory, both its successes and failures. The ambitious goals attracted brilliant researchers and substantial funding, accelerating progress. But the unrealistic timelines and overpromising set the stage for disappointment.
 
 ### 1.3.3 The First AI Winter (1974-1980)
 
@@ -227,7 +227,7 @@ Many AI problems simply couldn't run on available hardware. What seemed like alg
 
 **2. Lack of data:**
 
-Machine learning requires data—lots of it. In the 1970s:
+Machine learning requires data; lots of it. In the 1970s:
 - No internet to gather training examples
 - Manual data collection was expensive and slow
 - Storage was limited
@@ -254,9 +254,9 @@ Later, it would be shown that multi-layer networks could solve XOR and much more
 
 **4. Combinatorial explosion:**
 
-Many AI problems involved searching through possible solutions. As problems grew larger, the number of possibilities exploded:
+Many AI problems involve searching through possible solutions. As problems grew larger, the number of possibilities exploded:
 
-- Chess has roughly 10^120 possible games (more than atoms in the universe!)
+- Chess has roughly $10^{120}$ possible games (more than atoms in the universe!)
 - Natural language understanding requires considering multiple interpretations of sentences
 - Reasoning systems faced exponential growth in possible logical inferences
 
