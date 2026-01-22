@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ML for Biologists</title>
+  <title>Online Book</title>
 
   <style>
     html, body {
@@ -96,8 +96,11 @@
 
   <nav>
     <h2>Contents</h2>
-    <a href="#" onclick="loadChapter('chapters/chapter1.md')">Chapter 1</a>
-    <a href="#" onclick="loadChapter('chapters/chapter2.md')">Chapter 2</a>
+    <a href="#" onclick="loadChapter('chapters/01-introduction.md')">Introduction</a>
+    <a href="#" onclick="loadChapter('chapters/02-background.md')">Background</a>
+    <a href="#" onclick="loadChapter('chapters/03-methods.md')">Methods</a>
+    <a href="#" onclick="loadChapter('chapters/04-results.md')">Results</a>
+    <a href="#" onclick="loadChapter('chapters/05-discussion.md')">Discussion</a>
   </nav>
 
   <div id="content">
@@ -106,13 +109,25 @@
 
   <script>
     function loadChapter(file) {
-      fetch(file)
-        .then(response => response.text())
+      const base = window.location.pathname.replace(/\/[^/]*$/, '/');
+      const url = base + file;
+
+      fetch(url)
+        .then(response => {
+          if (!response.ok) throw new Error('HTTP ' + response.status);
+          return response.text();
+        })
         .then(text => {
           document.getElementById('page').innerHTML = marked.parse(text);
           document.querySelectorAll('pre code').forEach(block => {
             hljs.highlightElement(block);
           });
+          document.getElementById('content').scrollTop = 0;
+        })
+        .catch(err => {
+          document.getElementById('page').innerHTML = '<p>Failed to load chapter.</p><pre>' + err + '</pre>';
+        });
+    });
           window.scrollTo(0, 0);
         })
         .catch(() => {
@@ -121,7 +136,7 @@
     }
 
     // Load first chapter by default
-    loadChapter('chapters/chapter1.md');
+    loadChapter('chapters/01-introduction.md');
   </script>
 
 </body>
