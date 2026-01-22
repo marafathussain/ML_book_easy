@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ML for Biologists</title>
 
-  <link rel="stylesheet" href="[https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css](https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css)">
   <style>
-    /* RESET & LAYOUT */
     html, body {
       margin: 0;
       padding: 0;
@@ -16,89 +14,108 @@
       background: #fdfdfc;
       color: #222;
     }
-    body { display: flex; overflow: hidden; }
 
-    /* NAVIGATION */
+    body {
+      display: flex;
+      overflow: hidden;
+    }
+
     nav {
       width: 260px;
       background: #f5f5f3;
       border-right: 1px solid #ddd;
       padding: 2rem 1.5rem;
       overflow-y: auto;
-      flex-shrink: 0;
     }
-    nav h2 { font-size: 1.2rem; margin-top: 0; }
-    nav a { display: block; color: #222; text-decoration: none; margin: 0.6rem 0; }
-    nav a:hover { text-decoration: underline; }
 
-    /* MAIN CONTENT */
-    #content { flex: 1; overflow-y: auto; display: flex; justify-content: center; }
-    #page { max-width: 900px; width: 100%; padding: 4rem 3rem; line-height: 1.7; }
+    nav h2 {
+      font-size: 1.2rem;
+      margin-top: 0;
+    }
 
-    /* TYPOGRAPHY */
+    nav a {
+      display: block;
+      color: #222;
+      text-decoration: none;
+      margin: 0.6rem 0;
+      font-size: 1rem;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    #content {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      justify-content: center;
+    }
+
+    #page {
+      max-width: 900px;
+      width: 100%;
+      padding: 4rem 3rem;
+      line-height: 1.7;
+    }
+
     h1 { font-size: 2.5rem; }
     h2 { font-size: 1.9rem; margin-top: 2.5rem; }
+    h3 { font-size: 1.4rem; }
+
     p { font-size: 1.1rem; margin: 1.2rem 0; }
 
-    /* --- CODE STYLING FIX --- */
-    
-    /* 1. Inline code (single backtick) ONLY */
-    /* We use :not(pre) to ensure this doesn't touch the big code blocks */
-    :not(pre) > code {
+    code {
       background: #f3f3f3;
       padding: 0.2rem 0.4rem;
       border-radius: 4px;
       font-size: 0.95rem;
-      color: #d63384; /* Optional: makes inline code pop */
     }
 
-    /* 2. Block code (triple backticks) */
-    /* We let highlight.js handle the colors, we just set spacing */
     pre code {
       display: block;
-      padding: 1.5rem;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      line-height: 1.5;
+      padding: 1rem;
       overflow-x: auto;
-      /* Do NOT set background or color here, let the theme do it! */
     }
 
     @media (max-width: 900px) {
-      nav { display: none; }
-      #page { padding: 2rem 1.5rem; }
+      nav {
+        display: none;
+      }
     }
   </style>
 
-  <script src="[https://cdn.jsdelivr.net/npm/marked/marked.min.js](https://cdn.jsdelivr.net/npm/marked/marked.min.js)"></script>
-  <script src="[https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js](https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js)"></script>
-  <script src="[https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/languages/python.min.js](https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/languages/python.min.js)"></script>
+  <!-- Markdown parser -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- Syntax highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-light.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/languages/python.min.js"></script>
+
+  <script>
+    // Configure marked to add language classes
+    marked.setOptions({
+      langPrefix: 'language-'
+    });
+  </script>
 </head>
 <body>
 
   <nav>
     <h2>Contents</h2>
-    <a href="#" onclick="loadChapter('chapters/chapter1.md'); return false;">Chapter 1</a>
-    <a href="#" onclick="loadChapter('chapters/chapter2.md'); return false;">Chapter 2</a>
+    <a href="#" onclick="loadChapter('chapters/chapter1.md')">Chapter 1</a>
+    <a href="#" onclick="loadChapter('chapters/chapter2.md')">Chapter 2</a>
   </nav>
 
   <div id="content">
-    <div id="page">Loading...</div>
+    <div id="page">Loading chapter…</div>
   </div>
 
   <script>
-    // Configure Marked
-    marked.use({
-      gfm: true,
-      breaks: true
-    });
-
     function loadChapter(file) {
-      const pageDiv = document.getElementById('page');
-      
-      // Handle GitHub Pages path logic
       const base = window.location.pathname.replace(/\/[^/]*$/, '/');
-      const url = file.startsWith('http') ? file : base + file;
+      const url = base + file;
 
       fetch(url)
         .then(response => {
@@ -106,27 +123,23 @@
           return response.text();
         })
         .then(text => {
-          // 1. Render Markdown to HTML
-          pageDiv.innerHTML = marked.parse(text);
+          document.getElementById('page').innerHTML = marked.parse(text);
 
-          // 2. Force Syntax Highlighting
+          // Highlight code blocks if hljs is loaded
           if (window.hljs) {
-            const blocks = pageDiv.querySelectorAll('pre code');
-            blocks.forEach((block) => {
-              // Ensure the class name is clean for detection
+            document.querySelectorAll('pre code').forEach(block => {
               hljs.highlightElement(block);
             });
-            console.log(`Highlighted ${blocks.length} code blocks.`);
           }
 
           document.getElementById('content').scrollTop = 0;
         })
         .catch(err => {
-          pageDiv.innerHTML = `<p style="color:red">Error loading chapter: ${err.message}</p>`;
+          document.getElementById('page').innerHTML = '<p>Failed to load chapter.</p><pre>' + err + '</pre>';
         });
     }
 
-    // Load default chapter
+    // Load first chapter by default
     loadChapter('chapters/chapter1.md');
   </script>
 
