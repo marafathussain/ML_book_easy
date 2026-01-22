@@ -117,9 +117,12 @@
         .then(text => {
           document.getElementById('page').innerHTML = marked.parse(text);
   
-          document.querySelectorAll('pre code').forEach(block => {
-            hljs.highlightElement(block);
-          });
+          if (window.hljs) {
+              document.querySelectorAll('pre code').forEach(block => {
+                hljs.highlightElement(block);
+              });
+            }
+
   
           document.getElementById('content').scrollTop = 0;
         })
