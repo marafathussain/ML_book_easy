@@ -284,7 +284,7 @@ Today, as AI again transforms biology, we should remember this history. Not ever
 
 ### 1.3.4 Expert Systems and the Second Wave (1980-1987)
 
-AI rebounded in the 1980s with a new approach: **expert systems**—programs that captured human expertise in specific domains.
+AI rebounded in the 1980s with a new approach: **expert systems**, programs that captured human expertise in specific domains.
 
 **How expert systems worked:**
 
@@ -303,7 +303,7 @@ Instead of trying to create general intelligence, expert systems focused on narr
 
 **Success stories:**
 
-**MYCIN (medical diagnosis)**: Diagnosed bacterial infections with accuracy matching specialists. Its rule base contained ~600 rules like:
+**MYCIN (medical diagnosis)**: Diagnosed bacterial infections with accuracy matching specialists. Its rule base contained ~600 rules, like:
 ```
 IF: 
   1) The infection is bacterial
@@ -315,7 +315,7 @@ THEN:
 
 **XCON/R1 (computer configuration)**: Helped Digital Equipment Corporation configure custom computer systems. Saved the company an estimated $40 million annually by the late 1980s.
 
-**DENDRAL (chemistry)**: Analyzed mass spectrometry data to determine molecular structure—one of the first applications of AI to scientific discovery.
+**DENDRAL (chemistry)**: Analyzed mass spectrometry data to determine molecular structure, one of the first applications of AI to scientific discovery.
 
 **PROSPECTOR (geology)**: Helped locate mineral deposits. Famously, it predicted a molybdenum deposit worth over $100 million based on geological data.
 
@@ -330,13 +330,13 @@ By 1985, AI was a billion-dollar industry. Corporations invested in "AI departme
 
 **Specialized AI hardware:**
 
-Companies built dedicated "Lisp Machines"—computers optimized for running AI programs written in the Lisp programming language. These machines cost $70,000-$150,000 each.
+Companies built dedicated "Lisp Machines", computers optimized for running AI programs written in the Lisp programming language. These machines cost $70,000-$150,000 each.
 
 **Why expert systems ultimately failed:**
 
 Despite initial success, expert systems had fatal flaws:
 
-**1. Knowledge acquisition bottleneck**: Building an expert system required interviewing experts and manually encoding their knowledge into rules—a slow, expensive process. Experts often couldn't articulate their reasoning ("I just know").
+**1. Knowledge acquisition bottleneck**: Building an expert system required interviewing experts and manually encoding their knowledge into rules, a slow, expensive process. Experts often couldn't articulate their reasoning ("I just know").
 
 **2. Brittleness**: Expert systems worked only within their narrow domain. MYCIN couldn't diagnose viral infections because it knew nothing about viruses. Slight variations broke systems.
 
