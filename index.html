@@ -2,146 +2,123 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ML for Biologists</title>
+  <title>Online Book</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- PrismJS theme (light, IDE-like) -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css"
+  />
+
+  <!-- Optional: line numbers -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.css"
+  />
 
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: Georgia, "Times New Roman", serif;
-      background: #fdfdfc;
-      color: #222;
-    }
-
     body {
-      display: flex;
-      overflow: hidden;
-    }
-
-    nav {
-      width: 260px;
-      background: #f5f5f3;
-      border-right: 1px solid #ddd;
-      padding: 2rem 1.5rem;
-      overflow-y: auto;
-    }
-
-    nav h2 {
-      font-size: 1.2rem;
-      margin-top: 0;
-    }
-
-    nav a {
-      display: block;
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #ffffff;
       color: #222;
-      text-decoration: none;
-      margin: 0.6rem 0;
-      font-size: 1rem;
     }
 
-    nav a:hover {
+    #container {
+      display: flex;
+      height: 100vh;
+    }
+
+    #sidebar {
+      width: 260px;
+      border-right: 1px solid #ddd;
+      padding: 1rem;
+      overflow-y: auto;
+      background: #f7f7f7;
+    }
+
+    #sidebar h2 {
+      margin-top: 0;
+      font-size: 1.1rem;
+    }
+
+    #sidebar a {
+      display: block;
+      padding: 0.4rem 0;
+      color: #0366d6;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    #sidebar a:hover {
       text-decoration: underline;
     }
 
     #content {
       flex: 1;
+      padding: 2rem;
       overflow-y: auto;
-      display: flex;
-      justify-content: center;
-    }
-
-    #page {
       max-width: 900px;
-      width: 100%;
-      padding: 4rem 3rem;
-      line-height: 1.7;
+      margin: 0 auto;
     }
 
-    h1 { font-size: 2.5rem; }
-    h2 { font-size: 1.9rem; margin-top: 2.5rem; }
-    h3 { font-size: 1.4rem; }
-
-    p { font-size: 1.1rem; margin: 1.2rem 0; }
-
-    code {
-      background: #f3f3f3;
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      font-size: 0.95rem;
-    }
-
-    pre code {
-      display: block;
-      padding: 1rem;
+    pre {
+      border-radius: 6px;
+      padding: 1em;
       overflow-x: auto;
     }
-
-    @media (max-width: 900px) {
-      nav {
-        display: none;
-      }
-    }
   </style>
-
-  <!-- Markdown parser -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
-  <!-- Highlight.js -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-light.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/languages/python.min.js"></script>
-
-  <script>
-    // Configure marked to highlight code with Highlight.js
-    marked.setOptions({
-      langPrefix: 'language-',
-      highlight: function(code, lang) {
-        if (window.hljs && hljs.getLanguage(lang)) {
-          return hljs.highlight(code, { language: lang }).value;
-        }
-        return code; // fallback: no highlighting
-      }
-    });
-  </script>
 </head>
 <body>
 
-  <nav>
-    <h2>Contents</h2>
-    <a href="#" onclick="loadChapter('chapters/chapter1.md')">Chapter 1</a>
-    <a href="#" onclick="loadChapter('chapters/chapter2.md')">Chapter 2</a>
-    <!-- Add more chapters here -->
+<div id="container">
+  <nav id="sidebar">
+    <h2>Chapters</h2>
+    <a onclick="loadChapter('chapters/chapter1.md')">Chapter 1</a>
+    <a onclick="loadChapter('chapters/chapter2.md')">Chapter 2</a>
+    <a onclick="loadChapter('chapters/chapter3.md')">Chapter 3</a>
   </nav>
 
-  <div id="content">
-    <div id="page">Loading chapter…</div>
-  </div>
+  <main id="content">
+    <h1>Welcome</h1>
+    <p>Select a chapter to begin reading.</p>
+  </main>
+</div>
 
-  <script>
-    function loadChapter(file) {
-      const base = window.location.pathname.replace(/\/[^/]*$/, '/');
-      const url = base + file;
+<!-- Marked (Markdown parser) -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-      fetch(url)
-        .then(response => {
-          if (!response.ok) throw new Error('HTTP ' + response.status);
-          return response.text();
-        })
-        .then(text => {
-          // Render Markdown with highlighting
-          document.getElementById('page').innerHTML = marked.parse(text);
-          document.getElementById('content').scrollTop = 0;
-        })
-        .catch(err => {
-          document.getElementById('page').innerHTML = '<p>Failed to load chapter.</p><pre>' + err + '</pre>';
-        });
+<!-- Prism core -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+
+<!-- Prism Python language -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
+
+<!-- Optional: line numbers -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<script>
+  async function loadChapter(path) {
+    try {
+      const response = await fetch(path);
+      if (!response.ok) throw new Error("Failed to load");
+
+      const markdown = await response.text();
+
+      // Render markdown to HTML
+      document.getElementById("content").innerHTML =
+        marked.parse(markdown);
+
+      // Prism highlights AFTER content is injected
+      Prism.highlightAll();
+
+    } catch (err) {
+      document.getElementById("content").innerHTML =
+        "<p><strong>Failed to load chapter.</strong></p>";
     }
-
-    // Load first chapter by default
-    loadChapter('chapters/chapter1.md');
-  </script>
+  }
+</script>
 
 </body>
 </html>
