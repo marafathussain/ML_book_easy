@@ -1,6 +1,6 @@
 # Chapter 2: Data Cleaning and Exploratory Data Analysis for Biological Data
 
-## Introduction
+## 1. Introduction
 
 In the world of machine learning, there's a popular saying: "garbage in, garbage out." This principle is especially true in biological research, where data quality can make or break your analysis. While the excitement of machine learning often centers on sophisticated algorithms and impressive predictions, experienced practitioners know that the real work—and often the most critical work—happens long before any model is trained.
 
