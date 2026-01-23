@@ -140,7 +140,7 @@ A DataFrame is a two-dimensional labeled data structure with columns of potentia
 ```python
 import pandas as pd
 
-gene_data = pd.DataFrame({
+df = pd.DataFrame({
     'Gene': ['BRCA1', 'TP53', 'EGFR', 'MYC'],
     'Expression': [5.2, 12.8, 3.4, 7.1],
     'Chromosome': [17, 17, 7, 8],
