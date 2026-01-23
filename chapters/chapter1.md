@@ -98,7 +98,7 @@ These terms are often used interchangeably, but they represent nested concepts:
   <p><strong>Figure 1.</strong> A Venn diagram showing the overall field of AI. (PC: Goodfellow, I., Bengio, Y., & Courville, A. (2016). Deep Learning. Page 9)</p>
 </div>
 
-![AI_vs_ML](/figures/chapter1/fig1.jpg)
+![AI_vs_ML](https://marafathussain.github.io/ML_book_easy/figures/chapter1/fig1.jpg)
 Figure 2. Test
 
 ### 1.2.3 Traditional Programming vs. Machine Learning
