@@ -5,13 +5,14 @@
   <title>ML for Biologists</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <link rel="icon" type="image/svg+xml"
-  href="data:image/svg+xml,
-  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
-    <text y='0.9em' font-size='90'>🧬</text>
-  </svg>">
+  <!-- Favicon -->
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E🧬%3C/text%3E%3C/svg%3E"
+  />
 
-  <!-- PrismJS theme -->
+  <!-- PrismJS -->
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css"
@@ -60,7 +61,6 @@
       color: var(--link);
       text-decoration: none;
       cursor: pointer;
-      font-size: 1rem;
     }
 
     nav a:hover {
@@ -103,49 +103,44 @@
       font-size: clamp(1.2rem, 2.5vw, 1.4rem);
     }
 
-    p {
-      font-size: clamp(1rem, 2.4vw, 1.1rem);
-      margin: 1.2rem 0;
-    }
-
     pre {
       border-radius: 6px;
       -webkit-overflow-scrolling: touch;
     }
 
-    /* ---------- Mobile / Tablet ---------- */
-    @media (max-width: 900px) {
-      #container {
-        flex-direction: column;
-      }
-
-      nav {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-      }
-
-      #menuToggle {
-        display: block;
-      }
-
-      nav.collapsed a {
-        display: none;
-      }
-
-      nav.collapsed h2 {
-        display: none;
-      }
-
-      main {
-        justify-content: flex-start;
-      }
-
-      #content {
-        max-width: 100%;
-      }
+    /* Chapter index */
+    .chapter-index {
+      border-left: 4px solid #ddd;
+      padding-left: 1rem;
+      margin: 2rem 0;
+      background: #fafafa;
+      font-size: 0.95rem;
     }
 
+    .chapter-index h3 {
+      margin-top: 0;
+      font-size: 1rem;
+    }
+
+    .chapter-index ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .chapter-index li {
+      margin: 0.4rem 0;
+    }
+
+    .chapter-index a {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    .chapter-index a:hover {
+      text-decoration: underline;
+    }
+
+    /* Back to top */
     #toTop {
       position: fixed;
       bottom: 1.5rem;
@@ -162,13 +157,32 @@
       z-index: 1000;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
-    
+
     #toTop:hover {
       background: #000;
     }
-    
-    /* Slightly bigger tap target on phones */
+
+    /* Mobile / Tablet */
     @media (max-width: 900px) {
+      #container {
+        flex-direction: column;
+      }
+
+      nav {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      #menuToggle {
+        display: block;
+      }
+
+      nav.collapsed a,
+      nav.collapsed h2 {
+        display: none;
+      }
+
       #toTop {
         width: 52px;
         height: 52px;
@@ -177,45 +191,12 @@
         right: 1rem;
       }
     }
-
-    .chapter-index {
-      border-left: 4px solid #ddd;
-      padding-left: 1rem;
-      margin: 2rem 0;
-      font-size: 0.95rem;
-      background: #fafafa;
-    }
-    
-    .chapter-index h3 {
-      margin-top: 0;
-      font-size: 1rem;
-    }
-    
-    .chapter-index ul {
-      list-style: none;
-      padding-left: 0;
-    }
-    
-    .chapter-index li {
-      margin: 0.4rem 0;
-    }
-    
-    .chapter-index a {
-      text-decoration: none;
-      color: #0366d6;
-    }
-    
-    .chapter-index a:hover {
-      text-decoration: underline;
-    }
-
-
   </style>
 </head>
 
-<button id="toTop" title="Back to top">↑</button>
-
 <body>
+
+<button id="toTop" title="Back to top">↑</button>
 
 <div id="container">
   <nav class="collapsed">
@@ -234,10 +215,8 @@
   </main>
 </div>
 
-<!-- Marked -->
+<!-- Libraries -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
-<!-- Prism -->
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
@@ -265,11 +244,12 @@
     const markdown = await response.text();
     const content = document.getElementById("content");
 
-    // content.innerHTML = marked.parse(markdown);
     marked.setOptions({
       headerIds: true,
       mangle: false
     });
+
+    content.innerHTML = marked.parse(markdown);
 
     generateChapterIndex();
     Prism.highlightAll();
@@ -287,68 +267,42 @@
     document.querySelector("nav").classList.toggle("collapsed");
   };
 
-  // Load from URL hash or default
-  const initial = location.hash.replace('#', '') || 'chapter1';
-  loadChapter(chapterMap[initial]);
-
-  const toTopButton = document.getElementById("toTop");
-
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 300) {
-      toTopButton.style.display = "block";
-    } else {
-      toTopButton.style.display = "none";
-    }
-  });
-  
-  toTopButton.addEventListener("click", () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  });
-
   function generateChapterIndex() {
     const content = document.getElementById("content");
     const headings = content.querySelectorAll("h2, h3");
-  
-    if (headings.length === 0) return;
-  
+    if (!headings.length) return;
+
     const index = document.createElement("div");
     index.className = "chapter-index";
-  
-    const title = document.createElement("h3");
-    title.textContent = "In this chapter";
-    index.appendChild(title);
-  
-    const list = document.createElement("ul");
-  
+
+    index.innerHTML = "<h3>In this chapter</h3>";
+    const ul = document.createElement("ul");
+
     headings.forEach(h => {
       if (!h.id) return;
-  
       const li = document.createElement("li");
-      li.style.marginLeft = h.tagName === "H3" ? "1rem" : "0";
-  
-      const a = document.createElement("a");
-      a.href = `#${h.id}`;
-      a.textContent = h.textContent;
-  
-      li.appendChild(a);
-      list.appendChild(li);
+      if (h.tagName === "H3") li.style.marginLeft = "1rem";
+      li.innerHTML = `<a href="#${h.id}">${h.textContent}</a>`;
+      ul.appendChild(li);
     });
-  
-    index.appendChild(list);
-  
-    // Insert index after the first heading
+
+    index.appendChild(ul);
+
     const firstHeading = content.querySelector("h1, h2");
-    if (firstHeading) {
-      firstHeading.after(index);
-    } else {
-      content.prepend(index);
-    }
+    firstHeading ? firstHeading.after(index) : content.prepend(index);
   }
 
+  const toTop = document.getElementById("toTop");
+  window.addEventListener("scroll", () => {
+    toTop.style.display = window.scrollY > 300 ? "block" : "none";
+  });
 
+  toTop.onclick = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const initial = location.hash.replace("#", "") || "chapter1";
+  loadChapter(chapterMap[initial]);
 </script>
 
 </body>
