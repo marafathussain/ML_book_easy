@@ -2,7 +2,7 @@
 
 ## 1.1 Introduction: Why Machine Learning Matters in Biology
 
-In the summer of 2020, a team at DeepMind, a London-based artificial intelligence company, announced a breakthrough that stunned the biological community. Their AI system, [AlphaFold2](https://alphafold.ebi.ac.uk/){:target="_blank"}, could predict the three-dimensional structure of proteins with accuracy rivaling experimental methods, a problem that had challenged scientists for half a century. What once took months or years of painstaking laboratory work could now be accomplished in hours using machine learning.
+In the summer of 2020, a team at DeepMind, a London-based artificial intelligence company, announced a breakthrough that stunned the biological community. Their AI system, [AlphaFold2](https://alphafold.ebi.ac.uk/), could predict the three-dimensional structure of proteins with accuracy rivaling experimental methods, a problem that had challenged scientists for half a century. What once took months or years of painstaking laboratory work could now be accomplished in hours using machine learning.
 
 This wasn't an isolated achievement. Across biology, artificial intelligence (AI) and machine learning (ML) are transforming how we approach fundamental questions:
 
@@ -159,7 +159,7 @@ Understanding where AI came from helps us appreciate where it's going. The histo
 
 **The Proposal:**
 
-In the summer of 1956, John McCarthy, Marvin Minsky, Claude Shannon, and Nathaniel Rochester organized a  [workshop at Dartmouth College](https://en.wikipedia.org/wiki/Dartmouth_workshop){:target="_blank"} in Hanover, New Hampshire. Their proposal stated:
+In the summer of 1956, John McCarthy, Marvin Minsky, Claude Shannon, and Nathaniel Rochester organized a  [workshop at Dartmouth College](https://en.wikipedia.org/wiki/Dartmouth_workshop) in Hanover, New Hampshire. Their proposal stated:
 
 > "We propose that a 2-month, 10-man study of artificial intelligence be carried out during the summer of 1956 at Dartmouth College... The study is to proceed on the basis of the conjecture that every aspect of learning or any other feature of intelligence can, in principle, be so precisely described that a machine can be made to simulate it."
 
@@ -182,7 +182,7 @@ Their optimism was palpable. Allen Newell and Herbert Simon presented the Logic 
 
 **Why this matters for biologists:**
 
-The Dartmouth vision of machines that could learn, reason, and solve problems wasn't purely theoretical—it was motivated by understanding biological intelligence. The attendees included neuroscientists interested in how brains process information. From the beginning, AI and biology were intertwined: AI sought to recreate biological intelligence, while biology increasingly looked to computational models to understand the brain.
+The Dartmouth vision of machines that could learn, reason, and solve problems wasn't purely theoretical, it was motivated by understanding biological intelligence. The attendees included neuroscientists interested in how brains process information. From the beginning, AI and biology were intertwined: AI sought to recreate biological intelligence, while biology increasingly looked to computational models to understand the brain.
 
 ### 1.3.2 Early Success and Optimism (1956-1974)
 
@@ -330,7 +330,7 @@ By 1985, AI was a billion-dollar industry. Corporations invested in "AI departme
 
 **Specialized AI hardware:**
 
-Companies built dedicated "Lisp Machines", computers optimized for running AI programs written in the Lisp programming language. These machines cost $70,000-$150,000 each.
+Companies built dedicated "Lisp Machines", computers optimized for running AI programs written in the Lisp programming language. These machines cost \$70,000-\$150,000 each.
 
 **Why expert systems ultimately failed:**
 
