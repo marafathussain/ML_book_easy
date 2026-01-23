@@ -6,35 +6,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- Favicon -->
-  <link
-    rel="icon"
-    type="image/svg+xml"
-    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E🧬%3C/text%3E%3C/svg%3E"
-  />
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,
+    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+      <text y='0.9em' font-size='90'>🧬</text>
+    </svg>">
 
   <!-- PrismJS -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css"
-  />
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.css"
-  />
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
 
   <style>
-    :root {
-      --max-width: 900px;
-      --bg-nav: #f6f6f6;
-      --border: #ddd;
-      --link: #0366d6;
-    }
-
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #fff;
       color: #222;
+      background: #fff;
     }
 
     #container {
@@ -45,22 +34,21 @@
     nav {
       width: 260px;
       padding: 1.5rem;
-      background: var(--bg-nav);
-      border-right: 1px solid var(--border);
+      background: #f6f6f6;
+      border-right: 1px solid #ddd;
       overflow-y: auto;
     }
 
     nav h2 {
       margin-top: 0;
-      font-size: 1.2rem;
     }
 
     nav a {
       display: block;
-      margin: 0.6rem 0;
-      color: var(--link);
-      text-decoration: none;
+      margin: 0.5rem 0;
+      color: #0366d6;
       cursor: pointer;
+      text-decoration: none;
     }
 
     nav a:hover {
@@ -69,11 +57,11 @@
 
     #menuToggle {
       display: none;
+      margin-bottom: 1rem;
       font-size: 1.1rem;
       background: none;
       border: none;
       cursor: pointer;
-      margin-bottom: 1rem;
     }
 
     main {
@@ -84,42 +72,21 @@
     }
 
     #content {
-      max-width: var(--max-width);
+      max-width: 900px;
       width: 100%;
-      padding: clamp(1.2rem, 3vw, 3rem);
+      padding: clamp(1.5rem, 4vw, 3rem);
       line-height: 1.7;
     }
 
-    h1 {
-      font-size: clamp(1.8rem, 4vw, 2.4rem);
-    }
+    h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); }
+    h2 { margin-top: 2.5rem; }
 
-    h2 {
-      font-size: clamp(1.4rem, 3vw, 1.9rem);
-      margin-top: 2.5rem;
-    }
-
-    h3 {
-      font-size: clamp(1.2rem, 2.5vw, 1.4rem);
-    }
-
-    pre {
-      border-radius: 6px;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    /* Chapter index */
     .chapter-index {
-      border-left: 4px solid #ddd;
-      padding-left: 1rem;
-      margin: 2rem 0;
       background: #fafafa;
+      border-left: 4px solid #ddd;
+      padding: 1rem;
+      margin: 2rem 0;
       font-size: 0.95rem;
-    }
-
-    .chapter-index h3 {
-      margin-top: 0;
-      font-size: 1rem;
     }
 
     .chapter-index ul {
@@ -131,38 +98,25 @@
       margin: 0.4rem 0;
     }
 
-    .chapter-index a {
-      color: var(--link);
-      text-decoration: none;
+    .chapter-index li.h3 {
+      margin-left: 1rem;
     }
 
-    .chapter-index a:hover {
-      text-decoration: underline;
-    }
-
-    /* Back to top */
     #toTop {
       position: fixed;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      width: 44px;
-      height: 44px;
+      bottom: 1.2rem;
+      right: 1.2rem;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       border: none;
       background: #333;
-      color: white;
+      color: #fff;
       font-size: 1.4rem;
       cursor: pointer;
       display: none;
-      z-index: 1000;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
-    #toTop:hover {
-      background: #000;
-    }
-
-    /* Mobile / Tablet */
     @media (max-width: 900px) {
       #container {
         flex-direction: column;
@@ -171,7 +125,7 @@
       nav {
         width: 100%;
         border-right: none;
-        border-bottom: 1px solid var(--border);
+        border-bottom: 1px solid #ddd;
       }
 
       #menuToggle {
@@ -182,21 +136,13 @@
       nav.collapsed h2 {
         display: none;
       }
-
-      #toTop {
-        width: 52px;
-        height: 52px;
-        font-size: 1.6rem;
-        bottom: 1rem;
-        right: 1rem;
-      }
     }
   </style>
 </head>
 
 <body>
 
-<button id="toTop" title="Back to top">↑</button>
+<button id="toTop">↑</button>
 
 <div id="container">
   <nav class="collapsed">
@@ -208,15 +154,14 @@
   </nav>
 
   <main>
-    <div id="content">
-      <h1>Welcome</h1>
-      <p>Select a chapter to begin.</p>
-    </div>
+    <div id="content">Loading…</div>
   </main>
 </div>
 
-<!-- Libraries -->
+<!-- Marked -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<!-- Prism -->
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
@@ -225,106 +170,81 @@
 <script>
   window.MathJax = {
     tex: {
-      inlineMath: [['$', '$'], ['\\(', '\\)']],
-      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      inlineMath: [['$', '$']],
+      displayMath: [['$$', '$$']]
     }
   };
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
 
 <script>
-  const chapterMap = {
+  const chapters = {
     chapter1: 'chapters/chapter1.md',
     chapter2: 'chapters/chapter2.md',
     chapter3: 'chapters/chapter3.md'
   };
 
+  marked.setOptions({ headerIds: true, mangle: false });
+
   async function loadChapter(path) {
-    const response = await fetch(path);
-    if (!response.ok) throw new Error("Failed to load");
-  
-    const markdown = await response.text();
+    const res = await fetch(path);
+    const md = await res.text();
+
     const content = document.getElementById("content");
-  
-    marked.setOptions({
-      headerIds: true,
-      mangle: false
-    });
-  
-    content.innerHTML = marked.parse(markdown);   // ← THIS WAS MISSING
-  
+    content.innerHTML = marked.parse(md);
+
     generateChapterIndex();
     Prism.highlightAll();
-    MathJax.typeset();
-  
+    MathJax.typesetPromise();
     window.scrollTo({ top: 0 });
   }
 
-  function navigate(chapter) {
-    location.hash = chapter;
-    loadChapter(chapterMap[chapter]);
-    document.querySelector("nav").classList.add("collapsed");
-  }
-
-  document.getElementById("menuToggle").onclick = () => {
-    document.querySelector("nav").classList.toggle("collapsed");
-  };
-
   function generateChapterIndex() {
     const content = document.getElementById("content");
-  
-    // Grab all headings
-    const allHeadings = [...content.querySelectorAll("h1, h2, h3")];
-  
-    // Ignore the first H1 (chapter title)
-    const headings = allHeadings.filter((h, i) => !(h.tagName === "H1" && i === 0));
-  
-    if (headings.length === 0) return;
-  
-    const index = document.createElement("div");
-    index.className = "chapter-index";
-  
-    const title = document.createElement("h3");
-    title.textContent = "In this chapter";
-    index.appendChild(title);
-  
+    const headings = [...content.querySelectorAll("h2, h3")];
+    if (!headings.length) return;
+
+    const box = document.createElement("div");
+    box.className = "chapter-index";
+    box.innerHTML = "<strong>In this chapter</strong>";
+
     const ul = document.createElement("ul");
-  
+
     headings.forEach(h => {
-      if (!h.id) return;
-  
       const li = document.createElement("li");
-  
-      if (h.tagName === "H3") {
-        li.style.marginLeft = "1rem";
-      }
-  
+      if (h.tagName === "H3") li.className = "h3";
+
       const a = document.createElement("a");
-      a.href = `#${h.id}`;
+      a.href = "#" + h.id;
       a.textContent = h.textContent;
-  
+
       li.appendChild(a);
       ul.appendChild(li);
     });
-  
-    index.appendChild(ul);
-  
-    // Insert after first heading
-    const firstHeading = content.querySelector("h1, h2");
-    firstHeading.after(index);
+
+    box.appendChild(ul);
+    content.querySelector("h1")?.after(box);
   }
 
-  const toTop = document.getElementById("toTop");
-  window.addEventListener("scroll", () => {
-    toTop.style.display = window.scrollY > 300 ? "block" : "none";
-  });
+  function navigate(id) {
+    location.hash = id;
+    loadChapter(chapters[id]);
+    document.querySelector("nav").classList.add("collapsed");
+  }
 
-  toTop.onclick = () => {
+  document.getElementById("menuToggle").onclick = () =>
+    document.querySelector("nav").classList.toggle("collapsed");
+
+  window.addEventListener("scroll", () =>
+    document.getElementById("toTop").style.display =
+      window.scrollY > 300 ? "block" : "none"
+  );
+
+  document.getElementById("toTop").onclick = () =>
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
 
   const initial = location.hash.replace("#", "") || "chapter1";
-  loadChapter(chapterMap[initial]);
+  loadChapter(chapters[initial]);
 </script>
 
 </body>
