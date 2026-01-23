@@ -69,6 +69,7 @@
       display: flex;
       justify-content: center;
       overflow-y: auto;
+      scroll-behavior: smooth;
     }
 
     #content {
@@ -215,8 +216,14 @@
       if (h.tagName === "H3") li.className = "h3";
 
       const a = document.createElement("a");
-      a.href = "#" + h.id;
       a.textContent = h.textContent;
+      a.href = "javascript:void(0)";
+      a.onclick = () => {
+        document.getElementById(h.id).scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      };
 
       li.appendChild(a);
       ul.appendChild(li);
