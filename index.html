@@ -219,12 +219,12 @@
       a.textContent = h.textContent;
       a.href = "javascript:void(0)";
       a.onclick = () => {
-        document.getElementById(h.id).scrollIntoView({
+        h.scrollIntoView({
           behavior: "smooth",
           block: "start"
         });
       };
-
+      
       li.appendChild(a);
       ul.appendChild(li);
     });
