@@ -2,7 +2,7 @@
 
 ## 1.1 Introduction: Why Machine Learning Matters in Biology
 
-In the summer of 2020, a team at DeepMind, a London-based artificial intelligence company, announced a breakthrough that stunned the biological community. Their AI system, AlphaFold2, could predict the three-dimensional structure of proteins with accuracy rivaling experimental methods, a problem that had challenged scientists for half a century. What once took months or years of painstaking laboratory work could now be accomplished in hours using machine learning.
+In the summer of 2020, a team at DeepMind, a London-based artificial intelligence company, announced a breakthrough that stunned the biological community. Their AI system, [AlphaFold2](https://alphafold.ebi.ac.uk/){:target="_blank"}, could predict the three-dimensional structure of proteins with accuracy rivaling experimental methods, a problem that had challenged scientists for half a century. What once took months or years of painstaking laboratory work could now be accomplished in hours using machine learning.
 
 This wasn't an isolated achievement. Across biology, artificial intelligence (AI) and machine learning (ML) are transforming how we approach fundamental questions:
 
@@ -153,13 +153,13 @@ ML Algorithm learns:
 
 ## 1.3 A Brief History of Artificial Intelligence
 
-Understanding where AI came from helps us appreciate where it's going. The history is marked by cycles of optimism and disappointment—periods of rapid progress followed by "AI winters" when funding dried up and interest waned.
+Understanding where AI came from helps us appreciate where it's going. The history is marked by cycles of optimism and disappointment, periods of rapid progress followed by "AI winters" when funding dried up and interest waned.
 
 ### 1.3.1 The Dartmouth Conference (1956): Birth of AI
 
 **The Proposal:**
 
-In the summer of 1956, John McCarthy, Marvin Minsky, Claude Shannon, and Nathaniel Rochester organized a workshop at Dartmouth College in Hanover, New Hampshire. Their proposal stated:
+In the summer of 1956, John McCarthy, Marvin Minsky, Claude Shannon, and Nathaniel Rochester organized a  [workshop at Dartmouth College](https://en.wikipedia.org/wiki/Dartmouth_workshop){:target="_blank"} in Hanover, New Hampshire. Their proposal stated:
 
 > "We propose that a 2-month, 10-man study of artificial intelligence be carried out during the summer of 1956 at Dartmouth College... The study is to proceed on the basis of the conjecture that every aspect of learning or any other feature of intelligence can, in principle, be so precisely described that a machine can be made to simulate it."
 
