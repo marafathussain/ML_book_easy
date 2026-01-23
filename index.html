@@ -241,20 +241,23 @@
 
   async function loadChapter(path) {
     const response = await fetch(path);
+    if (!response.ok) throw new Error("Failed to load");
+  
     const markdown = await response.text();
     const content = document.getElementById("content");
-
+  
     marked.setOptions({
       headerIds: true,
       mangle: false
     });
-
-    content.innerHTML = marked.parse(markdown);
-
+  
+    content.innerHTML = marked.parse(markdown);   // ← THIS WAS MISSING
+  
     generateChapterIndex();
     Prism.highlightAll();
     MathJax.typeset();
-    window.scrollTo(0, 0);
+  
+    window.scrollTo({ top: 0 });
   }
 
   function navigate(chapter) {
