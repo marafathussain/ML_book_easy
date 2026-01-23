@@ -178,6 +178,38 @@
       }
     }
 
+    .chapter-index {
+      border-left: 4px solid #ddd;
+      padding-left: 1rem;
+      margin: 2rem 0;
+      font-size: 0.95rem;
+      background: #fafafa;
+    }
+    
+    .chapter-index h3 {
+      margin-top: 0;
+      font-size: 1rem;
+    }
+    
+    .chapter-index ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    
+    .chapter-index li {
+      margin: 0.4rem 0;
+    }
+    
+    .chapter-index a {
+      text-decoration: none;
+      color: #0366d6;
+    }
+    
+    .chapter-index a:hover {
+      text-decoration: underline;
+    }
+
+
   </style>
 </head>
 
@@ -233,7 +265,13 @@
     const markdown = await response.text();
     const content = document.getElementById("content");
 
-    content.innerHTML = marked.parse(markdown);
+    // content.innerHTML = marked.parse(markdown);
+    marked.setOptions({
+      headerIds: true,
+      mangle: false
+    });
+
+    generateChapterIndex();
     Prism.highlightAll();
     MathJax.typeset();
     window.scrollTo(0, 0);
@@ -269,6 +307,47 @@
       behavior: "smooth"
     });
   });
+
+  function generateChapterIndex() {
+    const content = document.getElementById("content");
+    const headings = content.querySelectorAll("h2, h3");
+  
+    if (headings.length === 0) return;
+  
+    const index = document.createElement("div");
+    index.className = "chapter-index";
+  
+    const title = document.createElement("h3");
+    title.textContent = "In this chapter";
+    index.appendChild(title);
+  
+    const list = document.createElement("ul");
+  
+    headings.forEach(h => {
+      if (!h.id) return;
+  
+      const li = document.createElement("li");
+      li.style.marginLeft = h.tagName === "H3" ? "1rem" : "0";
+  
+      const a = document.createElement("a");
+      a.href = `#${h.id}`;
+      a.textContent = h.textContent;
+  
+      li.appendChild(a);
+      list.appendChild(li);
+    });
+  
+    index.appendChild(list);
+  
+    // Insert index after the first heading
+    const firstHeading = content.querySelector("h1, h2");
+    if (firstHeading) {
+      firstHeading.after(index);
+    } else {
+      content.prepend(index);
+    }
+  }
+
 
 </script>
 
