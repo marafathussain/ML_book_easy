@@ -1031,7 +1031,7 @@ Machine learning enables: Collect data → Discover patterns → Generate hypoth
 - **Drug repurposing**: ML finds existing drugs that might treat new diseases based on molecular patterns
 - **Biomarker discovery**: ML identifies combinations of genes/proteins that predict disease better than any single marker
 
-This doesn't replace hypothesis-driven research—it complements it, suggesting new hypotheses to test.
+This doesn't replace hypothesis-driven research; it complements it, suggesting new hypotheses to test.
 
 ## 1.7 Machine Learning vs. Traditional Statistics
 
@@ -1050,7 +1050,7 @@ There's significant overlap, but key differences in philosophy and application:
 **Machine Learning:**
 - **Goal**: Make accurate predictions on new data
 - **Focus**: Prediction (how well can we predict outcomes?)
-- **Questions**: "Can we accurately predict disease from gene expression?" "Which model gives best predictions?"
+- **Questions**: "Can we accurately predict disease from gene expression?" "Which model gives the best predictions?"
 - **Values**: Predictive accuracy, scalability, automation
 
 **Example:**
@@ -1076,7 +1076,7 @@ Result: 89% accuracy on test set, identifies 85% of diabetes cases
 Conclusion: Can accurately predict diabetes. BMI is the most important feature, but combinations with other features improve prediction.
 ```
 
-Both are valuable—statistics explains *why*, machine learning predicts *what*.
+Both are valuable; statistics explains *why*, machine learning predicts *what*.
 
 ### 1.7.2 Model Complexity
 
@@ -1292,7 +1292,7 @@ Machine learning is powerful but not magic. Understanding limitations prevents m
 
 ### 1.9.1 Data Requirements
 
-**ML needs data—often lots of it:**
+**ML needs data, often lots of it:**
 
 Deep learning especially requires large datasets:
 - Image classification: Thousands to millions of images
@@ -1568,39 +1568,25 @@ Let's consolidate what we've learned in this chapter:
 
 **12. The future is bright**: multimodal integration, foundation models, automated discovery, and personalized medicine are on the horizon.
 
-## 1.13 Looking Ahead
-
-This chapter laid the foundation. In the chapters that follow, we'll dive deeper into:
-
-- **Chapter 2**: Data preparation and exploratory analysis—the essential but unglamorous work that determines success
-- **Chapter 3**: Your first ML algorithms: regression and classification
-- **Chapter 4**: Evaluating models—how to know if your model is good
-- **Chapter 5-6**: Advanced algorithms and ensemble methods
-- **Chapter 7-9**: Deep learning fundamentals and applications
-- **Chapter 10-12**: Specialized applications in genomics, imaging, and drug discovery
-
-Each chapter builds on previous ones, with hands-on examples using real biological datasets. By the end, you'll be equipped to apply machine learning to your own research questions.
-
-## 1.14 Further Reading
+## 1.13 Further Reading
 
 **Books:**
-- Goodfellow, I., Bengio, Y., & Courville, A. (2016). *Deep Learning*. MIT Press.
-- Hastie, T., Tibshirani, R., & Friedman, J. (2009). *The Elements of Statistical Learning*. Springer.
-- Murphy, K. P. (2022). *Probabilistic Machine Learning: An Introduction*. MIT Press.
+- Goodfellow, I., Bengio, Y., & Courville, A. (2016). *Deep Learning*. MIT Press. [PDF](https://github.com/janishar/mit-deep-learning-book-pdf/blob/master/complete-book-pdf/Ian%20Goodfellow%2C%20Yoshua%20Bengio%2C%20Aaron%20Courville%20-%20Deep%20Learning%20(2017%2C%20MIT).pdf)
+- Hastie, T., Tibshirani, R., & Friedman, J. (2009). *The Elements of Statistical Learning*. Springer. [PDF](https://www.sas.upenn.edu/~fdiebold/NoHesitations/BookAdvanced.pdf)
+- Murphy, K. P. (2022). *Probabilistic Machine Learning: An Introduction*. MIT Press. [PDF](file:///C:/Users/maraf/OneDrive/Desktop/New%20folder/book1.pdf)
 
 **Historical:**
 - McCarthy, J., et al. (1955). *A Proposal for the Dartmouth Summer Research Project on Artificial Intelligence*.
 - Russell, S., & Norvig, P. (2020). *Artificial Intelligence: A Modern Approach (4th ed.)*. Pearson.
 
 **Biology-specific:**
-- Greener, J. G., et al. (2022). A guide to machine learning for biologists. *Nature Reviews Molecular Cell Biology*, 23(1), 40-55.
-- Eraslan, G., et al. (2019). Deep learning: new computational modelling techniques for genomics. *Nature Reviews Genetics*, 20(7), 389-403.
+- Greener, J. G., et al. (2022). A guide to machine learning for biologists. *Nature Reviews Molecular Cell Biology*, 23(1), 40-55. [Link](https://www.nature.com/articles/s41580-021-00407-0)
+- Eraslan, G., et al. (2019). Deep learning: new computational modelling techniques for genomics. *Nature Reviews Genetics*, 20(7), 389-403. [Link](https://www.nature.com/articles/s41576-019-0122-6)
 
 **Online resources:**
-- Coursera: Machine Learning (Andrew Ng)
-- Fast.ai: Practical Deep Learning for Coders
-- Google's Machine Learning Crash Course
-- Kaggle: Competitions and tutorials with biological datasets
+- Coursera: Machine Learning (Andrew Ng) [Link](https://www.coursera.org/specializations/machine-learning-introduction)
+- Fast.ai: Practical Deep Learning for Coders [Link](https://course.fast.ai/)
+- Google's Machine Learning Crash Course [Link](https://developers.google.com/machine-learning/crash-course)
 
 **Key papers:**
 - Jumper, J., et al. (2021). Highly accurate protein structure prediction with AlphaFold. *Nature*, 596, 583-589.
@@ -1611,4 +1597,4 @@ Each chapter builds on previous ones, with hands-on examples using real biologic
 
 **End of Chapter 1**
 
-You now understand the foundations of artificial intelligence and machine learning, their history, how they work, and why they're transforming biology. In Chapter 2, we'll get our hands dirty with data—learning to clean, explore, and prepare biological datasets for machine learning.
+You now understand the foundations of artificial intelligence and machine learning, their history, how they work, and why they're transforming biology. In Chapter 2, we'll get our hands dirty with data, learning to clean, explore, and prepare biological datasets for machine learning.
