@@ -92,7 +92,7 @@ These terms are often used interchangeably, but they represent nested concepts:
 **Example**: In medical imaging, early layers might learn edges and textures, middle layers might learn cell shapes, and deep layers might learn disease patterns, all automatically from training data.
 
 <div style="text-align: center; margin: 2rem 0;">
-  <img src="../figures/chapter1/fig1.jpg"
+  <img src="[../figures/chapter1/fig1.jpg](https://github.com/marafathussain/ML_book_easy/blob/main/figures/chapter1/fig1.jpg)"
        alt="AI_vs_ML"
        style="max-width: 100%; width: 700px;" />
   <p style="font-size: 0.9rem; color: #555;">
