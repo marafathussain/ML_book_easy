@@ -92,10 +92,19 @@ These terms are often used interchangeably, but they represent nested concepts:
 **Example**: In medical imaging, early layers might learn edges and textures, middle layers might learn cell shapes, and deep layers might learn disease patterns, all automatically from training data.
 
 <div style="text-align: center;">
-  <img src="/ML_book_easy/blob/main/figures/chapter1/fig1.jpg"
+  <img src="https://github.com/marafathussain/ML_book_easy/blob/main/figures/chapter1/fig1.jpg"
        alt="AI_vs_ML"
        style="max-width:100%; height:auto;">
   <p><strong>Figure 1.</strong> A Venn diagram showing the overall field of AI. (PC: Goodfellow, I., Bengio, Y., & Courville, A. (2016). Deep Learning. Page 9)</p>
+</div>
+
+<div class="row">
+    <div class="col-sm mt-3 mt-md-0">
+        <img class="img-fluid rounded z-depth-1" src="{{'https://github.com/marafathussain/ML_book_easy/blob/main/figures/chapter1/fig1.jpg' | relative_url }}" alt="" title="example image"/>
+    </div>
+</div>
+<div class="caption">
+    Fig. 1: Schematic diagram of the proposed example-re-weighted active learning fromnoisy teacher approach for 3D image segmentation.
 </div>
 
 
