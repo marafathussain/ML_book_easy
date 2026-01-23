@@ -91,9 +91,14 @@ These terms are often used interchangeably, but they represent nested concepts:
 
 **Example**: In medical imaging, early layers might learn edges and textures, middle layers might learn cell shapes, and deep layers might learn disease patterns, all automatically from training data.
 
-![AI_vs_ML](../figures/chapter1/fig1.jpg)
-
-Figure 1. A Venn diagram showing the overall field of AI. (PC: Goodfellow, I., Bengio, Y., & Courville, A. (2016). Deep Learning. Page 9)
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../figures/chapter1/fig1.jpg"
+       alt="AI_vs_ML"
+       style="max-width: 100%; width: 700px;" />
+  <p style="font-size: 0.9rem; color: #555;">
+    <strong>Figure 1.</strong>  A Venn diagram showing the overall field of AI. (PC: Goodfellow, I., Bengio, Y., & Courville, A. (2016). Deep Learning. Page 9)
+  </p>
+</div>
 
 
 ### 1.2.3 Traditional Programming vs. Machine Learning
