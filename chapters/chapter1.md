@@ -163,7 +163,7 @@ ML Algorithm learns:
 
 ## 1.3 A Brief History of Artificial Intelligence
 
-Understanding where AI came from helps us appreciate where it's going. The history is marked by cycles of optimism and disappointment, periods of rapid progress followed by "AI winters" when funding dried up and interest waned.
+Understanding where AI came from helps us appreciate where it is going. The history is marked by cycles of optimism and disappointment, periods of rapid progress followed by "AI winters" when funding dried up and interest waned.
 
 ### 1.3.1 The Dartmouth Conference (1956): Birth of AI
 
@@ -510,7 +510,7 @@ By 2022, global investment in AI exceeded $90 billion annually. Major tech compa
 
 **Current state (2024-2026):**
 
-We're in the midst of rapid progress:
+We are in the midst of rapid progress:
 
 - **Large Language Models** (GPT-4, Claude, Gemini) demonstrate remarkable language understanding and generation
 - **Multimodal models** process text, images, video, and audio together
@@ -528,7 +528,7 @@ Some worry that current AI hype resembles previous cycles. However, key differen
 4. **Theoretical understanding**: We know more about why deep learning works
 5. **Diverse applications**: Success across many domains, not just narrow tasks
 
-That said, not every AI startup will succeed, and some applications wo not pan out. Realistic expectations remain important.
+That said, not every AI startup will succeed, and some applications will not pan out. Realistic expectations remain important.
 
 ## 1.4 How Machine Learning Works: Core Principles
 
@@ -632,7 +632,7 @@ Adjust the model's parameters to minimize the loss function. This is the actual 
 
 **Analogy**: Finding the lowest point in a valley while blindfolded
 
-- You're standing on a hillside (loss landscape)
+- You are standing on a hillside (loss landscape)
 - Your position = model parameters
 - Height = loss (error)
 - Goal: Reach the lowest point (minimum loss)
@@ -1006,7 +1006,7 @@ Many biological tasks involve recognizing patterns:
 
 Humans are good at this, but:
 - We fatigue
-- We're subjective and inconsistent
+- We are subjective and inconsistent
 - We cannot process millions of images
 - Subtle patterns escape our perception
 
@@ -1149,7 +1149,7 @@ Good for small data    Need large data
 - Sample size is small (<100)
 - You need p-values and confidence intervals
 - Interpretability is crucial
-- You're testing specific hypotheses
+- You are testing specific hypotheses
 
 **Use machine learning when:**
 - Primary goal is prediction
@@ -1602,4 +1602,4 @@ Let us consolidate what we have learned in this chapter:
 
 **End of Chapter 1**
 
-You now understand the foundations of artificial intelligence and machine learning, their history, how they work, and why they're transforming biology. In Chapter 2, we will get our hands dirty with data, learning to clean, explore, and prepare biological datasets for machine learning.
+You now understand the foundations of artificial intelligence and machine learning, their history, how they work, and why they are transforming biology. In Chapter 2, we will get our hands dirty with data, learning to clean, explore, and prepare biological datasets for machine learning.
