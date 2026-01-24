@@ -2411,11 +2411,6 @@ With clean, properly prepared data, you are now ready to:
 
 ## 2.12 Further Reading and Resources
 
-**Books:**
-- McKinney, W. (2022). *Python for Data Analysis, 3rd Edition*. O areilly Media.
-- VanderPlas, J. (2016). *Python Data Science Handbook*. O areilly Media.
-- Bruce, P., Bruce, A., & Gedeck, P. (2020). *Practical Statistics for Data Scientists*. O areilly Media.
-
 **Papers on Missing Data:**
 - Little, R. J., & Rubin, D. B. (2019). *Statistical Analysis with Missing Data, 3rd Edition*. Wiley.
 - van Buuren, S. (2018). *Flexible Imputation of Missing Data, 2nd Edition*. CRC Press.
