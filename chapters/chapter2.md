@@ -12,7 +12,7 @@ Before we dive into data cleaning and analysis, we need to understand how Python
 
 ### 2.1.1 Lists: Your First Data Container
 
-Lists are Python's most basic sequential data structure. Imagine you're cataloging genes of interest from a recent study. A list lets you store these gene names in order:
+Lists are Python's most basic sequential data structure. Imagine you are cataloging genes of interest from a recent study. A list lets you store these gene names in order:
 
 **What is a list?**
 A list is an ordered collection of items enclosed in square brackets `[]`. Items can be of any type, numbers, text (strings), or even other lists. Most importantly for our purposes, lists are ordered (the first item stays first) and mutable (you can change them after creation).
@@ -38,10 +38,10 @@ Lists support various operations crucial for biological data manipulation:
 - **Sorting**: `genes.sort()` arranges genes alphabetically
 
 **Real-world application:**
-Suppose you're analyzing differential gene expression. You might have one list for upregulated genes and another for downregulated genes:
+Suppose you are analyzing differential gene expression. You might have one list for upregulated genes and another for downregulated genes:
 
 ```python
-upregulated = [ haveGFA', 'HIF1A', 'EGFR']
+upregulated = ['VEGFA', 'HIF1A', 'EGFR']
 downregulated = ['PTEN', 'TP53', 'RB1']
 ```
 
@@ -134,7 +134,7 @@ tp53_chromosome = gene_database['TP53']['chromosome']  # Returns 17
 While lists and dictionaries are fundamental, real biological data analysis requires something more powerful: the Pandas DataFrame. If lists are like single-file folders and dictionaries are like filing cabinets, DataFrames are like entire spreadsheet applications.
 
 **What is a DataFrame?**
-A DataFrame is a two-dimensional labeled data structure with columns of potentially different types. Think of it as an Excel spreadsheet or a SQL table in Python. It's the primary data structure you will use for biological data analysis.
+A DataFrame is a two-dimensional labeled data structure with columns of potentially different types. Think of it as an Excel spreadsheet or a SQL table in Python. It is the primary data structure you will use for biological data analysis.
 
 **Creating a simple DataFrame:**
 ```python
@@ -307,7 +307,7 @@ The fact that the data are missing is systematically related to the unobserved d
 
 **Example**: In a depression registry, participants with severe depression are more likely to refuse to complete the survey about depression severity.
 
-In biological research: Gene expression below the detection limit is missing precisely because it's low. This is the most problematic type.
+In biological research: Gene expression below the detection limit is missing precisely because it is low. This is the most problematic type.
 
 **Example in RNA-seq data:**
 
@@ -317,7 +317,7 @@ RNA-seq commonly has 5-15% missing values. Genes with very low expression might 
 - Sample 3: 0.1 (measured)
 - Sample 4: NaN (below detection)
 
-The missingness is MNAR, it's missing because the expression is low, which is exactly what we're trying to measure!
+The missingness is MNAR, it is missing because the expression is low, which is exactly what we are trying to measure!
 
 ### 2.2.2 Outliers: Signal or Noise?
 
@@ -327,7 +327,7 @@ Outliers are extreme values that differ substantially from other observations. I
 
 **Example scenario:**
 
-You're measuring gene expression across 100 samples:
+You are measuring gene expression across 100 samples:
 - 99 samples: expression between 2.0 and 8.0
 - 1 sample: expression of 150.0
 
@@ -352,7 +352,7 @@ Is this:
 - **Investigate**: Look at the raw data, lab notes, sample quality metrics
 - **Transform**: Log transformation can reduce the impact of extreme values
 - **Cap**: Replace extreme values with a threshold (winsorization)
-- **Remove**: Only if you're confident it's an error and have documentation
+- **Remove**: Only if you are confident it is an error and have documentation
 
 **Important principle**: Never remove outliers simply to improve model performance without biological justification. That outlier might be your most interesting discovery!
 
@@ -378,7 +378,7 @@ Biological data often comes from multiple sources, databases, or experiments, le
 
 **Why it matters:**
 
-Python treats "BRCA1" and "brca1" as completely different strings. If you're filtering for "BRCA1", you will miss any entries recorded as "brca1".
+Python treats "BRCA1" and "brca1" as completely different strings. If you are filtering for "BRCA1", you will miss any entries recorded as "brca1".
 
 **Solutions:**
 
@@ -685,7 +685,7 @@ Some machine learning algorithms can work with missing values directly:
 - Random Forests (some implementations)
 
 **When to use:**
-- You're using these specific algorithms
+- You are using these specific algorithms
 - Missing data patterns are complex
 - You want the algorithm to learn optimal treatment of missing values
 
@@ -824,7 +824,7 @@ df[['GENE_1', 'GENE_2']] = scaler.fit_transform(df[['GENE_1', 'GENE_2']])
 
 **Biological example:**
 
-You're building a neural network to classify cancer subtypes using gene expression. Min-Max scaling ensures all genes contribute equally to the first layer's activation, regardless of their baseline expression levels.
+You are building a neural network to classify cancer subtypes using gene expression. Min-Max scaling ensures all genes contribute equally to the first layer's activation, regardless of their baseline expression levels.
 
 ### 2.4.3 Standardization (Z-score Normalization)
 
@@ -1147,7 +1147,7 @@ correlation = df['GENE_1'].corr(df['GENE_2'])
 Two technical replicates of the same sample should be highly correlated. If not, there's a technical problem!
 
 **Moderate positive correlation (r=0.6):**
-Genes in the same pathway often show moderate correlation. They're co-regulated but also have independent regulation.
+Genes in the same pathway often show moderate correlation. They are co-regulated but also have independent regulation.
 
 **Negative correlation (r=-0.7):**
 Tumor suppressor and oncogene might show negative correlation. When one is up, the other tends to be down.
@@ -1460,7 +1460,7 @@ Clear separation suggests GENE_1 could be a biomarker!
 
 ```python
 plt.scatter(df['GENE_1'], df['GENE_2'], 
-           c=df['Condition'].map({'Healthy': 'blue', 'Disease': 'red'}),
+           c=df['Condition'].map({'Healthy': 'blue', 'Disease':  ared'}),
            alpha=0.6)
 plt.xlabel('GENE_1 Expression')
 plt.ylabel('GENE_2 Expression')
@@ -1535,10 +1535,10 @@ df['Family_Mean'] = df[gene_family].mean(axis=1)
 **Separate features and target:**
 
 ```python
-# Define what you're predicting
+# Define what you are predicting
 target = 'Condition'
 
-# Define what you're using to predict
+# Define what you are using to predict
 feature_columns = gene_columns + ['Age', 'Gender']
 
 X = df[feature_columns]
@@ -2024,9 +2024,9 @@ model2.fit(X_train_new, y_train)
 test_score2 = model2.score(X_test_new, y_test)  # 85%
 ```
 
-**Why it's wrong:**
+**Why it is wrong:**
 
-You have now used the test set to make modeling decisions! It's no longer truly unseen. Your reported 85% is optimistic.
+You have now used the test set to make modeling decisions! It is no longer truly unseen. Your reported 85% is optimistic.
 
 **Correct approach:**
 
@@ -2153,7 +2153,7 @@ Gene expression values: [1, 2, 2, 3, 3, 3, 4, 4, 5, 100]
 - Mean: 12.7 (pulled up by outlier)
 - Median: 3 (representative of typical value)
 
-If you impute missing values with mean=12.7, you're filling in values much higher than most of the data!
+If you impute missing values with mean=12.7, you are filling in values much higher than most of the data!
 
 **Better approach:**
 
@@ -2383,7 +2383,7 @@ This chapter covered the essential foundations of data preparation for machine l
 
 **Critical Rules to Remember:**
 
-1. **Never look at test data during development** - it's sacred
+1. **Never look at test data during development** - it is sacred
 2. **Always split before scaling** - fit transformations on training only  
 3. **Document every cleaning step** - reproducibility is essential
 4. **Stratify for imbalanced data** - maintain class proportions
@@ -2401,20 +2401,20 @@ This chapter covered the essential foundations of data preparation for machine l
 
 **Next Steps:**
 
-With clean, properly prepared data, you're now ready to:
+With clean, properly prepared data, you are now ready to:
 - Apply machine learning algorithms (Chapter 3)
 - Evaluate model performance with appropriate metrics
 - Interpret results in biological context
 - Deploy models for real-world predictions
 
-**Remember:** In machine learning, "garbage in, garbage out" is not just a saying, it's a fundamental truth. The time you invest in proper data preparation will pay dividends in model performance and scientific validity. Good data preparation is not glamorous, but it's the foundation upon which all successful machine learning projects are built.
+**Remember:** In machine learning, "garbage in, garbage out" is not just a saying, it is a fundamental truth. The time you invest in proper data preparation will pay dividends in model performance and scientific validity. Good data preparation is not glamorous, but it is the foundation upon which all successful machine learning projects are built.
 
 ## 2.12 Further Reading and Resources
 
 **Books:**
-- McKinney, W. (2022). *Python for Data Analysis, 3rd Edition*. O'Reilly Media.
-- VanderPlas, J. (2016). *Python Data Science Handbook*. O'Reilly Media.
-- Bruce, P., Bruce, A., & Gedeck, P. (2020). *Practical Statistics for Data Scientists*. O'Reilly Media.
+- McKinney, W. (2022). *Python for Data Analysis, 3rd Edition*. O areilly Media.
+- VanderPlas, J. (2016). *Python Data Science Handbook*. O areilly Media.
+- Bruce, P., Bruce, A., & Gedeck, P. (2020). *Practical Statistics for Data Scientists*. O areilly Media.
 
 **Papers on Missing Data:**
 - Little, R. J., & Rubin, D. B. (2019). *Statistical Analysis with Missing Data, 3rd Edition*. Wiley.
