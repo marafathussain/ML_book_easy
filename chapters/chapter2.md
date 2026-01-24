@@ -2,17 +2,17 @@
 
 ## 1. Introduction
 
-In the world of machine learning, there's a popular saying: "garbage in, garbage out." This principle is especially true in biological research, where data quality can make or break your analysis. While the excitement of machine learning often centers on sophisticated algorithms and impressive predictions, experienced practitioners know that the real work—and often the most critical work—happens long before any model is trained.
+In the world of machine learning, there is a popular saying: "garbage in, garbage out." This principle is especially true in biological research, where data quality can make or break your analysis. While the excitement of machine learning often centers on sophisticated algorithms and impressive predictions, experienced practitioners know that the real work, and often the most critical work, happens long before any model is trained.
 
-This chapter focuses on the essential but often overlooked foundation of any successful machine learning project: data preparation and exploratory data analysis (EDA). We'll explore how to work with biological datasets, understand Python's core data structures, identify and fix data quality issues, and prepare your data for machine learning algorithms. By the end of this chapter, you'll understand why data scientists often spend 80% of their time on data preparation and only 20% on actual modeling.
+This chapter focuses on the essential but often overlooked foundation of any successful machine learning project: data preparation and exploratory data analysis (EDA). We will explore how to work with biological datasets, understand Python's core data structures, identify and fix data quality issues, and prepare your data for machine learning algorithms. By the end of this chapter, you will understand why data scientists often spend 80% of their time on data preparation and only 20% on actual modeling.
 
 ## 2.1 Python Data Structures: Building Blocks for Biological Data Analysis
 
-Before we dive into data cleaning and analysis, we need to understand how Python stores and organizes data. Think of data structures as containers—each designed for specific purposes, much like how a biologist uses different containers for different specimens.
+Before we dive into data cleaning and analysis, we need to understand how Python stores and organizes data. Think of data structures as containers, each designed for specific purposes, much like how a biologist uses different containers for different specimens.
 
 ### 2.1.1 Lists: Your First Data Container
 
-Lists are Python's most basic sequential data structure. Imagine you're cataloging genes of interest from a recent study. A list lets you store these gene names in order:
+Lists are Python's most basic sequential data structure. Imagine you are cataloging genes of interest from a recent study. A list lets you store these gene names in order:
 
 **What is a list?**
 A list is an ordered collection of items enclosed in square brackets `[]`. Items can be of any type—numbers, text (strings), or even other lists. Most importantly for our purposes, lists are ordered (the first item stays first) and mutable (you can change them after creation).
@@ -38,10 +38,10 @@ Lists support various operations crucial for biological data manipulation:
 - **Sorting**: `genes.sort()` arranges genes alphabetically
 
 **Real-world application:**
-Suppose you're analyzing differential gene expression. You might have one list for upregulated genes and another for downregulated genes:
+Suppose you are analyzing differential gene expression. You might have one list for upregulated genes and another for downregulated genes:
 
 ```python
-upregulated = ['VEGFA', 'HIF1A', 'EGFR']
+upregulated = [ haveGFA', 'HIF1A', 'EGFR']
 downregulated = ['PTEN', 'TP53', 'RB1']
 ```
 
@@ -71,7 +71,7 @@ brca1_info = {
     'chromosome': 17,
     'expression': 5.2,
     'p_value': 0.001,
-    'significant': True,
+     isignificant': True,
     'pathways': ['DNA repair', 'Cell cycle', 'Tumor suppression']
 }
 ```
@@ -129,12 +129,12 @@ tp53_chromosome = gene_database['TP53']['chromosome']  # Returns 17
 - Any scenario where meaningful labels are better than numeric positions
 - When you need fast lookup by key (dictionaries are optimized for this)
 
-### 2.1.3 Pandas DataFrames: The Biologist's Workhorse
+### 2.1.3 Pandas DataFrames: The Biologist is Workhorse
 
-While lists and dictionaries are fundamental, real biological data analysis requires something more powerful: the Pandas DataFrame. If lists are like single file folders and dictionaries are like filing cabinets, DataFrames are like entire spreadsheet applications.
+While lists and dictionaries are fundamental, real biological data analysis requires something more powerful: the Pandas DataFrame. If lists are like single-file folders and dictionaries are like filing cabinets, DataFrames are like entire spreadsheet applications.
 
 **What is a DataFrame?**
-A DataFrame is a two-dimensional labeled data structure with columns of potentially different types. Think of it as an Excel spreadsheet or a SQL table in Python. It's the primary data structure you'll use for biological data analysis.
+A DataFrame is a two-dimensional labeled data structure with columns of potentially different types. Think of it as an Excel spreadsheet or a SQL table in Python. It is the primary data structure you will use for biological data analysis.
 
 **Creating a simple DataFrame:**
 ```python
@@ -144,7 +144,7 @@ df = pd.DataFrame({
     'Gene': ['BRCA1', 'TP53', 'EGFR', 'MYC'],
     'Expression': [5.2, 12.8, 3.4, 7.1],
     'Chromosome': [17, 17, 7, 8],
-    'Significant': [True, True, False, True]
+     isignificant': [True, True, False, True]
 })
 ```
 
@@ -168,7 +168,7 @@ This creates a table with four columns (Gene, Expression, Chromosome, Significan
 
 **Real-world example - RNA-seq dataset:**
 
-Imagine you've performed RNA-seq on 100 patients—60 healthy and 40 with disease. For each patient, you've measured expression of 50 genes. Your DataFrame might look like:
+Imagine you have performed RNA-seq on 100 patients, 60 healthy and 40 with disease. For each patient, you have measured the expression of 50 genes. Your DataFrame might look like:
 
 ```
    Sample_ID  Condition  Age  Gender  GENE_1  GENE_2  GENE_3  ...  GENE_50
@@ -227,7 +227,7 @@ This is where Pandas truly shines for biological data analysis. You can filter r
 high_expression = df[df['Expression'] > 5.0]
 
 # Only significant genes
-significant_genes = df[df['Significant'] == True]
+significant_genes = df[df[ isignificant'] == True]
 
 # Multiple conditions: disease samples AND age > 50
 older_disease = df[(df['Condition'] == 'Disease') & (df['Age'] > 50)]
@@ -240,12 +240,12 @@ chr17_genes = df[df['Chromosome'] == 17]
 
 Suppose you want to find genes that are:
 1. Significantly differentially expressed
-2. Have expression greater than 10
+2. Have an expression greater than 10
 3. Are located on chromosome 17
 
 ```python
 candidate_genes = df[
-    (df['Significant'] == True) & 
+    (df[ isignificant'] == True) & 
     (df['Expression'] > 10) & 
     (df['Chromosome'] == 17)
 ]
@@ -255,7 +255,7 @@ This type of filtering is fundamental to biological data analysis—identifying 
 
 ## 2.2 Data Quality Issues in Biological Datasets
 
-Real-world biological data is messy. Unlike the clean datasets in textbooks, actual experimental data comes with numerous quality issues. Understanding these problems is the first step in addressing them.
+Real-world biological data is messy. Unlike the clean datasets in textbooks, actual experimental data come with numerous quality issues. Understanding these problems is the first step in addressing them.
 
 ### 2.2.1 Missing Values: The Unavoidable Reality
 
@@ -269,12 +269,12 @@ Missing values are perhaps the most common data quality issue in biological rese
 
 3. **Random chance**: Sometimes instruments fail, reagents degrade, or human error occurs.
 
-4. **Study design**: Not all measurements were taken for all samples (e.g., some clinical variables only measured in disease patients).
+4. **Study design**: Not all measurements were taken for all samples (e.g., some clinical variables were only measured in disease patients).
 
 **How missing values appear in data:**
 
 Missing values can be represented in many ways:
-- Python's `None` or `NaN` (Not a Number)
+- Python is `None` or `NaN` (Not a Number)
 - Empty cells in spreadsheets
 - Special codes like -999, 0, or "NA"
 - Literally the text "missing" or "N/A"
@@ -285,11 +285,11 @@ This inconsistency is why data cleaning is crucial—you need to standardize how
 
 Understanding why data is missing helps you decide how to handle it:
 
-1. **Missing Completely at Random (MCAR)**: The probability of being missing is the same for all observations. Example: A batch of samples was lost due to freezer malfunction—unrelated to any biological or technical factors.
+1. **Missing Completely at Random (MCAR)**: The probability of being missing is the same for all observations. Example: A batch of samples was lost due to a freezer malfunction—unrelated to any biological or technical factors.
 
 2. **Missing at Random (MAR)**: The probability of being missing is related to other observed variables but not the missing value itself. Example: Older patients were less likely to have certain tests performed, but among patients of the same age, missingness is random.
 
-3. **Missing Not at Random (MNAR)**: The probability of being missing is related to the unobserved value itself. Example: Gene expression below detection limit is missing precisely because it's low. This is the most problematic type.
+3. **Missing Not at Random (MNAR)**: The probability of being missing is related to the unobserved value itself. Example: Gene expression below the detection limit is missing precisely because it is low. This is the most problematic type.
 
 **Example in RNA-seq data:**
 
@@ -299,7 +299,7 @@ RNA-seq commonly has 5-15% missing values. Genes with very low expression might 
 - Sample 3: 0.1 (measured)
 - Sample 4: NaN (below detection)
 
-The missingness is MNAR—it's missing because expression is low, which is exactly what we're trying to measure!
+The missingness is MNAR—it is missing because expression is low, which is exactly what we are trying to measure!
 
 ### 2.2.2 Outliers: Signal or Noise?
 
@@ -309,7 +309,7 @@ Outliers are extreme values that differ substantially from other observations. I
 
 **Example scenario:**
 
-You're measuring gene expression across 100 samples:
+You are measuring gene expression across 100 samples:
 - 99 samples: expression between 2.0 and 8.0
 - 1 sample: expression of 150.0
 
@@ -320,7 +320,7 @@ Is this:
 
 **How to identify outliers:**
 
-1. **Visualization**: Box plots show outliers as points beyond the "whiskers"
+1. **Visualization**: Box plots show outliers as points beyond the "whiskers."
 
 2. **Statistical methods**:
    - Values beyond mean ± 3 standard deviations
@@ -331,10 +331,10 @@ Is this:
 
 **Handling outliers:**
 
-- **Investigate**: Look at the raw data, lab notes, sample quality metrics
+- **Investigate**: Look at the raw data, lab notes, and sample quality metrics
 - **Transform**: Log transformation can reduce the impact of extreme values
 - **Cap**: Replace extreme values with a threshold (winsorization)
-- **Remove**: Only if you're confident it's an error and have documentation
+- **Remove**: Only if you are confident it is an error and have documentation
 
 **Important principle**: Never remove outliers simply to improve model performance without biological justification. That outlier might be your most interesting discovery!
 
@@ -360,7 +360,7 @@ Biological data often comes from multiple sources, databases, or experiments, le
 
 **Why it matters:**
 
-Python treats "BRCA1" and "brca1" as completely different strings. If you're filtering for "BRCA1", you'll miss any entries recorded as "brca1".
+Python treats "BRCA1" and "brca1" as completely different strings. If you are filtering for "BRCA1", you will miss any entries recorded as "brca1".
 
 **Solutions:**
 
@@ -391,10 +391,10 @@ Python treats "BRCA1" and "brca1" as completely different strings. If you're fil
    ```
 
 4. **Use appropriate metrics**: Don't rely on accuracy alone
-   - Precision: Of predicted disease, how many truly have disease?
+   - Precision: Of predicted disease, how many truly have the disease?
    - Recall: Of actual disease cases, how many did we catch?
    - F1-score: Harmonic mean of precision and recall
-   - ROC-AUC: Area under ROC curve
+   - ROC-AUC: Area under the ROC curve
 
 **Example:**
 
@@ -414,7 +414,7 @@ Model B is clearly better despite lower accuracy!
 
 ### 2.8.4 Time Series and Longitudinal Data
 
-Some biological data has temporal structure:
+Some biological data has a temporal structure:
 - Patient measurements over time
 - Gene expression at different time points
 - Sequential drug responses
@@ -427,7 +427,7 @@ Some biological data has temporal structure:
    - Test on later time points
    
    ```python
-   # Instead of random split
+   # Instead of a random split
    split_point = int(0.8 * len(df))
    train = df[:split_point]
    test = df[split_point:]
@@ -490,7 +490,7 @@ model.fit(X_train, y_train)
 # Check test performance
 test_score = model.score(X_test, y_test)  # 75%
 
-# "That's not good enough, let me try different features"
+# "That is not good enough, let me try different features."
 # ... selects features based on test performance ...
 
 # Try again
@@ -498,22 +498,22 @@ model2.fit(X_train_new, y_train)
 test_score2 = model2.score(X_test_new, y_test)  # 85%
 ```
 
-**Why it's wrong:**
+**Why it is wrong:**
 
-You've now used the test set to make modeling decisions! It's no longer truly unseen. Your reported 85% is optimistic.
+You have now used the test set to make modeling decisions! It is no longer truly unseen. Your reported 85% is optimistic.
 
 **Correct approach:**
 
-Use cross-validation on training set for all development decisions. Touch test set only once at the very end.
+Use cross-validation on the training set for all development decisions. Touch test set only once at the very end.
 
 ```python
-# Use cross-validation on training set
+# Use cross-validation on the training set
 from sklearn.model_selection import cross_val_score
 
 scores = cross_val_score(model, X_train, y_train, cv=5)
 print(f"CV Score: {scores.mean()}")  # Use this to guide development
 
-# Only at the very end, evaluate on test set once
+# Only at the very end, evaluate on the test set once
 final_score = model.score(X_test, y_test)
 ```
 
@@ -521,7 +521,7 @@ final_score = model.score(X_test, y_test)
 
 **The problem:**
 
-You clean data interactively in Jupyter notebook:
+You clean data interactively in a Jupyter notebook:
 - Drop some outliers
 - Impute some missing values
 - Remove some samples
@@ -573,7 +573,7 @@ def clean_gene_expression_data(df, missing_threshold=0.5, outlier_sd=3):
         
     Returns:
     --------
-    DataFrame : Cleaned data
+    DataFrame: Cleaned data
     """
     # Your cleaning steps here
     # Document each step clearly
@@ -599,12 +599,12 @@ If you treat these as three independent samples:
 
 1. **Average the replicates**:
    ```python
-   df_averaged = df.groupby('Sample_ID').mean()
+   df_averaged = df.groupby( isample_ID').mean()
    ```
 
 2. **Use one replicate** (if quality is similar):
    ```python
-   df_single = df.groupby('Sample_ID').first()
+   df_single = df.groupby( isample_ID').first()
    ```
 
 3. **Model the correlation structure** (advanced):
@@ -627,7 +627,7 @@ Gene expression values: [1, 2, 2, 3, 3, 3, 4, 4, 5, 100]
 - Mean: 12.7 (pulled up by outlier)
 - Median: 3 (representative of typical value)
 
-If you impute missing values with mean=12.7, you're filling in values much higher than most of the data!
+If you impute missing values with mean=12.7, you are filling in values much higher than most of the data!
 
 **Better approach:**
 
@@ -696,11 +696,11 @@ X = pd.get_dummies(df[['Tissue_Type', 'Gene_1', 'Gene_2']],
 
 ## 2.10 Putting It All Together: A Complete Example
 
-Let's walk through a complete, realistic example from start to finish.
+Let us walk through a complete, realistic example from start to finish.
 
 ### 2.10.1 The Scenario
 
-You've received RNA-seq data from a collaborator studying breast cancer. The dataset contains:
+You have received RNA-seq data from a collaborator studying breast cancer. The dataset contains:
 - 120 patient samples (80 cancer, 40 healthy)
 - 500 genes selected as potentially relevant
 - Patient metadata: age, tumor stage, treatment status
@@ -812,7 +812,7 @@ print(f"\nTotal missing values after cleaning: {df.isnull().sum().sum()}")
 
 # Handle missing metadata
 df['Age'].fillna(df['Age'].median(), inplace=True)
-df['Stage'] = df['Stage'].fillna('Unknown')
+df[ istage'] = df[ istage'].fillna('Unknown')
 
 # Save cleaned data
 df.to_csv('data_cleaned.csv', index=False)
@@ -854,7 +854,7 @@ print("\nSkewness of sample genes:")
 print(skewness_values)
 print("\nNote: |skew| > 1 suggests log transformation may help")
 
-# Correlation between first 10 genes
+# Correlation between the first 10 genes
 correlation_matrix = df[gene_columns[:10]].corr()
 plt.figure(figsize=(10, 8))
 sns.heatmap(correlation_matrix, annot=True, fmt='.2f', 
@@ -902,21 +902,21 @@ log_gene_columns = [f'{gene}_log' for gene in skewed_genes]
 all_gene_features = log_gene_columns
 
 # Encode categorical variables
-df['Stage_encoded'] = df['Stage'].map({
+df[ istage_encoded'] = df[ istage'].map({
     'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'Unknown': 0
 })
 
 # Create age groups (optional, for interpretability)
 df['Age_Group'] = pd.cut(df['Age'], 
                          bins=[0, 40, 60, 100],
-                         labels=['Young', 'Middle', 'Senior'])
+                         labels=['Young', 'Middle',  Senior'])
 ```
 
 ### 2.10.7 Prepare for Modeling
 
 ```python
 # Define features and target
-feature_columns = all_gene_features + ['Age', 'Stage_encoded']
+feature_columns = all_gene_features + ['Age',  istage_encoded']
 X = df[feature_columns]
 y = df['Diagnosis']
 
@@ -996,7 +996,7 @@ This chapter covered the essential foundations of data preparation for machine l
 
 2. **Data quality issues**: Missing values, outliers, inconsistent formatting, duplicates, and batch effects are the norm in biological data
 
-3. **Missing value strategies**: Choose between deletion, imputation, or modeling based on amount and type of missingness
+3. **Missing value strategies**: Choose between deletion, imputation, or modeling based on the amount and type of missingness
 
 4. **Normalization and scaling**: Essential for most ML algorithms; choose Min-Max for bounded output, Standardization for most cases
 
@@ -1016,7 +1016,7 @@ This chapter covered the essential foundations of data preparation for machine l
 
 **Critical Rules to Remember:**
 
-1. **Never look at test data during development** - it's sacred
+1. **Never look at test data during development** - it is sacred
 2. **Always split before scaling** - fit transformations on training only  
 3. **Document every cleaning step** - reproducibility is essential
 4. **Stratify for imbalanced data** - maintain class proportions
@@ -1033,19 +1033,19 @@ This chapter covered the essential foundations of data preparation for machine l
 
 **Next Steps:**
 
-With clean, properly prepared data, you're now ready to:
+With clean, properly prepared data, you are now ready to:
 - Apply machine learning algorithms (Week 3)
 - Evaluate model performance with appropriate metrics
-- Interpret results in biological context
+- Interpret results in a biological context
 - Deploy models for real-world predictions
 
-Remember: In machine learning, "garbage in, garbage out" is not just a saying—it's a fundamental truth. The time you invest in proper data preparation will pay dividends in model performance and scientific validity.
+Remember: In machine learning, "garbage in, garbage out" is not just a saying—it is a fundamental truth. The time you invest in proper data preparation will pay dividends in model performance and scientific validity.
 
 ## 2.12 Further Reading and Resources
 
 **Books:**
-- McKinney, W. (2022). *Python for Data Analysis, 3rd Edition*. O'Reilly.
-- VanderPlas, J. (2016). *Python Data Science Handbook*. O'Reilly.
+- McKinney, W. (2022). *Python for Data Analysis, 3rd Edition*. O areilly.
+- VanderPlas, J. (2016). *Python Data Science Handbook*. O areilly.
 
 **Papers:**
 - Leek, J. T., et al. (2010). Tackling the widespread and critical impact of batch effects in high-throughput data. *Nature Reviews Genetics*, 11(10), 733-739.
@@ -1065,7 +1065,9 @@ Remember: In machine learning, "garbage in, garbage out" is not just a saying—
 
 **End of Chapter 2**
 
-In the next chapter, we'll use this cleaned and prepared data to build our first machine learning models, starting with logistic regression for classification of disease states based on gene expression profiles.. **Standardize text case**:
+In the next chapter, we will use this cleaned and prepared data to build our first machine learning models, starting with logistic regression for classification of disease states based on gene expression profiles.
+
+**Standardize text case**:
 ```python
 df['Gene'] = df['Gene'].str.upper()  # Convert all to uppercase
 ```
@@ -1077,7 +1079,7 @@ df['Gene'] = df['Gene'].str.strip()  # Remove leading/trailing spaces
 
 3. **Replace variations**:
 ```python
-df['Species'] = df['Species'].replace({
+df[ ispecies'] = df[ ispecies'].replace({
     'human': 'Homo sapiens',
     'Human': 'Homo sapiens',
     'H. sapiens': 'Homo sapiens'
@@ -1114,7 +1116,7 @@ duplicates = df.duplicated().sum()
 duplicate_rows = df[df.duplicated()]
 
 # Check for duplicates based on specific columns
-sample_duplicates = df.duplicated(subset=['Sample_ID']).sum()
+sample_duplicates = df.duplicated(subset=[ isample_ID']).sum()
 ```
 
 **Handling duplicates:**
@@ -1126,7 +1128,7 @@ df_clean = df.drop_duplicates()
 
 2. **Technical replicates**: Average the measurements
 ```python
-df_averaged = df.groupby('Sample_ID').mean()
+df_averaged = df.groupby( isample_ID').mean()
 ```
 
 3. **Biological replicates**: Keep separate but properly labeled
@@ -1156,7 +1158,7 @@ The strongest signal in your data is hospital (batch), not disease! Your machine
 
 1. **Visualization**: PCA plots colored by batch
 2. **Statistical tests**: ANOVA testing for batch differences
-3. **Correlation analysis**: Samples from same batch more similar than expected
+3. **Correlation analysis**: Samples from the same batch are more similar than expected
 
 **Correcting batch effects:**
 
@@ -1169,7 +1171,7 @@ The strongest signal in your data is hospital (batch), not disease! Your machine
 
 ## 2.3 Handling Missing Values: Strategies and Trade-offs
 
-Now that we understand why missing values occur, let's explore strategies for handling them. Each approach has advantages and disadvantages.
+Now that we understand why missing values occur, let is explore strategies for handling them. Each approach has advantages and disadvantages.
 
 ### 2.3.1 Strategy 1: Deletion
 
@@ -1245,7 +1247,7 @@ df['GENE_1'].fillna(df['GENE_1'].median(), inplace=True)
 **When to use:**
 - Missing values are moderate (5-30%)
 - Data is MAR
-- You need to retain sample size
+- You need to retain the sample size
 - As a quick first approach
 
 **Mode imputation (for categorical variables):**
@@ -1263,10 +1265,10 @@ df['Tissue'].fillna(most_common_tissue, inplace=True)
 Use the previous (forward fill) or next (backward fill) observation.
 
 ```python
-# Forward fill - use previous time point's value
+# Forward fill - use previous time point is value
 df['Temperature'].fillna(method='ffill', inplace=True)
 
-# Backward fill - use next time point's value
+# Backward fill - use next time point is value
 df['Temperature'].fillna(method='bfill', inplace=True)
 ```
 
@@ -1353,12 +1355,12 @@ df['GENE_1'].fillna(df['GENE_1'].mean(), inplace=True)
 
 **Advantage:**
 - Preserves information about missingness
-- Model can learn if missingness is informative
+- The model can learn if missingness is informative
 
 **When to use:**
 - Missingness might be MNAR
 - The fact that data is missing could be meaningful
-- Example: Certain tests only performed on sicker patients
+- Example: Certain tests are only performed on sicker patients
 
 **Algorithms that handle missing values:**
 
@@ -1368,7 +1370,7 @@ Some machine learning algorithms can work with missing values directly:
 - Random Forests (some implementations)
 
 **When to use:**
-- You're using these specific algorithms
+- You are using these specific algorithms
 - Missing data patterns are complex
 - You want the algorithm to learn optimal treatment of missing values
 
@@ -1387,7 +1389,7 @@ Some machine learning algorithms can work with missing values directly:
    - MAR: Imputation methods that use other variables
    - MNAR: Missing indicator or specialized methods
 
-3. **What's your goal?**
+3. **What is your goal?**
    - Prediction: Simpler imputation often sufficient
    - Inference: More sophisticated methods needed
    - Exploration: Deletion may be acceptable
@@ -1404,7 +1406,7 @@ Some machine learning algorithms can work with missing values directly:
 
 For most biological datasets with moderate missing data (5-20%):
 1. Drop columns with >20-30% missing
-2. Use median imputation for remaining numerical variables
+2. Use median imputation for the remaining numerical variables
 3. Use mode imputation for categorical variables
 4. Document your approach clearly
 
@@ -1416,7 +1418,7 @@ For high-stakes projects or publications:
 
 ## 2.4 Normalization and Scaling: Making Features Comparable
 
-Different genes have vastly different expression ranges. Some genes are highly expressed (thousands of reads), others barely expressed (single-digit reads). Machine learning algorithms can be misled by these scale differences.
+Different genes have vastly different expression ranges. Some genes are highly expressed (thousands of reads), others are barely expressed (single-digit reads). Machine learning algorithms can be misled by these scale differences.
 
 ### 2.4.1 Why Normalization Matters
 
@@ -1444,7 +1446,7 @@ Contribution of Gene_A: 1 (0.01%)
 Contribution of Gene_B: 10000 (99.99%)
 ```
 
-Gene A's contribution is essentially ignored!
+Gene A is contribution is essentially ignored!
 
 **When normalization is critical:**
 
@@ -1507,7 +1509,7 @@ df[['GENE_1', 'GENE_2']] = scaler.fit_transform(df[['GENE_1', 'GENE_2']])
 
 **Biological example:**
 
-You're building a neural network to classify cancer subtypes using gene expression. Min-Max scaling ensures all genes contribute equally to the first layer's activation, regardless of their baseline expression levels.
+You are building a neural network to classify cancer subtypes using gene expression. Min-Max scaling ensures all genes contribute equally to the first layer is activation, regardless of their baseline expression levels.
 
 ### 2.4.3 Standardization (Z-score Normalization)
 
