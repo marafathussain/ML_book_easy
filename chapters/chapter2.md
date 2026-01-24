@@ -2,20 +2,20 @@
 
 ## Introduction
 
-In the world of machine learning, there's a popular saying: "garbage in, garbage out." This principle is especially true in biological research, where data quality can make or break your analysis. While the excitement of machine learning often centers on sophisticated algorithms and impressive predictions, experienced practitioners know that the real work—and often the most critical work—happens long before any model is trained.
+In the world of machine learning, there's a popular saying: "garbage in, garbage out." This principle is especially true in biological research, where data quality can make or break your analysis. While the excitement of machine learning often centers on sophisticated algorithms and impressive predictions, experienced practitioners know that the real work, and often the most critical work, happens long before any model is trained.
 
-This chapter focuses on the essential but often overlooked foundation of any successful machine learning project: data preparation and exploratory data analysis (EDA). We'll explore how to work with biological datasets, understand Python's core data structures, identify and fix data quality issues, and prepare your data for machine learning algorithms. By the end of this chapter, you'll understand why data scientists often spend 80% of their time on data preparation and only 20% on actual modeling.
+This chapter focuses on the essential but often overlooked foundation of any successful machine learning project: data preparation and exploratory data analysis (EDA). We will explore how to work with biological datasets, understand Python's core data structures, identify and fix data quality issues, and prepare your data for machine learning algorithms. By the end of this chapter, you will understand why data scientists often spend 80% of their time on data preparation and only 20% on actual modeling.
 
 ## 2.1 Python Data Structures: Building Blocks for Biological Data Analysis
 
-Before we dive into data cleaning and analysis, we need to understand how Python stores and organizes data. Think of data structures as containers—each designed for specific purposes, much like how a biologist uses different containers for different specimens.
+Before we dive into data cleaning and analysis, we need to understand how Python stores and organizes data. Think of data structures as containers, each designed for specific purposes, much like how a biologist uses different containers for different specimens.
 
 ### 2.1.1 Lists: Your First Data Container
 
 Lists are Python's most basic sequential data structure. Imagine you're cataloging genes of interest from a recent study. A list lets you store these gene names in order:
 
 **What is a list?**
-A list is an ordered collection of items enclosed in square brackets `[]`. Items can be of any type—numbers, text (strings), or even other lists. Most importantly for our purposes, lists are ordered (the first item stays first) and mutable (you can change them after creation).
+A list is an ordered collection of items enclosed in square brackets `[]`. Items can be of any type, numbers, text (strings), or even other lists. Most importantly for our purposes, lists are ordered (the first item stays first) and mutable (you can change them after creation).
 
 **Example in biological context:**
 ```python
@@ -41,7 +41,7 @@ Lists support various operations crucial for biological data manipulation:
 Suppose you're analyzing differential gene expression. You might have one list for upregulated genes and another for downregulated genes:
 
 ```python
-upregulated = ['VEGFA', 'HIF1A', 'EGFR']
+upregulated = [ haveGFA', 'HIF1A', 'EGFR']
 downregulated = ['PTEN', 'TP53', 'RB1']
 ```
 
@@ -131,10 +131,10 @@ tp53_chromosome = gene_database['TP53']['chromosome']  # Returns 17
 
 ### 2.1.3 Pandas DataFrames: The Biologist's Workhorse
 
-While lists and dictionaries are fundamental, real biological data analysis requires something more powerful: the Pandas DataFrame. If lists are like single file folders and dictionaries are like filing cabinets, DataFrames are like entire spreadsheet applications.
+While lists and dictionaries are fundamental, real biological data analysis requires something more powerful: the Pandas DataFrame. If lists are like single-file folders and dictionaries are like filing cabinets, DataFrames are like entire spreadsheet applications.
 
 **What is a DataFrame?**
-A DataFrame is a two-dimensional labeled data structure with columns of potentially different types. Think of it as an Excel spreadsheet or a SQL table in Python. It's the primary data structure you'll use for biological data analysis.
+A DataFrame is a two-dimensional labeled data structure with columns of potentially different types. Think of it as an Excel spreadsheet or a SQL table in Python. It's the primary data structure you will use for biological data analysis.
 
 **Creating a simple DataFrame:**
 ```python
@@ -168,7 +168,7 @@ This creates a table with four columns (Gene, Expression, Chromosome, Significan
 
 **Real-world example - RNA-seq dataset:**
 
-Imagine you've performed RNA-seq on 100 patients—60 healthy and 40 with disease. For each patient, you've measured expression of 50 genes. Your DataFrame might look like:
+Imagine you have performed RNA-seq on 100 patients, 60 healthy and 40 with disease. For each patient, you have measured the expression of 50 genes. Your DataFrame might look like:
 
 ```
    Sample_ID  Condition  Age  Gender  GENE_1  GENE_2  GENE_3  ...  GENE_50
@@ -251,7 +251,7 @@ candidate_genes = df[
 ]
 ```
 
-This type of filtering is fundamental to biological data analysis—identifying genes or samples that meet specific criteria.
+This type of filtering is fundamental to biological data analysis, identifying genes or samples that meet specific criteria.
 
 ## 2.2 Data Quality Issues in Biological Datasets
 
@@ -279,7 +279,7 @@ Missing values can be represented in many ways:
 - Special codes like -999, 0, or "NA"
 - Literally the text "missing" or "N/A"
 
-This inconsistency is why data cleaning is crucial—you need to standardize how missing values are represented before analysis.
+This inconsistency is why data cleaning is crucial; you need to standardize how missing values are represented before analysis.
 
 **Types of missingness:**
 
@@ -289,9 +289,9 @@ Understanding why data is missing helps you decide how to handle it:
 
 The probability of being missing is the same for all observations. The missingness is unrelated to any observed or unobserved data.
 
-**Example**: A weighing scale that ran out of batteries—some data will be missing simply because of bad luck.
+**Example**: A weighing scale that ran out of batteries, some data will be missing simply because of bad luck.
 
-In biological research: A batch of samples was lost due to freezer malfunction—unrelated to any biological or technical factors.
+In biological research: A batch of samples was lost due to a freezer malfunction, unrelated to any biological or technical factors.
 
 **2. Missing at Random (MAR):**
 
@@ -303,11 +303,11 @@ In biological research: Older patients were less likely to have certain tests pe
 
 **3. Missing Not at Random (MNAR):**
 
-The fact that the data are missing is systematically related to the unobserved data—the missingness is related to the value that would have been observed.
+The fact that the data are missing is systematically related to the unobserved data; the missingness is related to the value that would have been observed.
 
 **Example**: In a depression registry, participants with severe depression are more likely to refuse to complete the survey about depression severity.
 
-In biological research: Gene expression below detection limit is missing precisely because it's low. This is the most problematic type.
+In biological research: Gene expression below the detection limit is missing precisely because it's low. This is the most problematic type.
 
 **Example in RNA-seq data:**
 
@@ -317,7 +317,7 @@ RNA-seq commonly has 5-15% missing values. Genes with very low expression might 
 - Sample 3: 0.1 (measured)
 - Sample 4: NaN (below detection)
 
-The missingness is MNAR—it's missing because expression is low, which is exactly what we're trying to measure!
+The missingness is MNAR, it's missing because the expression is low, which is exactly what we're trying to measure!
 
 ### 2.2.2 Outliers: Signal or Noise?
 
@@ -378,7 +378,7 @@ Biological data often comes from multiple sources, databases, or experiments, le
 
 **Why it matters:**
 
-Python treats "BRCA1" and "brca1" as completely different strings. If you're filtering for "BRCA1", you'll miss any entries recorded as "brca1".
+Python treats "BRCA1" and "brca1" as completely different strings. If you're filtering for "BRCA1", you will miss any entries recorded as "brca1".
 
 **Solutions:**
 
@@ -473,7 +473,7 @@ The strongest signal in your data is hospital (batch), not disease! Your machine
 
 1. **Visualization**: PCA plots colored by batch
 2. **Statistical tests**: ANOVA testing for batch differences
-3. **Correlation analysis**: Samples from same batch more similar than expected
+3. **Correlation analysis**: Samples from the same batch are more similar than expected
 
 **Correcting batch effects:**
 
@@ -493,7 +493,7 @@ Now that we understand why missing values occur, let's explore strategies for ha
 The simplest approach is to remove missing values from your dataset.
 
 **Listwise deletion (complete case analysis):**
-Remove any row that has any missing value.
+Remove any row that has any missing values.
 
 ```python
 df_clean = df.dropna()
@@ -505,7 +505,7 @@ df_clean = df.dropna()
 - Preserves observed relationships
 
 **Disadvantages:**
-- Can lose substantial data (if any column has missing values, entire row is removed)
+- Can lose substantial data (if any column has missing values, the entire row is removed)
 - Reduces statistical power
 - Can introduce bias if data is not MCAR
 
@@ -743,7 +743,7 @@ Imagine two genes in your dataset:
 - Gene A: Expression ranges from 0 to 10
 - Gene B: Expression ranges from 0 to 10,000
 
-When you feed this into a machine learning algorithm that calculates distances (like K-Nearest Neighbors or K-Means clustering), Gene B dominates the calculation simply because its numbers are larger—even if Gene A is more biologically relevant for your question!
+When you feed this into a machine learning algorithm that calculates distances (like K-Nearest Neighbors or K-Means clustering), Gene B dominates the calculation simply because its numbers are larger, even if Gene A is more biologically relevant for your question!
 
 **Mathematical illustration:**
 
@@ -1574,7 +1574,7 @@ If you train your model on data and test it on the same data, you cannot know if
 
 **Analogy:**
 
-Imagine teaching students by giving them practice problems. Then, on the exam, you give them the exact same problems. They'll ace it! But have they actually learned mathematics, or did they just memorize solutions?
+Imagine teaching students by giving them practice problems. Then, on the exam, you give them the exact same problems. They will ace it! But have they actually learned mathematics, or did they just memorize solutions?
 
 To truly assess learning, you must test on new, unseen problems.
 
@@ -1582,7 +1582,7 @@ To truly assess learning, you must test on new, unseen problems.
 
 - **Training data**: The "practice problems" the model learns from
 - **Test data**: The "exam" that evaluates how well it learned
-- The test data must be completely separate—the model never sees it during training
+- The test data must be completely separate, the model never sees it during training
 
 ### 2.7.2 Implementing Train/Test Split
 
@@ -2026,7 +2026,7 @@ test_score2 = model2.score(X_test_new, y_test)  # 85%
 
 **Why it's wrong:**
 
-You've now used the test set to make modeling decisions! It's no longer truly unseen. Your reported 85% is optimistic.
+You have now used the test set to make modeling decisions! It's no longer truly unseen. Your reported 85% is optimistic.
 
 **Correct approach:**
 
@@ -2222,11 +2222,11 @@ X = pd.get_dummies(df[['Tissue_Type', 'Gene_1', 'Gene_2']],
 
 ## 2.10 Complete Real-World Example: Breast Cancer RNA-seq Analysis
 
-Let's walk through a complete, realistic example from start to finish, applying everything we've learned.
+Let's walk through a complete, realistic example from start to finish, applying everything we have learned.
 
 ### 2.10.1 The Scenario
 
-You've received RNA-seq data from a collaborator studying breast cancer. The dataset contains:
+You have received RNA-seq data from a collaborator studying breast cancer. The dataset contains:
 - 120 patient samples (80 cancer, 40 healthy)
 - 500 genes selected as potentially relevant
 - Patient metadata: age, tumor stage, treatment status
@@ -2407,7 +2407,7 @@ With clean, properly prepared data, you're now ready to:
 - Interpret results in biological context
 - Deploy models for real-world predictions
 
-**Remember:** In machine learning, "garbage in, garbage out" is not just a saying—it's a fundamental truth. The time you invest in proper data preparation will pay dividends in model performance and scientific validity. Good data preparation is not glamorous, but it's the foundation upon which all successful machine learning projects are built.
+**Remember:** In machine learning, "garbage in, garbage out" is not just a saying, it's a fundamental truth. The time you invest in proper data preparation will pay dividends in model performance and scientific validity. Good data preparation is not glamorous, but it's the foundation upon which all successful machine learning projects are built.
 
 ## 2.12 Further Reading and Resources
 
@@ -2481,4 +2481,4 @@ With clean, properly prepared data, you're now ready to:
 
 **End of Chapter 2**
 
-In the next chapter, we'll use this cleaned and prepared data to build our first machine learning models, starting with logistic regression for classification of disease states based on gene expression profiles. We'll learn how to train models, make predictions, and evaluate their performance using appropriate metrics for biological applications.
+In the next chapter, we will use this cleaned and prepared data to build our first machine learning models, starting with logistic regression for classification of disease states based on gene expression profiles. We will learn how to train models, make predictions, and evaluate their performance using appropriate metrics for biological applications.
