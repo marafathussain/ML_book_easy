@@ -263,7 +263,7 @@ Missing values are perhaps the most common data quality issue in biological rese
 
 **Why do missing values occur?**
 
-1. **Technical failures**: A sample didn't amplify in PCR, a microarray spot was defective, or a sequencing read failed quality control.
+1. **Technical failures**: A sample did not amplify in PCR, a microarray spot was defective, or a sequencing read failed quality control.
 
 2. **Below detection limit**: Gene expression too low to be reliably measured. In RNA-seq, genes with very low read counts are often filtered out.
 
@@ -557,7 +557,7 @@ df['GENE_1'].fillna(df['GENE_1'].median(), inplace=True)
 **Disadvantages:**
 - Underestimates variance (all imputed values are the same)
 - Distorts relationships between variables
-- Doesn't account for correlations
+- Does not account for correlations
 
 **When to use:**
 - Missing values are moderate (5-30%)
@@ -654,7 +654,7 @@ Create multiple imputed datasets, analyze each, and combine results.
 
 ### 2.3.3 Strategy 3: Keep Missing Values
 
-Some approaches don't require imputation.
+Some approaches do not require imputation.
 
 **Missing indicator method:**
 
@@ -813,14 +813,14 @@ df[['GENE_1', 'GENE_2']] = scaler.fit_transform(df[['GENE_1', 'GENE_2']])
 
 **Disadvantages:**
 - Sensitive to outliers (a single extreme value affects the whole scaling)
-- Doesn't center the data
+- Does not center the data
 - New data might fall outside [0,1] range
 
 **When to use:**
 - Neural networks (especially with sigmoid/tanh activations)
 - Image data (pixel values)
 - When you need bounded values
-- Features don't have outliers
+- Features do not have outliers
 
 **Biological example:**
 
@@ -870,13 +870,13 @@ df[['GENE_1', 'GENE_2']] = scaler.fit_transform(df[['GENE_1', 'GENE_2']])
 **Disadvantages:**
 - Output is unbounded (can be any value)
 - Assumes approximate normal distribution
-- Doesn't preserve zero values
+- Does not preserve zero values
 
 **When to use:**
 - Most machine learning algorithms (logistic regression, SVM, KNN)
 - When features are approximately normally distributed
 - PCA and other dimensionality reduction techniques
-- When you don't need bounded output
+- When you do not need bounded output
 
 **Biological example:**
 
@@ -1178,7 +1178,7 @@ Colors show correlation strength:
 
 **Important caveat:**
 
-Correlation only measures linear relationships! Genes might have complex, non-linear relationships that correlation doesn't capture.
+Correlation only measures linear relationships! Genes might have complex, non-linear relationships that correlation does not capture.
 
 **Example:**
 
@@ -1647,13 +1647,13 @@ X_train2, X_test2, y_train2, y_test2 = train_test_split(X, y, test_size=0.2, ran
 Same split every time! Results are reproducible. You and your collaborators get identical results.
 
 **What number to use?**
-Doesn't matter! Common choices: 42, 0, 123. Just pick one and stick with it.
+Does not matter! Common choices: 42, 0, 123. Just pick one and stick with it.
 
 ### 2.7.4 Stratified Split: Maintaining Class Balance
 
 **The problem:**
 
-Imagine you have 100 samples: 90 healthy, 10 disease.
+Imagine you have 100 samples: 90 healthy, 10 diseased.
 
 A random split might give you:
 - Training: 88 healthy, 2 disease (2% disease)
@@ -1916,7 +1916,7 @@ A naive classifier that always predicts "healthy" gets 90% accuracy but is usele
    model = LogisticRegression(class_weight='balanced')
    ```
 
-4. **Use appropriate metrics**: Don't rely on accuracy alone
+4. **Use appropriate metrics**: Do not rely on accuracy alone
    - Precision: Of predicted disease, how many truly have disease?
    - Recall: Of actual disease cases, how many did we catch?
    - F1-score: Harmonic mean of precision and recall
@@ -1947,7 +1947,7 @@ Some biological data has temporal structure:
 
 **Special considerations:**
 
-1. **Don't randomize time points**: Keep temporal order intact
+1. **Do not randomize time points**: Keep temporal order intact
 2. **Time-based splitting**: 
    - Train on early time points
    - Test on later time points
@@ -2053,7 +2053,7 @@ You clean data interactively in Jupyter notebook:
 - Remove some samples
 - Transform some features
 
-Six months later, you can't remember exactly what you did. Reviewers ask questions you can't answer.
+Six months later, you cannot remember exactly what you did. Reviewers ask questions you cannot answer.
 
 **Solution:**
 
@@ -2186,7 +2186,7 @@ df['GENE_1_imputed'] = 2**df['GENE_1_log'] - 1
 
 ```python
 df = pd.read_csv('data.csv')
-print(df['Age'].mean())  # Error: can't calculate mean of object type!
+print(df['Age'].mean())  # Error: cannot calculate mean of object type!
 ```
 
 The 'Age' column was read as text because of some non-numeric values ("N/A", "Unknown").
@@ -2209,7 +2209,7 @@ df['Age'].fillna(df['Age'].median(), inplace=True)
 
 **Categorical variables:**
 
-Don't forget to properly encode categorical variables before modeling:
+Do not forget to properly encode categorical variables before modeling:
 
 ```python
 # Wrong: treating "Tissue_Type" as if it were numeric
