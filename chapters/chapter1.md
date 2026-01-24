@@ -4,9 +4,9 @@
 
 In the summer of 2020, a team at DeepMind, a London-based artificial intelligence company, announced a breakthrough that stunned the biological community. Their AI system, [AlphaFold2](https://alphafold.ebi.ac.uk/), could predict the three-dimensional structure of proteins with accuracy rivaling experimental methods, a problem that had challenged scientists for half a century. What once took months or years of painstaking laboratory work could now be accomplished in hours using machine learning.
 
-This wasn't an isolated achievement. Across biology, artificial intelligence (AI) and machine learning (ML) are transforming how we approach fundamental questions:
+This was not an isolated achievement. Across biology, artificial intelligence (AI) and machine learning (ML) are transforming how we approach fundamental questions:
 
-- **Cancer diagnosis**: Machine learning models analyze millions of cellular images to detect cancerous cells with accuracy matching or exceeding expert pathologists.
+- **Cancer diagnosis**: Machine learning models analyze millions of cellular images to detect cancerous cells with accuracy matching or exceeding that of expert pathologists.
 - **Drug discovery**: AI systems screen billions of potential drug compounds in silico, identifying promising candidates in days rather than years.
 - **Genomics**: Algorithms predict gene function, identify disease-causing mutations, and uncover hidden patterns in massive sequencing datasets.
 - **Ecology**: Machine learning processes satellite imagery to track deforestation, monitor wildlife populations, and predict ecosystem changes.
@@ -30,21 +30,21 @@ This data deluge presents both opportunity and challenge. Traditional statistica
 **What you need:**
 - Basic understanding of biology (undergraduate level)
 - Familiarity with basic statistics (mean, standard deviation, correlation)
-- Willingness to learn programming (we'll teach Python from scratch)
+- Willingness to learn programming (we will teach Python from scratch)
 - Curiosity about how algorithms work
 
-**What you don't need:**
-- Advanced mathematics (we'll explain concepts intuitively)
-- Prior programming experience (we'll start with basics)
-- Computer science background (we'll build from biological intuition)
+**What you do not need:**
+- Advanced mathematics (we will explain concepts intuitively)
+- Prior programming experience (we will start with the basics)
+- Computer science background (we will build from biological intuition)
 
-Our pedagogical approach emphasizes understanding over mathematical rigor. We'll use biological analogies, visual explanations, and practical examples to build intuition before introducing technical details. Code examples are complete and runnable, with extensive comments explaining each step.
+Our pedagogical approach emphasizes understanding over mathematical rigor. We will use biological analogies, visual explanations, and practical examples to build intuition before introducing technical details. Code examples are complete and runnable, with extensive comments explaining each step.
 
 ## 1.2 What is Artificial Intelligence?
 
 ### 1.2.1 Defining AI: Multiple Perspectives
 
-The term "artificial intelligence" means different things to different people. Let's explore several definitions:
+The term "artificial intelligence" means different things to different people. Let us explore several definitions:
 
 **Philosophical definition**: AI is the endeavor to create machines that exhibit behaviors we would call "intelligent" if performed by humans, such as reasoning, learning, problem-solving, perception, and language understanding.
 
@@ -120,7 +120,7 @@ IF email contains "winner" AND contains "$$$" AND has attachment:
 - Requires knowing all patterns in advance
 - Brittle (fails on variations: "w1nn3r" instead of "winner")
 - Time-consuming to write and maintain rules
-- Doesn't improve with more data
+- Does not improve with more data
 
 **Machine Learning:**
 ```
@@ -142,7 +142,7 @@ ML Algorithm learns:
 ```
 
 **Advantages:**
-- Handles complexity humans can't specify
+- Handles complexity humans cannot specify
 - Improves with more data
 - Adapts to changing patterns
 - Can discover unexpected relationships
@@ -192,7 +192,7 @@ Their optimism was palpable. Allen Newell and Herbert Simon presented the Logic 
 
 **Why this matters for biologists:**
 
-The Dartmouth vision of machines that could learn, reason, and solve problems wasn't purely theoretical, it was motivated by understanding biological intelligence. The attendees included neuroscientists interested in how brains process information. From the beginning, AI and biology were intertwined: AI sought to recreate biological intelligence, while biology increasingly looked to computational models to understand the brain.
+The Dartmouth vision of machines that could learn, reason, and solve problems was not purely theoretical, it was motivated by understanding biological intelligence. The attendees included neuroscientists interested in how brains process information. From the beginning, AI and biology were intertwined: AI sought to recreate biological intelligence, while biology increasingly looked to computational models to understand the brain.
 
 ### 1.3.2 Early Success and Optimism (1956-1974)
 
@@ -221,7 +221,7 @@ This optimism shaped the field's trajectory, both its successes and failures. Th
 
 ### 1.3.3 The First AI Winter (1974-1980)
 
-By the mid-1970s, reality crashed into optimism. The predicted breakthroughs hadn't materialized. Computers weren't world chess champions. They hadn't proven important mathematical theorems. Human-level AI remained distant.
+By the mid-1970s, reality crashed into optimism. The predicted breakthroughs had not materialized. Computers were not world chess champions. They had not proven important mathematical theorems. Human-level AI remained distant.
 
 **Why did progress stall?**
 
@@ -233,7 +233,7 @@ The computers of the 1970s were absurdly weak by today's standards. A typical 19
 - Storage: Magnetic tape, painfully slow
 - Cost: Hundreds of thousands to millions of dollars
 
-Many AI problems simply couldn't run on available hardware. What seemed like algorithmic limitations were often just insufficient computing power.
+Many AI problems simply could not run on available hardware. What seemed like algorithmic limitations were often just insufficient computing power.
 
 **2. Lack of data:**
 
@@ -247,7 +247,7 @@ Modern deep learning succeeds partly because we have massive datasets (millions 
 
 **3. Theoretical limitations discovered:**
 
-**Minsky and Papert's "Perceptrons" (1969)**: This influential book proved that perceptrons (simple neural networks with one layer) couldn't solve certain problems, most famously the XOR (exclusive OR) problem.
+**Minsky and Papert's "Perceptrons" (1969)**: This influential book proved that perceptrons (simple neural networks with one layer) could not solve certain problems, most famously the XOR (exclusive OR) problem.
 
 ```
 XOR Truth Table:
@@ -287,7 +287,7 @@ In Britain, Sir James Lighthill wrote a damning assessment of AI research, concl
 
 This first AI winter teaches important lessons:
 1. **Overpromising is dangerous**: Realistic expectations are crucial for sustained support
-2. **Infrastructure matters**: Algorithms alone aren't enough; you need computational resources and data
+2. **Infrastructure matters**: Algorithms alone are not enough; you need computational resources and data
 3. **Theoretical understanding is valuable**: Knowing what's impossible saves effort
 
 Today, as AI again transforms biology, we should remember this history. Not every problem yields to machine learning. Understanding limitations prevents wasted effort and maintains credibility.
@@ -346,11 +346,11 @@ Companies built dedicated "Lisp Machines", computers optimized for running AI pr
 
 Despite initial success, expert systems had fatal flaws:
 
-**1. Knowledge acquisition bottleneck**: Building an expert system required interviewing experts and manually encoding their knowledge into rules, a slow, expensive process. Experts often couldn't articulate their reasoning ("I just know").
+**1. Knowledge acquisition bottleneck**: Building an expert system required interviewing experts and manually encoding their knowledge into rules, a slow, expensive process. Experts often could not articulate their reasoning ("I just know").
 
-**2. Brittleness**: Expert systems worked only within their narrow domain. MYCIN couldn't diagnose viral infections because it knew nothing about viruses. Slight variations broke systems.
+**2. Brittleness**: Expert systems worked only within their narrow domain. MYCIN could not diagnose viral infections because it knew nothing about viruses. Slight variations broke systems.
 
-**3. Inability to learn**: Unlike machine learning, expert systems didn't improve with experience. Every new rule had to be manually added.
+**3. Inability to learn**: Unlike machine learning, expert systems did not improve with experience. Every new rule had to be manually added.
 
 **4. Maintenance nightmare**: As rule bases grew (some systems had thousands of rules), maintaining consistency became impossible. Rules contradicted each other. Updating one rule required checking effects on all others.
 
@@ -362,7 +362,7 @@ The expert systems bubble burst spectacularly:
 
 **The Lisp Machine market collapsed (1987)**: Companies like Symbolics and LMI went bankrupt or nearly so. Desktop computers (PCs and Macs) were cheaper and more versatile.
 
-**Japan's Fifth Generation project failed**: Despite massive investment (~$400 million), it didn't achieve its ambitious goals of AI-powered computing.
+**Japan's Fifth Generation project failed**: Despite massive investment (~$400 million), it did not achieve its ambitious goals of AI-powered computing.
 
 **Expert system limitations became clear**: Companies realized these systems were too inflexible and expensive to maintain.
 
@@ -415,7 +415,7 @@ Machine learning proved valuable in commercial applications:
 
 Instead of promising "artificial intelligence," researchers focused on specific, achievable tasks:
 - "We can classify emails as spam with 99% accuracy."
-- "We can recommend movies you'll enjoy."
+- "We can recommend movies you will enjoy."
 - "We can detect credit card fraud in real-time."
 
 This shift from grand visions to practical applications restored credibility.
@@ -432,7 +432,7 @@ This shift from grand visions to practical applications restored credibility.
 
 The modern AI era began with a dramatic demonstration:
 
-**AlexNet (2012)**: A deep convolutional neural network achieved unprecedented accuracy (84.7%) in the ImageNet image recognition challenge, crushing previous methods (74%). This wasn't incremental progress, it was a paradigm shift.
+**AlexNet (2012)**: A deep convolutional neural network achieved unprecedented accuracy (84.7%) in the ImageNet image recognition challenge, crushing previous methods (74%). This was not incremental progress; it was a paradigm shift.
 
 **Why did deep learning suddenly work?**
 
@@ -453,7 +453,7 @@ The internet provided unprecedented training data:
 - Facebook: Billions of photos
 - YouTube: Hundreds of millions of videos
 
-More data meant better models. Deep learning scales with data in ways previous methods didn't.
+More data meant better models. Deep learning scales with data in ways previous methods did not.
 
 **3. Better algorithms and techniques:**
 
@@ -520,7 +520,7 @@ We're in the midst of rapid progress:
 
 **Are we in another bubble?**
 
-Some worry that current AI hype resembles previous cycles. However, key differences suggest this isn't just hype:
+Some worry that current AI hype resembles previous cycles. However, key differences suggest this is not just hype:
 
 1. **Deployed products**: Billions use AI daily (translation, search, recommendations, voice assistants)
 2. **Economic value**: Companies generate real revenue from AI
@@ -528,11 +528,11 @@ Some worry that current AI hype resembles previous cycles. However, key differen
 4. **Theoretical understanding**: We know more about why deep learning works
 5. **Diverse applications**: Success across many domains, not just narrow tasks
 
-That said, not every AI startup will succeed, and some applications won't pan out. Realistic expectations remain important.
+That said, not every AI startup will succeed, and some applications wo not pan out. Realistic expectations remain important.
 
 ## 1.4 How Machine Learning Works: Core Principles
 
-Now that we understand AI's history, let's explore how machine learning actually works. We'll focus on intuitive explanations suitable for biologists.
+Now that we understand AI's history, let us explore how machine learning actually works. We will focus on intuitive explanations suitable for biologists.
 
 ### 1.4.1 Learning from Examples
 
@@ -542,7 +542,7 @@ Machine learning is fundamentally about learning from examples rather than being
 
 Consider how you learned to identify animals as a child:
 
-Your parent didn't give you rules like:
+Your parent did not give you rules like:
 ```
 IF has_four_legs AND has_trunk AND large_ears THEN elephant
 IF has_four_legs AND orange AND black_stripes THEN tiger
@@ -597,7 +597,7 @@ The learned model might be more accurate than simple rules because it captures c
 
 ### 1.4.2 The Learning Process
 
-Let's break down how learning happens:
+Let us break down how learning happens:
 
 **Step 1: Choose a model class**
 
@@ -640,11 +640,11 @@ Adjust the model's parameters to minimize the loss function. This is the actual 
 **Method**: Gradient descent
 - Feel which direction is downhill (compute gradient)
 - Take a step in that direction
-- Repeat until you can't go lower
+- Repeat until you cannot go lower
 
 **Step 4: Validation**
 
-Test the model on new data it hasn't seen to ensure it learned general patterns, not memorized training examples.
+Test the model on new data it has not seen to ensure it learned general patterns, not memorized training examples.
 
 **Mathematical notation (optional):**
 
@@ -662,7 +662,7 @@ Learning: θ* = argmin L(θ)
   (find parameters that minimize loss)
 ```
 
-For those less comfortable with math: Don't worry! The intuition is what matters. The computer handles the calculations.
+For those less comfortable with math: Do not worry! The intuition is what matters. The computer handles the calculations.
 
 ### 1.4.3 Types of Machine Learning
 
@@ -731,7 +731,7 @@ Machine learning is divided into several categories based on the type of learnin
 
 **3. Semi-Supervised Learning**
 
-**Definition**: Learn from mix of labeled and unlabeled data.
+**Definition**: Learn from a mix of labeled and unlabeled data.
 
 **Why this matters in biology:**
 
@@ -911,7 +911,7 @@ A unique challenge in biology: often we have many more features than samples.
 **Regularization**: Penalize complex models
 - L1 regularization (Lasso): Forces some features to have zero weight
 - L2 regularization (Ridge): Shrinks feature weights
-- Elastic net: Combination of L1 and L2
+- Elastic net: A combination of L1 and L2
 
 ### 1.5.4 Data Quality: Garbage In, Garbage Out
 
@@ -919,7 +919,7 @@ Machine learning models reflect the quality of their training data. Poor data �
 
 **Common data quality issues:**
 
-**1. Missing values**: Some measurements weren't taken or failed
+**1. Missing values**: Some measurements were not taken or failed
 - Random technical failures
 - Below detection limit
 - Study design (not all tests for all patients)
@@ -956,7 +956,7 @@ Machine learning models reflect the quality of their training data. Poor data �
 - Remove or correct obvious errors
 - Understand and account for known biases
 
-We'll cover data cleaning in detail in Chapter 2.
+We will cover data cleaning in detail in Chapter 2.
 
 ## 1.6 Why Machine Learning Works in Biology
 
@@ -973,7 +973,7 @@ Biology naturally generates high-dimensional data:
 Traditional statistical methods struggle with high dimensions. Machine learning thrives:
 - Can handle thousands to millions of features
 - Automatically identifies relevant features
-- Discovers complex patterns humans can't see
+- Discovers complex patterns humans cannot see
 
 ### 1.6.2 Complex, Non-Linear Relationships
 
@@ -981,14 +981,14 @@ Biological systems are complex:
 - Gene regulatory networks with feedback loops
 - Protein interactions with multiple partners
 - Disease caused by combinations of factors
-- Dose-response curves that aren't straight lines
+- Dose-response curves that are not straight lines
 
 **Linear models assume**: Doubling a gene's expression doubles the effect
 
 **Reality**: Gene expression effects are often:
 - Threshold-based: No effect until expression exceeds a threshold
 - Saturating: Increasing expression has diminishing returns
-- Synergistic: Two genes together have more effect than expected
+- Synergistic: Two genes together have a greater effect than expected
 - Antagonistic: One gene blocks another's effect
 
 Machine learning captures these complexities:
@@ -1007,7 +1007,7 @@ Many biological tasks involve recognizing patterns:
 Humans are good at this, but:
 - We fatigue
 - We're subjective and inconsistent
-- We can't process millions of images
+- We cannot process millions of images
 - Subtle patterns escape our perception
 
 Machine learning excels at pattern recognition:
@@ -1041,11 +1041,11 @@ Machine learning enables: Collect data → Discover patterns → Generate hypoth
 - **Drug repurposing**: ML finds existing drugs that might treat new diseases based on molecular patterns
 - **Biomarker discovery**: ML identifies combinations of genes/proteins that predict disease better than any single marker
 
-This doesn't replace hypothesis-driven research; it complements it, suggesting new hypotheses to test.
+This does not replace hypothesis-driven research; it complements it, suggesting new hypotheses to test.
 
 ## 1.7 Machine Learning vs. Traditional Statistics
 
-Many biologists wonder: "How is machine learning different from statistics? Aren't they the same?"
+Many biologists wonder: "How is machine learning different from statistics? Are not they the same?"
 
 There's significant overlap, but key differences in philosophy and application:
 
@@ -1086,7 +1086,7 @@ Result: 89% accuracy on test set, identifies 85% of diabetes cases
 Conclusion: Can accurately predict diabetes. BMI is the most important feature, but combinations with other features improve prediction.
 ```
 
-Both are valuable; statistics explains *why*, machine learning predicts *what*.
+Both are valuable; statistics explain *why*, machine learning predicts *what*.
 
 ### 1.7.2 Model Complexity
 
@@ -1167,7 +1167,7 @@ Good for small data    Need large data
 
 ## 1.8 Applications of Machine Learning in Biology
 
-Let's explore concrete examples of ML transforming biological research:
+Let us explore concrete examples of ML transforming biological research:
 
 ### 1.8.1 Genomics and Transcriptomics
 
@@ -1333,7 +1333,7 @@ Complex models (deep neural networks) are opaque:
 - Regulatory approval may require explanations (medical devices)
 - Scientific understanding requires knowing mechanisms
 - Trust: Clinicians hesitant to use unexplainable systems
-- Debugging: Hard to fix what you don't understand
+- Debugging: Hard to fix what you do not understand
 
 **Approaches to interpretability:**
 
@@ -1385,7 +1385,7 @@ Predicting gene expression from sequence:
 **Example biases in medical ML:**
 - Training mostly on European ancestry: Poor performance on other populations
 - Fewer female subjects: Models may underperform for women
-- Hospital biases: Model learns hospital-specific patterns that don't generalize
+- Hospital biases: Model learns hospital-specific patterns that do not generalize
 
 **Consequences:**
 - Disparate performance across groups
@@ -1410,7 +1410,7 @@ Model finds: High ice cream sales correlate with drowning deaths
 
 ML prediction: When ice cream sales rise, drownings will increase
 
-Reality: Both caused by hot weather (summer). Ice cream doesn't cause drowning!
+Reality: Both caused by hot weather (summer). Ice cream does not cause drowning!
 
 **Biological examples:**
 
@@ -1420,7 +1420,7 @@ Reality: Both caused by hot weather (summer). Ice cream doesn't cause drowning!
 
 **Implications:**
 - ML can identify associations for further study
-- Don't assume predictions reveal mechanisms
+- Do not assume predictions reveal mechanisms
 - Experimental validation needed for causal claims
 - Be cautious about interventions based on correlations
 
@@ -1455,7 +1455,7 @@ As ML becomes more prevalent in biology and medicine, ethical issues arise:
 - Uniquely identifies individuals
 - Reveals disease risks
 - Affects family members (shared genetics)
-- Can't be "changed" like a password
+- cannot be "changed" like a password
 
 **Challenges:**
 - Data sharing accelerates research but risks privacy
@@ -1548,7 +1548,7 @@ End-to-end ML drug discovery:
 
 ## 1.12 Summary: Key Takeaways
 
-Let's consolidate what we've learned in this chapter:
+Let us consolidate what we have learned in this chapter:
 
 **1. AI is the broad field** of creating intelligent machines. **Machine learning** is a subset focused on learning from data. **Deep learning** is a subset of ML using multi-layer neural networks.
 
@@ -1602,4 +1602,4 @@ Let's consolidate what we've learned in this chapter:
 
 **End of Chapter 1**
 
-You now understand the foundations of artificial intelligence and machine learning, their history, how they work, and why they're transforming biology. In Chapter 2, we'll get our hands dirty with data, learning to clean, explore, and prepare biological datasets for machine learning.
+You now understand the foundations of artificial intelligence and machine learning, their history, how they work, and why they're transforming biology. In Chapter 2, we will get our hands dirty with data, learning to clean, explore, and prepare biological datasets for machine learning.
