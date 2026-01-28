@@ -1,8 +1,8 @@
-﻿# Chapter 2: Data Cleaning and Exploratory Data Analysis for Biological Data
+# Chapter 2: Data Cleaning and Exploratory Data Analysis for Biological Data
 
 ## Introduction
 
-In the world of machine learning, there's a popular saying: "garbage in, garbage out." This principle is especially true in biological research, where data quality can make or break your analysis. While the excitement of machine learning often centers on sophisticated algorithms and impressive predictions, experienced practitioners know that the real work, and often the most critical work, happens long before any model is trained.
+In the world of machine learning, there is a popular saying: "garbage in, garbage out." This principle is especially true in biological research, where data quality can make or break your analysis. While the excitement of machine learning often centers on sophisticated algorithms and impressive predictions, experienced practitioners know that the real work, and often the most critical work, happens long before any model is trained.
 
 This chapter introduces two Python data structures you will use all the time: **lists** and **dictionaries**. Think of them as the building blocks for storing gene names, sample IDs, expression values, and metadata. Once you are comfortable with these, we will move on to **Pandas** and data cleaning in Chapter 3.
 
@@ -12,7 +12,7 @@ Before we dive into data cleaning and analysis, we need to understand how Python
 
 ### 2.1.1 Lists: Your First Data Container
 
-Lists are Python's most basic sequential data structure. Imagine you are cataloging genes of interest from a recent study. A list lets you store these gene names in order:
+Lists are the most basic sequential data structure in Python. Imagine you are cataloging genes of interest from a recent study. A list lets you store these gene names in order:
 
 **What is a list?**
 A list is an ordered collection of items enclosed in square brackets `[]`. Items can be of any type, numbers, text (strings), or even other lists. Most importantly for our purposes, lists are ordered (the first item stays first) and mutable (you can change them after creation).
@@ -61,7 +61,7 @@ all_degs = upregulated + downregulated  # Concatenation
 While lists use numeric positions, dictionaries use meaningful keys. This makes them perfect for storing gene metadata where you want to look up information by gene name rather than remembering position numbers.
 
 **What is a dictionary?**
-A dictionary stores data as key-value pairs enclosed in curly braces `{}`. Think of it like a real dictionary where you look up a word (key) to find its definition (value).
+A dictionary stores data as key-value pairs enclosed in curly braces `{}`. Think of it like a real dictionary where you look up a word (the key) to find its definition (the value).
 
 **Example in biological context:**
 ```python
@@ -78,24 +78,81 @@ brca1_info = {
 
 This dictionary stores comprehensive information about the BRCA1 gene. Each piece of information is associated with a descriptive key.
 
-**Accessing values:**
-You retrieve values using their keys:
-- `brca1_info['gene_name']` returns 'BRCA1'
-- `brca1_info['expression']` returns 5.2
-- `brca1_info['pathways']` returns the list of pathways
+**Extracting values using keys:**
 
-**Adding and modifying:**
-Dictionaries are mutable. You can add new information:
+You retrieve a value by putting its key in square brackets. The key must match exactly (including spelling and capital letters).
+
 ```python
-brca1_info['fold_change'] = 2.5
+brca1_info['gene_name']      # Returns 'BRCA1'
+brca1_info['expression']     # Returns 5.2
+brca1_info['pathways']       # Returns ['DNA repair', 'Cell cycle', 'Tumor suppression']
 ```
 
-Or modify existing values:
+If you use a key that does not exist, Python raises a **KeyError** and your code stops. For example, `brca1_info['unknown_key']` would cause an error.
+
+To avoid that, you can use **`.get()`**. If the key exists, you get the value. If it does not, you get `None`, or a default value you choose:
+
 ```python
-brca1_info['expression'] = 5.8
+brca1_info.get('gene_name')           # Returns 'BRCA1'
+brca1_info.get('unknown_key')         # Returns None (no error)
+brca1_info.get('unknown_key', 0)      # Returns 0 because the key is missing
+```
+
+**Adding and modifying key-value pairs:**
+
+Dictionaries are mutable. You can add a new key-value pair by assigning a value to a new key:
+
+```python
+brca1_info['fold_change'] = 2.5    # Adds a new key 'fold_change' with value 2.5
+```
+
+To change an existing value, use the same assignment with a key that already exists:
+
+```python
+brca1_info['expression'] = 5.8     # Updates 'expression' from 5.2 to 5.8
+```
+
+**Other key-value manipulations:**
+
+- **Remove a key-value pair:** use `del` or `.pop()`.
+  - `del brca1_info['fold_change']` removes that key and its value. If the key is missing, you get a KeyError.
+  - `brca1_info.pop('fold_change')` also removes it and returns the value. You can give a default: `brca1_info.pop('fold_change', None)` so that if the key is missing, you get `None` instead of an error.
+
+```python
+val = brca1_info.pop('fold_change', None)   # Removes 'fold_change', returns 2.5; if key missing, returns None
+```
+
+- **Check if a key exists:** use `in`.
+
+```python
+'gene_name' in brca1_info    # True
+'unknown_key' in brca1_info  # False
+```
+
+- **Get all keys, all values, or all key-value pairs:** use `.keys()`, `.values()`, or `.items()`. These are useful when you loop over the dictionary.
+
+```python
+brca1_info.keys()    # All keys: dict_keys(['gene_name', 'full_name', 'chromosome', ...])
+brca1_info.values()  # All values
+brca1_info.items()   # Pairs (key, value)
+```
+
+Example: loop over each key-value pair and print it:
+
+```python
+for key, value in brca1_info.items():
+    print(key, ":", value)
+```
+
+- **Update one dictionary with another:** use `.update()`. Keys from the other dictionary are added or overwritten.
+
+```python
+extra = {'pubmed_id': '12345', 'expression': 6.0}
+brca1_info.update(extra)   # Adds 'pubmed_id', updates 'expression' to 6.0
 ```
 
 **Nested dictionaries for multiple genes:**
+
 For a complete gene database, you can create a dictionary of dictionaries:
 
 ```python
@@ -118,9 +175,14 @@ gene_database = {
 }
 ```
 
-Now you can access any gene's information:
+**Accessing nested values:**
+
+When a value is itself a dictionary, you use the key twice (or more): first for the outer dictionary, then for the inner one.
+
 ```python
-tp53_chromosome = gene_database['TP53']['chromosome']  # Returns 17
+# gene_database['TP53'] is a dictionary, then we take its 'chromosome' key
+gene_database['TP53']['chromosome']   # Returns 17
+gene_database['EGFR']['expression']   # Returns 3.4
 ```
 
 **When to use dictionaries:**
@@ -134,7 +196,7 @@ tp53_chromosome = gene_database['TP53']['chromosome']  # Returns 17
 You now know Python’s two main data structures we use before moving to tables:
 
 - **Lists**: ordered sequences of items (e.g. gene names, sample IDs). Use when order matters and you access by position.
-- **Dictionaries**: key–value pairs (e.g. gene → expression, sample → metadata). Use when you want to look up by name instead of position.
+- **Dictionaries**: key-value pairs (e.g. gene to expression, sample to metadata). Use when you want to look up by name instead of position.
 
 In **Chapter 3**, we will use **Pandas DataFrames** and **indexing** to load biological data, spot quality issues, handle missing values, normalize and scale, run a simple **EDA workflow**, and introduce the **train/test split**. All of that builds on the lists and dictionaries you have just learned.
 

@@ -2,9 +2,9 @@
 
 ## Introduction
 
-In Chapter 2, you learned how to store data with **lists** and **dictionaries**. Now we put those building blocks to work. Before you train any machine learning model, you need to **clean** and **explore** your data. Clean, well-understood data is the foundation of useful ML. Messy or biased data leads to misleading or useless models. In biology, that often means missing samples, typos, batch effects, or wrong units—all of which can lead to wrong conclusions. So: spend time on data quality and exploration *before* you train models.
+In Chapter 2, you learned how to store data with **lists** and **dictionaries**. Now we put those building blocks to work. Before you train any machine learning model, you need to **clean** and **explore** your data. Clean, well-understood data is the foundation of useful ML. Messy or biased data leads to misleading or useless models. In biology, that often means missing samples, typos, batch effects, or wrong units, all of which can lead to wrong conclusions. So: spend time on data quality and exploration *before* you train models.
 
-This chapter teaches you a simple, practical workflow: load your data, spot quality issues, handle missing values, normalize and scale when needed, summarize with basic statistics, and visualize. We also introduce the **train/test split**, which you will use from here on whenever you evaluate a model. By the end, you will know how to get biological data ready for machine learning—without going deep into theory.
+This chapter teaches you a simple, practical workflow: load your data, spot quality issues, handle missing values, normalize and scale when needed, summarize with basic statistics, and visualize. We also introduce the **train/test split**, which you will use from here on whenever you evaluate a model. By the end, you will know how to get biological data ready for machine learning, without going deep into theory.
 
 We use **Pandas** for tables and **Matplotlib** or **Seaborn** for simple plots. All code runs in Google Colab; no installations required.
 
@@ -35,14 +35,14 @@ You get a table with four rows (genes) and four columns. Rows have an **index** 
 
 **Loading data from a file:**
 
-In practice, you load data from a CSV or Excel file:
+In practice, you load data from a CSV or Excel file. A dummy **`gene_expression.csv`** is available in this book's GitHub repo under `ML_book_easy/data/`. Download it and place it in the same folder as your notebook, or use the path from your repo root. In Google Colab, you can load it directly from the raw GitHub URL (replace `YOUR_USERNAME` and `YOUR_REPO` with the actual repo):
 
 ```python
-# Load a CSV (e.g. gene expression or sample metadata)
-df = pd.read_csv('gene_expression.csv')
+# Load a CSV: use the path that matches where you put the file
+df = pd.read_csv('gene_expression.csv')   # same folder as notebook
 
-# Or Excel
-# df = pd.read_excel('samples.xlsx')
+# If using the repo: df = pd.read_csv('ML_book_easy/data/gene_expression.csv')
+# Colab from GitHub: df = pd.read_csv('https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/ML_book_easy/data/gene_expression.csv')
 ```
 
 Always check shape and columns right after loading:
@@ -58,8 +58,8 @@ print(df.head())  # First few rows
 
 **Columns:**
 
-- Single column: `df['Gene']` → a **Series** (one column).
-- Multiple columns: `df[['Gene', 'Expression']]` → a **DataFrame** (two columns).
+- Single column: `df['Gene']` returns a **Series** (one column).
+- Multiple columns: `df[['Gene', 'Expression']]` returns a **DataFrame** (two columns).
 
 **Rows by position (`.iloc`):**
 
@@ -77,7 +77,7 @@ Use index or column names:
 
 ```python
 df.loc[0, 'Gene']           # Row 0, column 'Gene'
-df.loc[0:2, 'Gene':'Expression']  # Rows 0–2, columns from Gene to Expression
+df.loc[0:2, 'Gene':'Expression']  # Rows 0 to 2, columns from Gene to Expression
 ```
 
 **Filtering rows with conditions (boolean indexing):**
@@ -161,14 +161,14 @@ df['Tissue'].fillna(most_common, inplace=True)
 
 ## 3.4 Normalization and Scaling
 
-Different features often live on different scales (e.g. expression 0–1000, age 20–80). Many ML algorithms care about scale: features with larger numbers can dominate. **Normalization** or **scaling** puts features on a comparable scale.
+Different features often live on different scales (e.g. expression 0 to 1000, age 20 to 80). Many ML algorithms care about scale: features with larger numbers can dominate. **Normalization** or **scaling** puts features on a comparable scale.
 
 - **MinMax scaling:** Map values to a range, usually [0, 1].  
   Formula: `(value - min) / (max - min)`
 - **Standardization (Z-score):** Mean 0, standard deviation 1.  
   Formula: `(value - mean) / std`
 
-**Why it matters:** Imagine two genes—one ranges 0–10, the other 0–10,000. In distance-based methods (e.g. k-NN, clustering), the second would overwhelm the first. Scaling balances them.
+**Why it matters:** Imagine two genes: one ranges 0 to 10, the other 0 to 10,000. In distance-based methods (e.g. k-NN, clustering), the second would overwhelm the first. Scaling balances them.
 
 We use **StandardScaler** and **MinMaxScaler** from scikit-learn in later chapters. For now, it is enough to know that you will typically scale numeric features before training models, and that you should **fit the scaler on the training set only**, then apply it to the test set. We come back to this when we do train/test splits.
 
@@ -220,10 +220,10 @@ Values near 1 or -1 mean strong linear relationship; near 0 means weak. For many
 
 ### 3.6.1 Step 1: Load and Inspect
 
-- Load the file: `pd.read_csv()`, `pd.read_excel()`, etc.
+- Load the file: `pd.read_csv()`, `pd.read_excel()`, etc. (e.g. `gene_expression.csv` from the repo’s `ML_book_easy/data/` folder).
 - Check **shape**, **columns**, **dtypes**, and **first/last rows**:
   ```python
-  df = pd.read_csv('your_data.csv')
+  df = pd.read_csv('gene_expression.csv')  # or path to your file
   print(df.shape)
   print(df.columns)
   print(df.dtypes)
@@ -284,14 +284,14 @@ plt.show()
 
 ### 3.6.4 Step 4: Decide and Document
 
-Based on Steps 1–3, decide:
+Based on Steps 1 to 3, decide:
 
 - **What to drop?** (e.g. rows/columns with too many missing, non-informative)
 - **What to impute?** (which columns, mean vs median vs mode)
-- **What to scale?** (which features, and with what method—later)
+- **What to scale?** (which features, and with what method, later)
 - **What to fix?** (typos, units, encoding)
 
-**Document your choices** in your notebook (comments or a short “Data cleaning checklist”) so others—and future you—can reproduce your steps.
+**Document your choices** in your notebook (comments or a short “Data cleaning checklist”) so others, and future you, can reproduce your steps.
 
 ## 3.7 Train/Test Split: Introduction
 
@@ -345,17 +345,18 @@ With clean, explored data and a proper train/test split, you are ready to build 
 ## 3.9 Further Reading
 
 **Pandas:**  
-- [Pandas documentation](https://pandas.pydata.org/docs/) — DataFrames, indexing, and data manipulation.
+- [Pandas documentation](https://pandas.pydata.org/docs/): DataFrames, indexing, and data manipulation.
 
 **Preprocessing:**  
-- [Scikit-learn preprocessing](https://scikit-learn.org/stable/modules/preprocessing.html) — Scaling, encoding, and imputation.
+- [Scikit-learn preprocessing](https://scikit-learn.org/stable/modules/preprocessing.html): Scaling, encoding, and imputation.
 
 **Visualization:**  
-- [Matplotlib](https://matplotlib.org/), [Seaborn](https://seaborn.pydata.org/) — Histograms, boxplots, heatmaps.
+- [Matplotlib](https://matplotlib.org/), [Seaborn](https://seaborn.pydata.org/): Histograms, boxplots, heatmaps.
 
 **Practice datasets:**  
-- [UCI ML Repository](https://archive.ics.uci.edu/ml/) — e.g. Breast Cancer Wisconsin dataset.  
-- [Gene Expression Omnibus (GEO)](https://www.ncbi.nlm.nih.gov/geo/) — Gene expression data.
+- **`gene_expression.csv`**: Dummy dataset for this chapter, in the repo’s `ML_book_easy/data/` folder. Download from GitHub and use it for all EDA and train/test examples above.  
+- [UCI ML Repository](https://archive.ics.uci.edu/ml/): e.g. Breast Cancer Wisconsin dataset.  
+- [Gene Expression Omnibus (GEO)](https://www.ncbi.nlm.nih.gov/geo/): Gene expression data.
 
 ---
 
