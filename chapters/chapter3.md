@@ -4,7 +4,7 @@
 
 In Chapter 2, you learned how to store data with **lists** and **dictionaries**. Now we put those building blocks to work. Before you train any machine learning model, you need to **clean** and **explore** your data. Clean, well-understood data is the foundation of useful ML. Messy or biased data leads to misleading or useless models. In biology, that often means missing samples, typos, batch effects, or wrong units, all of which can lead to wrong conclusions. So: spend time on data quality and exploration *before* you train models.
 
-This chapter teaches you a simple, practical workflow: load your data, spot quality issues, handle missing values, normalize and scale when needed, summarize with basic statistics, and visualize. We also introduce the **train/test split**, which you will use from here on whenever you evaluate a model. By the end, you will know how to get biological data ready for machine learning, without going deep into theory.
+This chapter teaches you a simple, practical workflow: load your data, spot quality issues, handle missing values, normalize and scale when needed, summarize with basic statistics, and visualize. We also introduce the **ML golden rule**, **train/validation/test** splits, and **cross-validation**, which you will use from here on whenever you evaluate a model. By the end, you will know how to get biological data ready for machine learning, without going deep into theory.
 
 We use **Pandas** for tables and **Matplotlib** or **Seaborn** for simple plots. All code runs in Google Colab; no installations required.
 
@@ -293,35 +293,71 @@ Based on Steps 1 to 3, decide:
 
 **Document your choices** in your notebook (comments or a short “Data cleaning checklist”) so others, and future you, can reproduce your steps.
 
-## 3.7 Train/Test Split: Introduction
+## 3.7 The ML Golden Rule and Data Splits
 
-To know how well a model **generalizes** to new data, we need to evaluate it on data it has *never* seen during training. That is why we split the dataset into a **training set** and a **test set**.
+### 3.7.1 The ML Golden Rule
 
-- **Training set:** Used to fit the model.
-- **Test set:** Held out and used *only* to evaluate performance.
+**The model must *never* see the data used to evaluate it.**
 
-If you train and evaluate on the same data, you risk **overfitting** and overly optimistic results. The test set mimics “unseen” data.
+If the model has seen evaluation data (during training or when you chose the model or tuned hyperparameters), we cannot trust the reported performance. That is why we **hold out** some data and never use it for fitting or for choosing the model. We use that held-out data **only once**, for a final performance check.
 
-**Rule:** Never train on the test set, and do not use it to choose models or tune parameters. Use it only for a final performance check.
+**Golden rule:** Evaluation data stays unseen until the very end. No training on it, no model selection on it, no tuning on it.
 
-### 3.7.1 How to Split
+### 3.7.2 Train, Validation, and Test (Three Splits)
 
-A common choice is **80% train, 20% test** (or 70/30, 90/10). Use **`train_test_split`** from scikit-learn and always set **`random_state`** so the split is reproducible:
+Do not use only train and test. Use **three** splits:
+
+| Split | Purpose | Model sees it? |
+|-------|---------|-----------------|
+| **Training** | Fit the model (learn parameters) | Yes |
+| **Validation** | Choose model, hyperparameters, early stopping | No (used only to *select*, not to fit) |
+| **Test** | Final evaluation only (report performance) | No, and use **once** at the end |
+
+- **Training:** Data the model learns from.
+- **Validation:** Data we use to compare models or settings; the model never trains on it. We use it to pick the best model or hyperparameters.
+- **Test:** Data we use only once to report how well the chosen model generalizes. Never use it for training or for model selection.
+
+Typical split: **60% train, 20% validation, 20% test** (or 70/15/15).
+
+### 3.7.3 How to Split: Train / Validation / Test
+
+Split **once** and fix **`random_state`** so the split is reproducible. Split *before* any scaling or preprocessing; fit scalers on the training data only, then apply them to validation and test.
 
 ```python
 from sklearn.model_selection import train_test_split
 
-# X = features, y = target (e.g. disease vs healthy)
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y,
-    test_size=0.2,
-    random_state=42
+# First: separate test set (e.g. 20%)
+X_temp, X_test, y_temp, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
 )
+# Then: split temp into train and validation (e.g. 75% train, 25% val of temp)
+X_train, X_val, y_train, y_val = train_test_split(
+    X_temp, y_temp, test_size=0.25, random_state=42  # 0.25 of 80% = 20% of full data
+)
+# Result: 60% train, 20% val, 20% test
 ```
 
-This gives you four arrays: `X_train`, `X_test`, `y_train`, `y_test`. You fit the model on `X_train` and `y_train`, and evaluate on `X_test` and `y_test`. We use this pattern from the next chapter onward when we build our first ML models.
+Use `X_train`, `y_train` to fit the model; `X_val`, `y_val` to choose models or hyperparameters; `X_test`, `y_test` only for the final evaluation.
 
-**Important:** Split *before* scaling or other preprocessing that uses global statistics. Fit scalers (and similar) only on the training data, then apply them to the test data. That keeps the test set truly “unseen.” We will practice this when we add scaling in later chapters.
+### 3.7.4 Cross-Validation
+
+When data is limited, a single train/validation split can be unstable (the validation score depends on which samples ended up in the validation set). **Cross-validation (CV)** rotates which part is the validation set so that every sample is used for validation once.
+
+- **k-fold CV:** Split the (training) data into *k* folds (e.g. 5). Train on *k*−1 folds, validate on the remaining fold. Repeat *k* times so each fold is the validation set once. Average the *k* validation scores (and optionally report their standard deviation).
+- **Use CV for:** Model selection, hyperparameter tuning, and getting a more stable estimate of performance. **Do not** include the test set in CV; keep it completely held out and use it only at the end.
+- **Tool:** **`cross_val_score`** or **`KFold`** from **`sklearn.model_selection`**.
+
+```python
+from sklearn.model_selection import cross_val_score
+
+# 5-fold CV on training data only (do not use X_test, y_test here)
+scores = cross_val_score(model, X_train, y_train, cv=5)
+print("CV score: %.3f (+/- %.3f)" % (scores.mean(), scores.std()))
+```
+
+**Rule:** Run CV only on the training (and optionally validation) data. The test set is used once at the very end to report final performance.
+
+**Important:** Split *before* scaling or other preprocessing that uses global statistics. Fit scalers (and similar) only on the training data, then apply them to validation and test. That keeps the test set truly unseen. We will practice this when we add scaling in later chapters.
 
 ## 3.8 Summary and Key Takeaways
 
@@ -337,10 +373,13 @@ Use **mean**, **median**, **std**, **describe()**, and **correlation** to summar
 **EDA workflow:**  
 **Load → Summarize → Visualize → Decide.** Always document what you drop, impute, or transform.
 
-**Train/test split:**  
-Split data into **train** and **test** sets, use **`train_test_split`** with **`random_state`**, and evaluate only on the test set. Split *before* fitting scalers or other preprocessing.
+**ML golden rule:** The model must never see the data used to evaluate it. Evaluation data stays unseen until the very end.
 
-With clean, explored data and a proper train/test split, you are ready to build and evaluate your first ML models in the next chapter.
+**Train / validation / test:** Split data into **training**, **validation**, and **test** sets (e.g. 60/20/20). Use training to fit the model, validation to choose models or hyperparameters, and test only once for final performance. Split *before* fitting scalers or other preprocessing.
+
+**Cross-validation:** When data is limited, use k-fold CV on the training (and optionally validation) data for a more stable estimate. Do not include the test set in CV; use it only once at the end.
+
+With clean, explored data and a proper train/validation/test split (and CV when needed), you are ready to build and evaluate your first ML models in the next chapter.
 
 ## 3.9 Further Reading
 
@@ -362,4 +401,4 @@ With clean, explored data and a proper train/test split, you are ready to build 
 
 **End of Chapter 3**
 
-In the next chapter, we introduce machine learning proper: supervised vs unsupervised learning, classification and regression, and key metrics such as accuracy, AUROC, and RMSE. We will train our first models using the clean data and train/test split you have just learned to prepare.
+In the next chapter, we introduce machine learning proper: supervised vs unsupervised learning, classification and regression, and key metrics such as accuracy, AUROC, and RMSE. We will train our first models using the clean data and train/validation/test split (and cross-validation when needed) you have just learned to prepare.
