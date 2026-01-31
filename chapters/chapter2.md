@@ -218,14 +218,17 @@ You get a table with four rows (genes) and four columns. Rows have an **index** 
 
 **Loading data from a file:**
 
-In practice, you load data from a CSV or Excel file. A dummy **`gene_expression.csv`** is available in this book's GitHub repo under `ML_book_easy/data/`. Download it and place it in the same folder as your notebook, or use the path from your repo root. In Google Colab, you can load it directly from the raw GitHub URL (replace `YOUR_USERNAME` and `YOUR_REPO` with the actual repo):
+In practice, you load data from a CSV or Excel file. A dummy **`gene_expression.csv`** is available for download:
+
+**File:** [gene_expression.csv](https://github.com/marafathussain/ML_book_easy/blob/main/data/gene_expression.csv)
+
+<p><a href="https://raw.githubusercontent.com/marafathussain/ML_book_easy/main/data/gene_expression.csv" download="gene_expression.csv" target="_blank" style="display:inline-block;padding:10px 20px;background:#0366d6;color:white;text-decoration:none;border-radius:6px;font-weight:bold;">⬇ Download gene_expression.csv</a></p>
+
+If you use **Google Colab**, upload the downloaded file to the **left panel** (Files section). Click the folder icon on the left sidebar, then click the upload button to add `gene_expression.csv`. After uploading, place the file in the same folder as your notebook or adjust the path in the code below.
 
 ```python
-# Load a CSV: use the path that matches where you put the file
-df = pd.read_csv('gene_expression.csv')   # same folder as notebook
-
-# If using the repo: df = pd.read_csv('ML_book_easy/data/gene_expression.csv')
-# Colab from GitHub: df = pd.read_csv('https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/ML_book_easy/data/gene_expression.csv')
+# Load the CSV: use the path that matches where you put the file
+df = pd.read_csv('gene_expression.csv')   # same folder as notebook (or Colab's root after upload)
 ```
 
 Always check shape and columns right after loading:
@@ -403,7 +406,7 @@ Values near 1 or -1 mean strong linear relationship; near 0 means weak. For many
 
 ### 2.7.1 Step 1: Load and Inspect
 
-- Load the file: `pd.read_csv()`, `pd.read_excel()`, etc. (e.g. `gene_expression.csv` from the repo's `ML_book_easy/data/` folder).
+- Load the file: `pd.read_csv()`, `pd.read_excel()`, etc. (e.g. `gene_expression.csv` from the download link in section 2.2.1).
 - Check **shape**, **columns**, **dtypes**, and **first/last rows**:
   ```python
   df = pd.read_csv('gene_expression.csv')  # or path to your file
@@ -579,7 +582,7 @@ With clean, explored data and a proper train/validation/test split (and CV when 
 - [Matplotlib](https://matplotlib.org/), [Seaborn](https://seaborn.pydata.org/): Histograms, boxplots, heatmaps.
 
 **Practice datasets:**  
-- **`gene_expression.csv`**: Dummy dataset for this chapter, in the repo's `ML_book_easy/data/` folder. Download from GitHub and use it for all EDA and train/test examples above.  
+- **`gene_expression.csv`**: Dummy dataset for this chapter. Use the [download link](https://github.com/marafathussain/ML_book_easy/blob/main/data/gene_expression.csv) in section 2.2.1, then upload to Colab's left panel if needed. Use it for all EDA and train/test examples above.  
 - [UCI ML Repository](https://archive.ics.uci.edu/ml/): e.g. Breast Cancer Wisconsin dataset.  
 - [Gene Expression Omnibus (GEO)](https://www.ncbi.nlm.nih.gov/geo/): Gene expression data.
 
