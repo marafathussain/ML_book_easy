@@ -218,11 +218,10 @@ You get a table with four rows (genes) and four columns. Rows have an **index** 
 
 **Loading data from a file:**
 
-In practice, you load data from a CSV or Excel file. A dummy **`gene_expression.csv`** is available for download:
+In practice, you load data from a CSV or Excel file. An artificially generated **`gene_expression.csv`** dataset is available for download for learning purposes:
 
 **File:** [gene_expression.csv](https://github.com/marafathussain/ML_book_easy/blob/main/data/gene_expression.csv)
 
-<p><a href="https://raw.githubusercontent.com/marafathussain/ML_book_easy/main/data/gene_expression.csv" download="gene_expression.csv" target="_blank" style="display:inline-block;padding:10px 20px;background:#0366d6;color:white;text-decoration:none;border-radius:6px;font-weight:bold;">⬇ Download gene_expression.csv</a></p>
 
 If you use **Google Colab**, upload the downloaded file to the **left panel** (Files section). Click the folder icon on the left sidebar, then click the upload button to add `gene_expression.csv`. After uploading, place the file in the same folder as your notebook or adjust the path in the code below.
 
@@ -437,35 +436,59 @@ Simple plots go a long way:
 | **Scatter plot** | Relationship between two numeric variables |
 | **Correlation heatmap** | Many numeric variables at once |
 
-**Example: histogram and boxplot**
+The figures below were generated from the `gene_expression.csv` dataset. They show how each plot type helps you understand the data.
+
+**Histogram: distribution of GENE_1 expression**
+
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter2/histogram_gene1.png" alt="Histogram of GENE_1" />
+  <p class="caption"><strong>Figure 2.1.</strong> Histogram of GENE_1 expression across samples. The x-axis shows expression values; the y-axis shows how many samples fall in each bin. This plot reveals the shape of the distribution: whether it is symmetric, skewed (e.g. right-skewed with a tail of high values), or bimodal (two peaks). For GENE_1, most samples cluster in the lower range with a few higher values.</p>
+</div>
+
+**Boxplot: GENE_1 expression by condition (Healthy vs Disease)**
+
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter2/boxplot_gene1_by_condition.png" alt="Boxplot of GENE_1 by Condition" />
+  <p class="caption"><strong>Figure 2.2.</strong> Boxplot of GENE_1 expression grouped by Condition. The box shows the interquartile range (middle 50% of data); the line inside is the median. Whiskers extend to 1.5 times the IQR; points beyond are outliers. This plot lets you compare the distribution of GENE_1 between Healthy and Disease samples and spot outliers in each group.</p>
+</div>
+
+**Scatter plot: GENE_1 vs GENE_2**
+
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter2/scatter_gene1_gene2.png" alt="Scatter plot GENE_1 vs GENE_2" />
+  <p class="caption"><strong>Figure 2.3.</strong> Scatter plot of GENE_1 (x-axis) vs GENE_2 (y-axis). Each point is one sample. A strong linear pattern would suggest high correlation; a cloud suggests weak or no linear relationship. Outliers appear as isolated points. Use this to explore whether two variables move together.</p>
+</div>
+
+**Correlation heatmap: all gene columns**
+
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter2/correlation_heatmap.png" alt="Correlation heatmap of all genes" />
+  <p class="caption"><strong>Figure 2.4.</strong> Correlation heatmap of all gene expression columns (GENE_1 through GENE_10). Each cell shows the Pearson correlation between two genes. Red indicates positive correlation; blue indicates negative correlation; white indicates near-zero correlation. The diagonal is 1 (each gene perfectly correlates with itself). Use this to spot clusters of co-expressed genes or genes that move in opposite directions.</p>
+</div>
+
+You can generate these plots in your notebook with code like:
 
 ```python
 import matplotlib.pyplot as plt
+import seaborn as sns
 
-# Histogram of gene expression
-plt.hist(df['GENE_1'], bins=30, edgecolor='black')
-plt.xlabel('Expression')
-plt.ylabel('Frequency')
-plt.title('Distribution of GENE_1')
-plt.show()
+# Histogram
+plt.hist(df['GENE_1'].dropna(), bins=20, edgecolor='black')
+plt.xlabel('GENE_1 Expression'); plt.ylabel('Frequency')
+plt.title('Distribution of GENE_1'); plt.show()
 
 # Boxplot by condition
 df.boxplot(column='GENE_1', by='Condition')
-plt.ylabel('Expression')
-plt.title('GENE_1 by Condition')
-plt.show()
-```
+plt.ylabel('GENE_1 Expression'); plt.suptitle(''); plt.show()
 
-**Example: correlation heatmap (first few genes)**
+# Scatter plot
+plt.scatter(df['GENE_1'], df['GENE_2'], alpha=0.6)
+plt.xlabel('GENE_1'); plt.ylabel('GENE_2'); plt.title('GENE_1 vs GENE_2'); plt.show()
 
-```python
-import seaborn as sns
-
-gene_cols = ['GENE_1', 'GENE_2', 'GENE_3', 'GENE_4', 'GENE_5']
-corr = df[gene_cols].corr()
-sns.heatmap(corr, annot=True, cmap='coolwarm', center=0)
-plt.title('Gene correlations')
-plt.show()
+# Correlation heatmap
+gene_cols = [c for c in df.columns if c.startswith('GENE_')]
+sns.heatmap(df[gene_cols].corr(), annot=True, cmap='coolwarm', center=0)
+plt.title('Gene correlations'); plt.tight_layout(); plt.show()
 ```
 
 ### 2.7.4 Step 4: Decide and Document
