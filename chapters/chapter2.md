@@ -551,7 +551,7 @@ Use `X_train`, `y_train` to fit the model; `X_val`, `y_val` to choose models or 
 The figure below illustrates this three-way split. The full dataset is divided into 60% for training, 20% for validation, and 20% for testing. The training portion is used to fit the model; the validation portion is used to compare models or tune hyperparameters; the test portion is locked away until the very end and used only once to report final performance.
 
 <div class="figure">
-  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter2/train_test_val_example.jpg" alt="Train, validation, and test split" />
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter2/train_val_test_example.jpg" alt="Train, validation, and test split" />
   <p class="caption"><strong>Figure 2.5.</strong> Splitting the full dataset into 60% training, 20% validation, and 20% test. The training set is used to fit the model. The validation set is used for model selection and hyperparameter tuning; the model never trains on it. The test set is held out completely and used only once for the final performance report. Keeping these roles separate is essential to avoid overfitting and to get a trustworthy estimate of how well the model generalizes.</p>
 </div>
 
