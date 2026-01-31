@@ -1,5 +1,5 @@
 """
-Generate dummy gene_expression.csv for Chapter 3 (Data Cleaning & EDA).
+Generate dummy gene_expression.csv for Chapter 2 (Data Cleaning & EDA).
 Matches columns and examples used in the book. Includes some missing values
 for imputation practice. Run once, then you can delete this script.
 """

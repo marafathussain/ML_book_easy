@@ -1,6 +1,6 @@
 # Data for ML Book (Easy)
 
-Dummy datasets for hands-on practice with **Chapter 3: Data Cleaning and Exploratory Data Analysis**.
+Dummy datasets for hands-on practice with **Chapter 2: Python Data Structures, Data Cleaning, and Exploratory Data Analysis**.
 
 ## `gene_expression.csv`
 
