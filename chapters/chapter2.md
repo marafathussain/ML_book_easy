@@ -548,6 +548,13 @@ X_train, X_val, y_train, y_val = train_test_split(
 
 Use `X_train`, `y_train` to fit the model; `X_val`, `y_val` to choose models or hyperparameters; `X_test`, `y_test` only for the final evaluation.
 
+The figure below illustrates this three-way split. The full dataset is divided into 60% for training, 20% for validation, and 20% for testing. The training portion is used to fit the model; the validation portion is used to compare models or tune hyperparameters; the test portion is locked away until the very end and used only once to report final performance.
+
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter2/train_test_val_example.jpg" alt="Train, validation, and test split" />
+  <p class="caption"><strong>Figure 2.5.</strong> Splitting the full dataset into 60% training, 20% validation, and 20% test. The training set is used to fit the model. The validation set is used for model selection and hyperparameter tuning; the model never trains on it. The test set is held out completely and used only once for the final performance report. Keeping these roles separate is essential to avoid overfitting and to get a trustworthy estimate of how well the model generalizes.</p>
+</div>
+
 ### 2.8.4 Cross-Validation
 
 When data is limited, a single train/validation split can be unstable (the validation score depends on which samples ended up in the validation set). **Cross-validation (CV)** rotates which part is the validation set so that every sample is used for validation once.
@@ -563,6 +570,13 @@ from sklearn.model_selection import cross_val_score
 scores = cross_val_score(model, X_train, y_train, cv=5)
 print("CV score: %.3f (+/- %.3f)" % (scores.mean(), scores.std()))
 ```
+
+The figure below shows how 5-fold cross-validation works. The training data is divided into 5 equal parts (folds). In each of the 5 rounds, one fold serves as the validation set (blue) and the other 4 folds are used for training (orange). Every sample is used for validation exactly once. After 5 rounds, you have 5 validation scores; the average (and optionally the standard deviation) gives you a more stable estimate than a single train/validation split.
+
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter2/cv_example.jpg" alt="5-fold cross-validation" />
+  <p class="caption"><strong>Figure 2.6.</strong> Example of k-fold cross-validation with k=5. The training data is split into 5 folds. In each round (Fold 1 to Fold 5), one fold is held out as the validation set while the remaining folds are used for training. After 5 rounds, every sample has been in the validation set once. The 5 validation scores are averaged to give a more reliable performance estimate than a single split. The test set is not part of CV; it remains held out for the final evaluation.</p>
+</div>
 
 **Rule:** Run CV only on the training (and optionally validation) data. The test set is used once at the very end to report final performance.
 
