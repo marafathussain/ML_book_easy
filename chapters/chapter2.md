@@ -344,29 +344,7 @@ df['Tissue'].fillna(most_common, inplace=True)
 
 **Rule of thumb:** Do not impute blindly. Check *where* and *why* values are missing (e.g. only in certain conditions or batches). Document what you did so others can reproduce it.
 
-## 2.5 Normalization and Scaling
-
-Different features often live on different scales (e.g. expression 0 to 1000, age 20 to 80). Many ML algorithms care about scale: features with larger numbers can dominate. **Normalization** or **scaling** puts features on a comparable scale.
-
-- **MinMax scaling:** Map values to a range, usually [0, 1].  
-  Formula: `(value - min) / (max - min)`
-- **Standardization (Z-score):** Mean 0, standard deviation 1.  
-  Formula: `(value - mean) / std`
-
-**Why it matters:** Imagine two genes: one ranges 0 to 10, the other 0 to 10,000. In distance-based methods (e.g. k-NN, clustering), the second would overwhelm the first. Scaling balances them.
-
-We use **StandardScaler** and **MinMaxScaler** from scikit-learn in later chapters. For now, it is enough to know that you will typically scale numeric features before training models, and that you should **fit the scaler on the training set only**, then apply it to the test set. We come back to this when we do train/test splits.
-
-**Log transform:** Gene expression and read counts are often right-skewed. A **log transform** (e.g. `log2(x + 1)`) can help before scaling or modeling:
-
-```python
-import numpy as np
-df['GENE_1_log'] = np.log2(df['GENE_1'] + 1)
-```
-
-The `+ 1` avoids log(0).
-
-## 2.6 Basic Statistics for Biological Data
+## 2.5 Basic Statistics for Biological Data
 
 A few simple summaries help you understand your data before modeling.
 
@@ -399,11 +377,11 @@ Values near 1 or -1 mean strong linear relationship; near 0 means weak. For many
 
 **What to check:** Odd value ranges (e.g. negative expression, ages > 150), strongly skewed distributions, and unexpected categories. Fix or document them before modeling.
 
-## 2.7 Exploratory Data Analysis (EDA) Workflow
+## 2.6 Exploratory Data Analysis (EDA) Workflow
 
 **EDA** means understanding your data *before* you build models. A simple workflow: **load → summarize → visualize → decide**.
 
-### 2.7.1 Step 1: Load and Inspect
+### 2.6.1 Step 1: Load and Inspect
 
 - Load the file: `pd.read_csv()`, `pd.read_excel()`, etc. (e.g. `gene_expression.csv` from the download link in section 2.2.1).
 - Check **shape**, **columns**, **dtypes**, and **first/last rows**:
@@ -417,7 +395,7 @@ Values near 1 or -1 mean strong linear relationship; near 0 means weak. For many
   ```
 - Quick sanity check: Do column names and sample IDs match what you expect? Are numeric columns actually numeric? If not, fix with `pd.to_numeric(..., errors='coerce')` or similar.
 
-### 2.7.2 Step 2: Summarize
+### 2.6.2 Step 2: Summarize
 
 - **Missing:** `df.isna().sum()` or `df.isnull().sum()`
 - **Numeric summary:** `df.describe()`
@@ -425,7 +403,7 @@ Values near 1 or -1 mean strong linear relationship; near 0 means weak. For many
 
 Look for strange min/max, too many missing in one column, or unexpected categories.
 
-### 2.7.3 Step 3: Visualize
+### 2.6.3 Step 3: Visualize
 
 Simple plots go a long way:
 
@@ -491,7 +469,7 @@ sns.heatmap(df[gene_cols].corr(), annot=True, cmap='coolwarm', center=0)
 plt.title('Gene correlations'); plt.tight_layout(); plt.show()
 ```
 
-### 2.7.4 Step 4: Decide and Document
+### 2.6.4 Step 4: Decide and Document
 
 Based on Steps 1 to 3, decide:
 
@@ -501,6 +479,45 @@ Based on Steps 1 to 3, decide:
 - **What to fix?** (typos, units, encoding)
 
 **Document your choices** in your notebook (comments or a short "Data cleaning checklist") so others, and future you, can reproduce your steps.
+
+## 2.7 Normalization and Scaling
+
+Different features often live on different scales (e.g. expression 0 to 1000, age 20 to 80). Many ML algorithms care about scale: features with larger numbers can dominate. **Normalization** or **scaling** puts features on a comparable scale.
+
+- **MinMax scaling:** Map values to a range, usually [0, 1].  
+  Formula: `(value - min) / (max - min)`
+- **Standardization (Z-score):** Mean 0, standard deviation 1.  
+  Formula: `(value - mean) / std`
+
+**Why it matters:** Imagine two genes: one ranges 0 to 10, the other 0 to 10,000. In distance-based methods (e.g. k-NN, clustering), the second would overwhelm the first. Scaling balances them.
+
+Use **StandardScaler** from scikit-learn to standardize numeric features. **Fit the scaler on the training set only**, then apply it to the validation and test sets. That keeps the test set truly unseen.
+
+```python
+from sklearn.preprocessing import StandardScaler
+
+# Assume X_train, X_val, X_test are already split
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)   # Fit on train, transform train
+X_val_scaled = scaler.transform(X_val)           # Transform val (do not fit)
+X_test_scaled = scaler.transform(X_test)         # Transform test (do not fit)
+```
+
+The figure below shows GENE_1 expression before and after standardization. The top panel displays the original values; the bottom panel shows the same data after StandardScaler, with mean 0 and standard deviation 1. The shape of the distribution stays the same, but the scale changes so that features are comparable.
+
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter2/scaling_before_after.png" alt="Before and after StandardScaler" />
+  <p class="caption"><strong>Figure 2.5.</strong> GENE_1 expression before (top) and after (bottom) StandardScaler. The original values are on different scales than other features; after standardization, the data has mean 0 and standard deviation 1, making it suitable for distance-based ML algorithms. The distribution shape is preserved.</p>
+</div>
+
+**Log transform:** Gene expression and read counts are often right-skewed. A **log transform** (e.g. `log2(x + 1)`) can help before scaling or modeling:
+
+```python
+import numpy as np
+df['GENE_1_log'] = np.log2(df['GENE_1'] + 1)
+```
+
+The `+ 1` avoids log(0).
 
 ## 2.8 The ML Golden Rule and Data Splits
 
@@ -552,7 +569,7 @@ The figure below illustrates this three-way split. The full dataset is divided i
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter2/train_val_test_example.jpg" alt="Train, validation, and test split" />
-  <p class="caption"><strong>Figure 2.5.</strong> Splitting the full dataset into 60% training, 20% validation, and 20% test. The training set is used to fit the model. The validation set is used for model selection and hyperparameter tuning; the model never trains on it. The test set is held out completely and used only once for the final performance report. Keeping these roles separate is essential to avoid overfitting and to get a trustworthy estimate of how well the model generalizes.</p>
+  <p class="caption"><strong>Figure 2.6.</strong> Splitting the full dataset into 60% training, 20% validation, and 20% test. The training set is used to fit the model. The validation set is used for model selection and hyperparameter tuning; the model never trains on it. The test set is held out completely and used only once for the final performance report. Keeping these roles separate is essential to avoid overfitting and to get a trustworthy estimate of how well the model generalizes.</p>
 </div>
 
 ### 2.8.4 Cross-Validation
@@ -575,12 +592,12 @@ The figure below shows how 5-fold cross-validation works. The training data is d
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter2/cv_example.jpg" alt="5-fold cross-validation" />
-  <p class="caption"><strong>Figure 2.6.</strong> Example of k-fold cross-validation with k=5. The training data is split into 5 folds. In each round (Fold 1 to Fold 5), one fold is held out as the validation set while the remaining folds are used for training. After 5 rounds, every sample has been in the validation set once. The 5 validation scores are averaged to give a more reliable performance estimate than a single split. The test set is not part of CV; it remains held out for the final evaluation.</p>
+  <p class="caption"><strong>Figure 2.7.</strong> Example of k-fold cross-validation with k=5. The training data is split into 5 folds. In each round (Fold 1 to Fold 5), one fold is held out as the validation set while the remaining folds are used for training. After 5 rounds, every sample has been in the validation set once. The 5 validation scores are averaged to give a more reliable performance estimate than a single split. The test set is not part of CV; it remains held out for the final evaluation.</p>
 </div>
 
 **Rule:** Run CV only on the training (and optionally validation) data. The test set is used once at the very end to report final performance.
 
-**Important:** Split *before* scaling or other preprocessing that uses global statistics. Fit scalers (and similar) only on the training data, then apply them to validation and test. That keeps the test set truly unseen. We will practice this when we add scaling in later chapters.
+**Important:** Split *before* scaling or other preprocessing that uses global statistics. Fit scalers (and similar) only on the training data, then apply them to validation and test. That keeps the test set truly unseen. See section 2.7 for the StandardScaler workflow.
 
 ## 2.9 Summary and Key Takeaways
 
@@ -591,13 +608,16 @@ The figure below shows how 5-fold cross-validation works. The training data is d
 You now use **DataFrames** for tables and **indexing** (`[]`, `.loc`, `.iloc`, boolean filters) to select columns and rows. These are the core tools for loading and manipulating biological data.
 
 **Data quality:**  
-Biological data often has missing values, outliers, batch effects, inconsistent units, and typos. We focused on **missing values** (drop vs impute with mean/median/mode) and **scaling** (why it matters, MinMax vs standardization).
+Biological data often has missing values, outliers, batch effects, inconsistent units, and typos. We focused on **missing values** (drop vs impute with mean/median/mode).
 
 **Basic statistics:**  
 Use **mean**, **median**, **std**, **describe()**, and **correlation** to summarize and check your data before modeling.
 
 **EDA workflow:**  
 **Load → Summarize → Visualize → Decide.** Always document what you drop, impute, or transform.
+
+**Normalization and scaling:**  
+After EDA, scale numeric features (e.g. with **StandardScaler**) so that features with different units do not dominate. Fit the scaler on the training set only, then apply it to validation and test.
 
 **ML golden rule:** The model must never see the data used to evaluate it. Evaluation data stays unseen until the very end.
 
