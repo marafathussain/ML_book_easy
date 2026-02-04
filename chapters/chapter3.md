@@ -8,7 +8,7 @@ This chapter introduces the core concepts of supervised machine learning. We sta
 
 We also cover critical concepts that every ML practitioner must understand: **overfitting** and **underfitting**, **regularization** (L1 and L2), **feature selection**, and **hyperparameter tuning** with GridSearchCV. These topics help you build models that generalize well to new data, not just memorize the training examples.
 
-All examples use biological contexts: predicting disease from gene expression, modeling dose-response relationships, and selecting informative features from high-dimensional data. All code runs in Google Colab; no installations required.
+All examples use the **Iris flower dataset**: predicting flower species (setosa, versicolor, virginica) from sepal and petal measurements (length and width in cm). We also use simple regression examples (e.g. petal length vs sepal length) and feature selection on the same measurements. All code runs in Google Colab; no installations required.
 
 ## 3.1 Machine Learning vs. Classical Statistics
 
@@ -16,11 +16,11 @@ Before diving into algorithms, it is helpful to understand how machine learning 
 
 **What is classical statistics?**
 
-Classical statistics focuses on **testing hypotheses** and **explaining relationships**. A typical question might be: "Does gene X's expression differ significantly between disease and healthy groups?" The answer comes in the form of a p-value, confidence interval, or effect size. The goal is to understand *why* something happens and *which* variables matter. Interpretability is crucial: you want to know that gene X is associated with disease, and perhaps how strong that association is.
+Classical statistics focuses on **testing hypotheses** and **explaining relationships**. A typical question might be: "Does sepal length differ significantly between setosa and virginica flowers?" The answer comes in the form of a p-value, confidence interval, or effect size. The goal is to understand *why* something happens and *which* variables matter. Interpretability is crucial: you want to know that sepal length is associated with species, and perhaps how strong that association is.
 
 **What is machine learning?**
 
-Machine learning focuses on **prediction**. A typical question might be: "Can we predict whether a patient has the disease based on their gene expression profile?" The answer is a trained model that outputs predictions for new patients. The goal is accuracy on unseen data. While interpretability can be valuable, it is secondary to prediction performance. The model might use hundreds of genes; you care less about each individual gene's contribution and more about whether the overall prediction is correct.
+Machine learning focuses on **prediction**. A typical question might be: "Can we predict which species an Iris flower belongs to based on its sepal and petal measurements?" The answer is a trained model that outputs predictions for new flowers. The goal is accuracy on unseen data. While interpretability can be valuable, it is secondary to prediction performance. The model might use all four measurements; you care less about each individual measurement's contribution and more about whether the overall prediction is correct.
 
 **Key differences:**
 
@@ -35,11 +35,11 @@ Machine learning focuses on **prediction**. A typical question might be: "Can we
 
 **A concrete example:**
 
-Imagine you have gene expression data from 100 patients: 50 with disease, 50 healthy.
+Imagine you have the Iris dataset: 150 flowers, 50 of each species (setosa, versicolor, virginica), with sepal and petal length and width.
 
-- **Classical statistics approach:** Test whether each gene's mean expression differs between groups. You might find that gene A has a p-value of 0.001 (significant) and gene B has p-value 0.3 (not significant). You conclude that gene A is associated with disease. You focus on understanding this one relationship.
+- **Classical statistics approach:** Test whether sepal length differs between species. You might find that setosa vs virginica has a p-value of 0.001 (significant) and setosa vs versicolor has p-value 0.3 (not significant). You conclude that sepal length is associated with species. You focus on understanding this one relationship.
 
-- **Machine learning approach:** Train a model using all genes to predict disease status. The model learns that genes A, C, F, and 20 others together predict disease with 85% accuracy. You care about the overall accuracy; the individual contributions of each gene are less important.
+- **Machine learning approach:** Train a model using all four measurements to predict species. The model learns that sepal length, petal length, and petal width together predict species with high accuracy. You care about the overall accuracy; the individual contributions of each measurement are less important.
 
 **When to use which?**
 
@@ -58,12 +58,11 @@ Machine learning problems fall into two main categories based on what you want t
 In classification, the target variable is a **category** (also called a **class** or **label**). The model predicts which category a sample belongs to.
 
 **Examples:**
+- Predicting Iris species: setosa, versicolor, or virginica (from sepal and petal measurements)
 - Predicting tumor type: malignant vs benign
-- Predicting disease status: disease vs healthy
-- Predicting cell type: T-cell vs B-cell vs macrophage
 - Predicting drug response: responder vs non-responder
 
-The output is discrete: one of a fixed set of classes. For binary classification (two classes), the model might output probabilities (e.g., 0.7 probability of disease) or a class label (disease or healthy).
+The output is discrete: one of a fixed set of classes. For binary classification (two classes), the model might output probabilities (e.g., 0.7 probability of virginica) or a class label (e.g. virginica or not).
 
 **Regression: predicting numbers**
 
@@ -106,7 +105,7 @@ Accuracy is the simplest metric for classification: it is the fraction of predic
 
 **Example:**
 
-Suppose you have 100 patients, and your model predicts disease status for each. If the model predicts correctly for 85 patients and incorrectly for 15, then:
+Suppose you have 100 flowers, and your model predicts species for each. If the model predicts correctly for 85 flowers and incorrectly for 15, then:
 
 \[
 \text{Accuracy} = \frac{85}{100} = 0.85 \text{ (or } 85\%\text{)}
@@ -118,7 +117,7 @@ Accuracy is intuitive and easy to interpret. It works well when classes are **ba
 
 **When is accuracy misleading?**
 
-Accuracy can be misleading when classes are **imbalanced**. Imagine a dataset with 95 healthy patients and 5 disease patients. A model that always predicts "healthy" would achieve 95% accuracy, but it is useless because it never identifies disease cases. We will cover better metrics for imbalanced data (precision, recall, F1-score) in a later chapter.
+Accuracy can be misleading when classes are **imbalanced**. Imagine a dataset with 95 setosa flowers and 5 virginica flowers. A model that always predicts "setosa" would achieve 95% accuracy, but it is useless because it never identifies virginica. We will cover better metrics for imbalanced data (precision, recall, F1-score) in a later chapter.
 
 **How to compute accuracy:**
 
@@ -138,7 +137,7 @@ AUROC (Area Under the Receiver Operating Characteristic Curve) measures how well
 
 **The ROC curve:**
 
-Many classification models output a **score** or **probability** (e.g., probability of disease from 0 to 1). To convert this to a class prediction, you choose a **threshold** (e.g., predict "disease" if probability > 0.5). The ROC curve plots the trade-off between two rates as you vary this threshold:
+Many classification models output a **score** or **probability** (e.g., probability of "virginica" from 0 to 1). To convert this to a class prediction, you choose a **threshold** (e.g., predict "virginica" if probability > 0.5). The ROC curve plots the trade-off between two rates as you vary this threshold:
 
 - **True Positive Rate (TPR)**: Of all actual positives, what fraction did we correctly predict as positive?
 - **False Positive Rate (FPR)**: Of all actual negatives, what fraction did we incorrectly predict as positive?
@@ -151,26 +150,26 @@ The **AUROC** is the area under this curve. It ranges from 0 to 1:
 
 **Intuitive explanation:**
 
-Sort all patients by their model score (probability of disease). If patients with actual disease tend to have higher scores than patients without disease, the model has good ranking ability, and AUROC will be high. AUROC does not depend on the specific threshold you choose; it measures ranking quality across all possible thresholds.
+Sort all flowers by their model score (e.g. probability of virginica). If flowers that are actually virginica tend to have higher scores than non-virginica flowers, the model has good ranking ability, and AUROC will be high. AUROC does not depend on the specific threshold you choose; it measures ranking quality across all possible thresholds.
 
 **Example:**
 
-Suppose you have 10 patients with scores and true labels:
+Suppose you have 10 flowers with scores and true labels:
 
-| Patient | Score | True Label |
-|---------|-------|------------|
-| 1 | 0.95 | Disease |
-| 2 | 0.88 | Disease |
-| 3 | 0.75 | Healthy |
-| 4 | 0.70 | Disease |
-| 5 | 0.65 | Healthy |
-| 6 | 0.55 | Healthy |
-| 7 | 0.45 | Disease |
-| 8 | 0.30 | Healthy |
-| 9 | 0.25 | Healthy |
-| 10 | 0.10 | Healthy |
+| Flower | Score | True Label |
+|--------|-------|------------|
+| 1 | 0.95 | virginica |
+| 2 | 0.88 | virginica |
+| 3 | 0.75 | setosa |
+| 4 | 0.70 | virginica |
+| 5 | 0.65 | setosa |
+| 6 | 0.55 | setosa |
+| 7 | 0.45 | virginica |
+| 8 | 0.30 | setosa |
+| 9 | 0.25 | setosa |
+| 10 | 0.10 | setosa |
 
-Sorting by score: Patients 1, 2, 4, 7 (disease) and 3, 5, 6, 8, 9, 10 (healthy). Most disease patients have higher scores than healthy patients, but patient 7 (disease) has a lower score than patients 3, 5, 6 (healthy). This is not perfect ranking, so AUROC would be less than 1.0, but likely above 0.5.
+Sorting by score: Flowers 1, 2, 4, 7 (virginica) and 3, 5, 6, 8, 9, 10 (setosa). Most virginica flowers have higher scores than setosa, but flower 7 (virginica) has a lower score than flowers 3, 5, 6 (setosa). This is not perfect ranking, so AUROC would be less than 1.0, but likely above 0.5.
 
 **When to use AUROC:**
 
@@ -274,7 +273,7 @@ rmse = np.sqrt(mean_squared_error(y_true, y_pred))
 
 ## 3.4 Classification Algorithms
 
-We now introduce several classification algorithms, starting with the simplest and building to more complex methods. Each algorithm has strengths and weaknesses; understanding when to use each is key to building effective models.
+We now introduce several classification algorithms, starting with the simplest and building to more complex methods. We use the **Iris dataset** as our running example: predict species (setosa, versicolor, virginica) from sepal and petal length and width. Each algorithm has strengths and weaknesses; understanding when to use each is key to building effective models.
 
 ### 3.4.1 Decision Stump
 
@@ -288,19 +287,19 @@ A **decision stump** is the simplest possible decision tree: it makes a single y
 \text{if } x_j \leq t \text{ then predict class } C_1 \text{ else predict class } C_2
 \]
 
-where \(x_j\) is a feature (e.g., gene expression), \(t\) is a threshold, and \(C_1\) and \(C_2\) are the two classes.
+where \(x_j\) is a feature (e.g., petal length in cm), \(t\) is a threshold, and \(C_1\) and \(C_2\) are the two classes.
 
 **Example:**
 
-Predict disease from gene A expression. The rule might be: "If gene A expression > 5.0, predict 'disease'; otherwise predict 'healthy'."
+Predict species from petal length. The rule might be: "If petal length > 2.5 cm, predict 'virginica or versicolor'; otherwise predict 'setosa'."
 
 **Visualization:**
 
-The figure below shows a decision stump in action. The x-axis is gene A expression. A vertical line at the threshold (e.g., 5.0) divides the space: samples to the left are predicted as "healthy," samples to the right are predicted as "disease."
+The figure below shows a decision stump in action. The x-axis is petal length (cm). A vertical line at the threshold divides the space: flowers to the left are predicted as one class (e.g. setosa), flowers to the right as another (e.g. virginica or versicolor).
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter3/decision_stump.png" alt="Decision stump visualization" />
-  <p class="caption"><strong>Figure 3.2.</strong> Decision stump for predicting disease from gene A expression. The vertical line at threshold = 5.0 divides the feature space. Samples with gene A expression ≤ 5.0 are predicted as "healthy" (left region); samples with gene A expression > 5.0 are predicted as "disease" (right region). This is the simplest possible decision rule: one feature, one threshold.</p>
+  <p class="caption"><strong>Figure 3.2.</strong> Decision stump for predicting species from petal length. The vertical line at the threshold divides the feature space. Flowers with petal length ≤ threshold are predicted as one class (left region); flowers with petal length > threshold are predicted as another (right region). This is the simplest possible decision rule: one feature, one threshold.</p>
 </div>
 
 **When to use decision stumps:**
@@ -329,11 +328,11 @@ A **decision tree** is a sequence of yes/no questions arranged in a tree structu
 **Example tree structure:**
 
 ```
-Root: Gene A > 5?
-├─ Yes → Gene B > 2?
-│  ├─ Yes → Predict "Disease"
-│  └─ No → Predict "Healthy"
-└─ No → Predict "Healthy"
+Root: Petal length > 2.5?
+├─ Yes → Sepal length > 6?
+│  ├─ Yes → Predict "virginica"
+│  └─ No → Predict "versicolor"
+└─ No → Predict "setosa"
 ```
 
 **Visualization:**
@@ -342,7 +341,7 @@ The figure below shows a decision tree diagram. Each internal node (rectangle) a
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter3/decision_tree_diagram.png" alt="Decision tree diagram" />
-  <p class="caption"><strong>Figure 3.3.</strong> Example decision tree for disease prediction. The root node asks "Is gene A expression > 5?" If yes, the tree checks "Is gene B expression > 2?" If gene B is also high, it predicts "Disease"; otherwise "Healthy." If gene A is low, it predicts "Healthy" directly. Decision trees can use multiple features and make multiple splits, making them more flexible than decision stumps.</p>
+  <p class="caption"><strong>Figure 3.3.</strong> Example decision tree for Iris species prediction. The root node asks "Is petal length > 2.5?" If yes, the tree checks "Is sepal length > 6?" and predicts virginica or versicolor. If petal length is low, it predicts "setosa" directly. Decision trees can use multiple features and make multiple splits, making them more flexible than decision stumps.</p>
 </div>
 
 **How trees are built:**
@@ -416,11 +415,11 @@ where \(B\) is the number of trees (e.g., 100 or 500), and \(\hat{y}_{\text{tree
 
 **Example:**
 
-Suppose you have 100 trees predicting disease status for one patient:
-- 62 trees predict "disease"
-- 38 trees predict "healthy"
+Suppose you have 100 trees predicting species for one flower:
+- 62 trees predict "virginica"
+- 38 trees predict "versicolor"
 
-The majority vote is "disease," so the random forest predicts "disease."
+The majority vote is "virginica," so the random forest predicts "virginica."
 
 **How random forests reduce overfitting:**
 
@@ -434,7 +433,7 @@ The figure below illustrates how a random forest works. Many trees are trained o
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter3/random_forest_concept.png" alt="Random forest concept" />
-  <p class="caption"><strong>Figure 3.4.</strong> Random forest concept. Multiple decision trees are trained on random subsets of data and features. Each tree makes a prediction (e.g., "Disease" or "Healthy"). The final prediction is the majority vote across all trees. This ensemble approach reduces overfitting and improves generalization compared to a single tree.</p>
+  <p class="caption"><strong>Figure 3.4.</strong> Random forest concept. Multiple decision trees are trained on random subsets of data and features. Each tree makes a prediction (e.g., setosa, versicolor, or virginica). The final prediction is the majority vote across all trees. This ensemble approach reduces overfitting and improves generalization compared to a single tree.</p>
 </div>
 
 **Advantages:**
@@ -507,15 +506,15 @@ The logistic function \(\frac{1}{1 + e^{-z}}\) "squashes" any real number \(z\) 
 
 **Example:**
 
-Suppose you have one feature (gene A expression) and the model learns:
+Suppose you have one feature (petal length in cm) and the model learns:
 \[
-z = -2 + 0.8 \cdot \text{geneA}
+z = -4 + 1.5 \cdot \text{petal\_length}
 \]
 
-- If geneA = 0: \(z = -2\), so \(P \approx \frac{1}{1 + e^{2}} \approx 0.12\) (12% probability of disease)
-- If geneA = 5: \(z = -2 + 0.8 \times 5 = 2\), so \(P \approx \frac{1}{1 + e^{-2}} \approx 0.88\) (88% probability of disease)
+- If petal length = 2 cm: \(z = -4 + 3 = -1\), so \(P \approx 0.27\) (27% probability of virginica)
+- If petal length = 5 cm: \(z = -4 + 7.5 = 3.5\), so \(P \approx 0.97\) (97% probability of virginica)
 
-Interpretation: Higher gene A expression increases the probability of disease.
+Interpretation: Higher petal length increases the probability of virginica (compared with setosa).
 
 **Visualization:**
 
@@ -532,8 +531,8 @@ The algorithm finds coefficients \(\beta_0, \beta_1, \ldots, \beta_p\) that maxi
 
 **Making predictions:**
 
-- **Probability**: Use the logistic function to get \(P(Y=1 \mid \mathbf{x})\)
-- **Class**: Choose a threshold (usually 0.5). If \(P > 0.5\), predict class 1; otherwise predict class 0
+- **Probability**: Use the logistic function to get \(P(Y=1 \mid \mathbf{x})\) (e.g. probability of virginica)
+- **Class**: Choose a threshold (usually 0.5). If \(P > 0.5\), predict class 1 (e.g. virginica); otherwise predict class 0 (e.g. setosa)
 
 **Advantages:**
 
@@ -595,8 +594,8 @@ where:
 
 **Making predictions:**
 
-- If \(f(\mathbf{x}) > 0\), predict class +1 (e.g., disease)
-- If \(f(\mathbf{x}) < 0\), predict class -1 (e.g., healthy)
+- If \(f(\mathbf{x}) > 0\), predict class +1 (e.g., virginica)
+- If \(f(\mathbf{x}) < 0\), predict class -1 (e.g., setosa)
 - The **decision boundary** is where \(f(\mathbf{x}) = 0\)
 
 **Breaking down the equation:**
@@ -615,7 +614,7 @@ The figure below shows an SVM in 2D. The solid line is the decision boundary. Th
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter3/svm_margin.png" alt="SVM with margin" />
-  <p class="caption"><strong>Figure 3.6.</strong> Support Vector Machine with maximum margin. The solid line is the decision boundary that separates the two classes. The dashed lines show the margin boundaries. The points on the margin boundaries (circled) are the support vectors. SVMs maximize the margin (the distance between the margin boundaries) to improve generalization. Only the support vectors matter for determining the boundary; other points can be removed without changing the model.</p>
+  <p class="caption"><strong>Figure 3.6.</strong> Support Vector Machine with maximum margin. The solid line is the decision boundary that separates two classes (e.g. setosa vs virginica). The dashed lines show the margin boundaries. The points on the margin boundaries (circled) are the support vectors. SVMs maximize the margin (the distance between the margin boundaries) to improve generalization. Only the support vectors matter for determining the boundary; other points can be removed without changing the model.</p>
 </div>
 
 **Kernels for non-linear boundaries:**
@@ -693,16 +692,16 @@ where:
 
 **Example:**
 
-Suppose you predict drug response from dose:
+Suppose you predict petal length from sepal length (both in cm):
 \[
-\hat{y} = 1.2 + 0.5 \cdot \text{dose}
+\hat{y} = -2.5 + 0.9 \cdot \text{sepal\_length}
 \]
 
-- If dose = 0: \(\hat{y} = 1.2\) (baseline response)
-- If dose = 1: \(\hat{y} = 1.2 + 0.5 = 1.7\)
-- If dose = 2: \(\hat{y} = 1.2 + 1.0 = 2.2\)
+- If sepal length = 5 cm: \(\hat{y} = -2.5 + 4.5 = 2.0\) cm (predicted petal length)
+- If sepal length = 6 cm: \(\hat{y} = -2.5 + 5.4 = 2.9\) cm
+- If sepal length = 7 cm: \(\hat{y} = -2.5 + 6.3 = 3.8\) cm
 
-Interpretation: For every unit increase in dose, response increases by 0.5 units.
+Interpretation: For every 1 cm increase in sepal length, predicted petal length increases by 0.9 cm.
 
 **How linear regression is trained:**
 
@@ -716,11 +715,11 @@ This is done using **ordinary least squares (OLS)** or optimization methods (e.g
 
 **Visualization:**
 
-The figure below shows linear regression in action. Each point is a sample (e.g., a patient with a dose and response). The line is the fitted model: \(\hat{y} = \beta_0 + \beta_1 x\). The vertical distances from points to the line are the errors (residuals). Linear regression minimizes the sum of squared errors.
+The figure below shows linear regression in action. Each point is a sample (e.g., one Iris flower: sepal length and some response). The line is the fitted model: \(\hat{y} = \beta_0 + \beta_1 x\). The vertical distances from points to the line are the errors (residuals). Linear regression minimizes the sum of squared errors.
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter3/linear_regression.png" alt="Linear regression" />
-  <p class="caption"><strong>Figure 3.7.</strong> Linear regression example. Each point represents a sample (e.g., dose and drug response). The solid line is the fitted model \(\hat{y} = \beta_0 + \beta_1 x\). The vertical distances from points to the line are the residuals (errors). Linear regression finds the line that minimizes the sum of squared residuals. The relationship is assumed to be linear (straight line).</p>
+  <p class="caption"><strong>Figure 3.7.</strong> Linear regression example. Each point represents a sample (e.g., sepal length and petal length for one flower). The solid line is the fitted model \(\hat{y} = \beta_0 + \beta_1 x\). The vertical distances from points to the line are the residuals (errors). Linear regression finds the line that minimizes the sum of squared residuals. The relationship is assumed to be linear (straight line).</p>
 </div>
 
 **Advantages:**
@@ -788,12 +787,12 @@ where \(d\) is the **degree** of the polynomial.
 
 **Example:**
 
-Dose-response relationships are often not linear. A quadratic model might be:
+The relationship between sepal length and petal length might not be perfectly linear. A quadratic model might be:
 \[
-\hat{y} = 1.0 + 2.0 \cdot \text{dose} - 0.3 \cdot \text{dose}^2
+\hat{y} = -1.0 + 0.5 \cdot \text{sepal\_length} + 0.1 \cdot \text{sepal\_length}^2
 \]
 
-This allows the response to increase initially, then level off or decrease at high doses (saturation or toxicity).
+This allows the predicted petal length to curve (e.g. increase more slowly at high sepal lengths).
 
 **Visualization:**
 
@@ -1017,7 +1016,7 @@ coefficients = ridge.coef_
 
 **Example:**
 
-Suppose you have 100 genes as features. Lasso might set 80 coefficients to zero, keeping only 20 genes. This tells you which genes matter most for prediction.
+Suppose you have 100 measurements as features. Lasso might set 80 coefficients to zero, keeping only 20 features. This tells you which measurements matter most for prediction (e.g. which sepal/petal columns matter for Iris species).
 
 **When to use Lasso:**
 
@@ -1097,7 +1096,7 @@ If a feature's variance is below a threshold, remove it.
 
 **Example:**
 
-Gene X has expression = 5.0 for all 100 patients. Variance = 0. This feature provides no information, so remove it.
+A measurement column has the same value for all 150 flowers (e.g. always 1.0). Variance = 0. This feature provides no information, so remove it.
 
 **How to use variance threshold:**
 
@@ -1140,9 +1139,9 @@ F = \frac{\text{between-group variance}}{\text{within-group variance}}
 
 **Example:**
 
-Gene A: mean expression in disease = 8.0, in healthy = 2.0 → large between-group variance → high F → useful feature.
+Petal length: mean in virginica = 5.5 cm, in setosa = 1.5 cm → large between-group variance → high F → useful feature.
 
-Gene B: mean expression in disease = 5.1, in healthy = 4.9 → small between-group variance → low F → less useful feature.
+Sepal width: mean in virginica = 3.0 cm, in setosa = 2.8 cm → small between-group variance → low F → less useful feature.
 
 **How to use ANOVA F-test:**
 
