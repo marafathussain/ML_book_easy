@@ -99,17 +99,21 @@ Before we introduce specific algorithms, we need to know how to measure whether 
 
 Accuracy is the simplest metric for classification: it is the fraction of predictions that are correct.
 
-\[
+
+$$
 \text{Accuracy} = \frac{\text{number of correct predictions}}{\text{total number of predictions}}
-\]
+$$
+
 
 **Example:**
 
 Suppose you have 100 flowers, and your model predicts species for each. If the model predicts correctly for 85 flowers and incorrectly for 15, then:
 
-\[
+
+$$
 \text{Accuracy} = \frac{85}{100} = 0.85 \text{ (or } 85\%\text{)}
-\]
+$$
+
 
 **When is accuracy useful?**
 
@@ -201,18 +205,20 @@ The figure below shows an example ROC curve. The x-axis is False Positive Rate; 
 
 RMSE (Root Mean Squared Error) measures prediction error for regression tasks. It tells you the "typical" error in the same units as your target variable.
 
-\[
+
+$$
 \text{RMSE} = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2}
-\]
+$$
+
 
 **Breaking down the equation:**
 
-- \(y_i\) = true value for sample \(i\)
-- \(\hat{y}_i\) = predicted value for sample \(i\)
-- \((y_i - \hat{y}_i)\) = error (difference between true and predicted)
-- \((y_i - \hat{y}_i)^2\) = squared error (squaring makes all errors positive and penalizes large errors more)
-- \(\frac{1}{n}\sum_{i=1}^{n} \ldots\) = mean squared error (MSE), the average of squared errors
-- \(\sqrt{\ldots}\) = square root, bringing the value back to the original units (e.g., months, expression units)
+- $y_i$ = true value for sample $i$
+- $\hat{y}_i$ = predicted value for sample $i$
+- $(y_i - \hat{y}_i)$ = error (difference between true and predicted)
+- $(y_i - \hat{y}_i)^2$ = squared error (squaring makes all errors positive and penalizes large errors more)
+- $\frac{1}{n}\sum_{i=1}^{n} \ldots$ = mean squared error (MSE), the average of squared errors
+- $\sqrt{\ldots}$ = square root, bringing the value back to the original units (e.g., months, expression units)
 
 **Why square the errors?**
 
@@ -236,9 +242,11 @@ Suppose you predict survival time (in months) for 5 patients:
 
 Mean Squared Error (MSE) = (4 + 4 + 4 + 9 + 36) / 5 = 57 / 5 = 11.4
 
-\[
+
+$$
 \text{RMSE} = \sqrt{11.4} \approx 3.38 \text{ months}
-\]
+$$
+
 
 Interpretation: On average, predictions are off by about 3.38 months (in a root-mean-square sense).
 
@@ -283,11 +291,13 @@ A **decision stump** is the simplest possible decision tree: it makes a single y
 
 **The rule:**
 
-\[
-\text{if } x_j \leq t \text{ then predict class } C_1 \text{ else predict class } C_2
-\]
 
-where \(x_j\) is a feature (e.g., petal length in cm), \(t\) is a threshold, and \(C_1\) and \(C_2\) are the two classes.
+$$
+\text{if } x_j \leq t \text{ then predict class } C_1 \text{ else predict class } C_2
+$$
+
+
+where $x_j$ is a feature (e.g., petal length in cm), $t$ is a threshold, and $C_1$ and $C_2$ are the two classes.
 
 **Example:**
 
@@ -401,15 +411,17 @@ A **random forest** is an **ensemble** method: it combines many decision trees a
 
 **The prediction rule (classification):**
 
-\[
-\hat{y} = \text{majority vote}\big(\hat{y}_{\text{tree}_1}, \hat{y}_{\text{tree}_2}, \ldots, \hat{y}_{\text{tree}_B}\big)
-\]
 
-where \(B\) is the number of trees (e.g., 100 or 500), and \(\hat{y}_{\text{tree}_i}\) is the prediction from tree \(i\).
+$$
+\hat{y} = \text{majority vote}\big(\hat{y}_{\text{tree}_1}, \hat{y}_{\text{tree}_2}, \ldots, \hat{y}_{\text{tree}_B}\big)
+$$
+
+
+where $B$ is the number of trees (e.g., 100 or 500), and $\hat{y}_{\text{tree}_i}$ is the prediction from tree $i$.
 
 **Breaking down the equation:**
 
-- Train \(B\) decision trees (e.g., \(B = 100\))
+- Train $B$ decision trees (e.g., $B = 100$)
 - Each tree gives a class prediction
 - The final prediction is the class that appears most often (majority vote)
 
@@ -424,7 +436,7 @@ The majority vote is "virginica," so the random forest predicts "virginica."
 **How random forests reduce overfitting:**
 
 1. **Bootstrap sampling**: Each tree is trained on a random sample (with replacement) of the training data. Different trees see different subsets.
-2. **Feature randomness**: At each split, each tree considers only a random subset of features (e.g., \(\sqrt{p}\) features where \(p\) is the total number of features).
+2. **Feature randomness**: At each split, each tree considers only a random subset of features (e.g., $\sqrt{p}$ features where $p$ is the total number of features).
 3. **Averaging**: Combining many trees smooths out individual tree errors.
 
 **Visualization:**
@@ -473,7 +485,7 @@ importances = forest.feature_importances_
 
 - **n_estimators**: Number of trees (more is usually better, but slower)
 - **max_depth**: Maximum depth of each tree
-- **max_features**: Number of features to consider at each split (often \(\sqrt{p}\) or \(\log_2(p)\))
+- **max_features**: Number of features to consider at each split (often $\sqrt{p}$ or $\log_2(p)$)
 - **min_samples_split**: Minimum samples to split a node
 
 ### 3.4.4 Logistic Regression
@@ -484,55 +496,57 @@ importances = forest.feature_importances_
 
 **The equation:**
 
-\[
+
+$$
 P(Y=1 \mid \mathbf{x}) = \frac{1}{1 + e^{-z}}, \quad z = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_p x_p
-\]
+$$
+
 
 where:
-- \(P(Y=1 \mid \mathbf{x})\) is the probability that the sample belongs to class 1 (e.g., disease) given features \(\mathbf{x}\)
-- \(z\) is a linear combination of features (like linear regression)
-- \(\beta_0\) is the intercept (bias term)
-- \(\beta_1, \beta_2, \ldots, \beta_p\) are coefficients (weights) for features \(x_1, x_2, \ldots, x_p\)
-- \(e\) is Euler's number (approximately 2.718)
-- The function \(\frac{1}{1 + e^{-z}}\) is called the **logistic function** or **sigmoid function**
+- $P(Y=1 \mid \mathbf{x})$ is the probability that the sample belongs to class 1 (e.g., disease) given features $\mathbf{x}$
+- $z$ is a linear combination of features (like linear regression)
+- $\beta_0$ is the intercept (bias term)
+- $\beta_1, \beta_2, \ldots, \beta_p$ are coefficients (weights) for features $x_1, x_2, \ldots, x_p$
+- $e$ is Euler's number (approximately 2.718)
+- The function $\frac{1}{1 + e^{-z}}$ is called the **logistic function** or **sigmoid function**
 
 **Breaking down the logistic function:**
 
-The logistic function \(\frac{1}{1 + e^{-z}}\) "squashes" any real number \(z\) into the range (0, 1):
+The logistic function $\frac{1}{1 + e^{-z}}$ "squashes" any real number $z$ into the range (0, 1):
 
-- When \(z\) is large and positive (e.g., \(z = 5\)): \(e^{-5} \approx 0.0067\), so \(P \approx \frac{1}{1 + 0.0067} \approx 0.993\) (very high probability)
-- When \(z = 0\): \(e^{0} = 1\), so \(P = \frac{1}{1 + 1} = 0.5\) (50% probability)
-- When \(z\) is large and negative (e.g., \(z = -5\)): \(e^{5} \approx 148\), so \(P \approx \frac{1}{1 + 148} \approx 0.007\) (very low probability)
+- When $z$ is large and positive (e.g., $z = 5$): $e^{-5} \approx 0.0067$, so $P \approx \frac{1}{1 + 0.0067} \approx 0.993$ (very high probability)
+- When $z = 0$: $e^{0} = 1$, so $P = \frac{1}{1 + 1} = 0.5$ (50% probability)
+- When $z$ is large and negative (e.g., $z = -5$): $e^{5} \approx 148$, so $P \approx \frac{1}{1 + 148} \approx 0.007$ (very low probability)
 
 **Example:**
 
 Suppose you have one feature (petal length in cm) and the model learns:
-\[
-z = -4 + 1.5 \cdot \text{petal\_length}
-\]
 
-- If petal length = 2 cm: \(z = -4 + 3 = -1\), so \(P \approx 0.27\) (27% probability of virginica)
-- If petal length = 5 cm: \(z = -4 + 7.5 = 3.5\), so \(P \approx 0.97\) (97% probability of virginica)
+z = -4 + 1.5 \cdot \text{petal\_length}
+
+
+- If petal length = 2 cm: $z = -4 + 3 = -1$, so $P \approx 0.27$ (27% probability of virginica)
+- If petal length = 5 cm: $z = -4 + 7.5 = 3.5$, so $P \approx 0.97$ (97% probability of virginica)
 
 Interpretation: Higher petal length increases the probability of virginica (compared with setosa).
 
 **Visualization:**
 
-The figure below shows the logistic (sigmoid) curve. The x-axis is \(z\) (the linear combination); the y-axis is the probability \(P(Y=1)\). The curve is S-shaped: it rises slowly for negative \(z\), rises quickly around \(z = 0\), and levels off near 1 for large positive \(z\).
+The figure below shows the logistic (sigmoid) curve. The x-axis is $z$ (the linear combination); the y-axis is the probability $P(Y=1)$. The curve is S-shaped: it rises slowly for negative $z$, rises quickly around $z = 0$, and levels off near 1 for large positive $z$.
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter3/logistic_curve.png" alt="Logistic regression sigmoid curve" />
-  <p class="caption"><strong>Figure 3.5.</strong> The logistic (sigmoid) function. The x-axis is \(z\) (linear combination of features); the y-axis is the probability \(P(Y=1)\). The curve is S-shaped: when \(z\) is very negative, probability is near 0; when \(z = 0\), probability is 0.5; when \(z\) is very positive, probability is near 1. This function ensures that probabilities always stay between 0 and 1, regardless of the value of \(z\).</p>
+  <p class="caption"><strong>Figure 3.5.</strong> The logistic (sigmoid) function. The x-axis is $z$ (linear combination of features); the y-axis is the probability $P(Y=1)$. The curve is S-shaped: when $z$ is very negative, probability is near 0; when $z = 0$, probability is 0.5; when $z$ is very positive, probability is near 1. This function ensures that probabilities always stay between 0 and 1, regardless of the value of $z$.</p>
 </div>
 
 **How logistic regression is trained:**
 
-The algorithm finds coefficients \(\beta_0, \beta_1, \ldots, \beta_p\) that maximize the **likelihood** of observing the training data. This is typically done using optimization methods (e.g., gradient descent). The loss function is called **log loss** or **cross-entropy loss**.
+The algorithm finds coefficients $\beta_0, \beta_1, \ldots, \beta_p$ that maximize the **likelihood** of observing the training data. This is typically done using optimization methods (e.g., gradient descent). The loss function is called **log loss** or **cross-entropy loss**.
 
 **Making predictions:**
 
-- **Probability**: Use the logistic function to get \(P(Y=1 \mid \mathbf{x})\) (e.g. probability of virginica)
-- **Class**: Choose a threshold (usually 0.5). If \(P > 0.5\), predict class 1 (e.g. virginica); otherwise predict class 0 (e.g. setosa)
+- **Probability**: Use the logistic function to get $P(Y=1 \mid \mathbf{x})$ (e.g. probability of virginica)
+- **Class**: Choose a threshold (usually 0.5). If $P > 0.5$, predict class 1 (e.g. virginica); otherwise predict class 0 (e.g. setosa)
 
 **Advantages:**
 
@@ -569,8 +583,8 @@ intercept = logreg.intercept_[0]
 
 **Interpreting coefficients:**
 
-- **Positive coefficient** (\(\beta_j > 0\)): Increasing feature \(x_j\) increases the probability of class 1
-- **Negative coefficient** (\(\beta_j < 0\)): Increasing feature \(x_j\) decreases the probability of class 1
+- **Positive coefficient** ($\beta_j > 0$): Increasing feature $x_j$ increases the probability of class 1
+- **Negative coefficient** ($\beta_j < 0$): Increasing feature $x_j$ decreases the probability of class 1
 - **Larger absolute value**: Stronger effect on the probability
 
 ### 3.4.5 Support Vector Machine (SVM)
@@ -583,26 +597,28 @@ A **Support Vector Machine (SVM)** finds a **boundary** (line in 2D, hyperplane 
 
 For a linear SVM, the decision function is:
 
-\[
+
+$$
 f(\mathbf{x}) = w_1 x_1 + w_2 x_2 + \cdots + w_p x_p + b = \mathbf{w}^\top \mathbf{x} + b
-\]
+$$
+
 
 where:
-- \(\mathbf{w} = (w_1, w_2, \ldots, w_p)\) is a weight vector
-- \(b\) is a bias term
-- \(\mathbf{x} = (x_1, x_2, \ldots, x_p)\) is the feature vector
+- $\mathbf{w} = (w_1, w_2, \ldots, w_p)$ is a weight vector
+- $b$ is a bias term
+- $\mathbf{x} = (x_1, x_2, \ldots, x_p)$ is the feature vector
 
 **Making predictions:**
 
-- If \(f(\mathbf{x}) > 0\), predict class +1 (e.g., virginica)
-- If \(f(\mathbf{x}) < 0\), predict class -1 (e.g., setosa)
-- The **decision boundary** is where \(f(\mathbf{x}) = 0\)
+- If $f(\mathbf{x}) > 0$, predict class +1 (e.g., virginica)
+- If $f(\mathbf{x}) < 0$, predict class -1 (e.g., setosa)
+- The **decision boundary** is where $f(\mathbf{x}) = 0$
 
 **Breaking down the equation:**
 
-- \(\mathbf{w}^\top \mathbf{x}\) is the dot product (sum of element-wise products): \(w_1 x_1 + w_2 x_2 + \cdots + w_p x_p\)
-- Adding \(b\) shifts the boundary
-- The magnitude of \(\mathbf{w}\) determines the margin width (larger margin = smaller \(\|\mathbf{w}\|\))
+- $\mathbf{w}^\top \mathbf{x}$ is the dot product (sum of element-wise products): $w_1 x_1 + w_2 x_2 + \cdots + w_p x_p$
+- Adding $b$ shifts the boundary
+- The magnitude of $\mathbf{w}$ determines the margin width (larger margin = smaller $\|\mathbf{w}\|$)
 
 **The margin:**
 
@@ -621,9 +637,9 @@ The figure below shows an SVM in 2D. The solid line is the decision boundary. Th
 
 When classes cannot be separated by a straight line, SVMs use **kernels** to map features to a higher-dimensional space where a linear boundary exists. Common kernels include:
 
-- **Linear**: \(K(\mathbf{x}_i, \mathbf{x}_j) = \mathbf{x}_i^\top \mathbf{x}_j\) (no transformation)
-- **Polynomial**: \(K(\mathbf{x}_i, \mathbf{x}_j) = (\gamma \mathbf{x}_i^\top \mathbf{x}_j + r)^d\)
-- **RBF (Radial Basis Function)**: \(K(\mathbf{x}_i, \mathbf{x}_j) = \exp(-\gamma \|\mathbf{x}_i - \mathbf{x}_j\|^2)\)
+- **Linear**: $K(\mathbf{x}_i, \mathbf{x}_j) = \mathbf{x}_i^\top \mathbf{x}_j$ (no transformation)
+- **Polynomial**: $K(\mathbf{x}_i, \mathbf{x}_j) = (\gamma \mathbf{x}_i^\top \mathbf{x}_j + r)^d$
+- **RBF (Radial Basis Function)**: $K(\mathbf{x}_i, \mathbf{x}_j) = \exp(-\gamma \|\mathbf{x}_i - \mathbf{x}_j\|^2)$
 
 The RBF kernel is very common and can handle complex, curved decision boundaries.
 
@@ -639,7 +655,7 @@ The RBF kernel is very common and can handle complex, curved decision boundaries
 - **Less interpretable**: Harder to explain than linear models
 - **Sensitive to feature scaling**: Features should be standardized
 - **Slow on large datasets**: Training time can be long with many samples
-- **Hyperparameter tuning**: Kernel choice and parameters (e.g., \(C\), \(\gamma\)) need tuning
+- **Hyperparameter tuning**: Kernel choice and parameters (e.g., $C$, $\gamma$) need tuning
 
 **How to use SVMs:**
 
@@ -659,7 +675,7 @@ y_pred = svm_rbf.predict(X_val)
 
 **Key hyperparameters:**
 
-- **C**: Controls the trade-off between maximizing margin and minimizing classification errors (larger \(C\) = harder margin, less tolerance for misclassification)
+- **C**: Controls the trade-off between maximizing margin and minimizing classification errors (larger $C$ = harder margin, less tolerance for misclassification)
 - **kernel**: Type of kernel ('linear', 'poly', 'rbf', etc.)
 - **gamma**: Kernel coefficient (for RBF and polynomial kernels; larger = more complex boundaries)
 
@@ -671,55 +687,61 @@ We now turn to regression algorithms for predicting continuous numeric values.
 
 **What is linear regression?**
 
-**Linear regression** predicts a target variable \(y\) as a linear (straight-line) function of the features. It is one of the simplest and most interpretable regression methods.
+**Linear regression** predicts a target variable $y$ as a linear (straight-line) function of the features. It is one of the simplest and most interpretable regression methods.
 
 **The equation:**
 
-\[
+
+$$
 \hat{y} = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_p x_p
-\]
+$$
+
 
 where:
-- \(\hat{y}\) is the predicted value
-- \(\beta_0\) is the **intercept** (predicted \(y\) when all features are 0)
-- \(\beta_1, \beta_2, \ldots, \beta_p\) are **coefficients** (slopes) for features \(x_1, x_2, \ldots, x_p\)
+- $\hat{y}$ is the predicted value
+- $\beta_0$ is the **intercept** (predicted $y$ when all features are 0)
+- $\beta_1, \beta_2, \ldots, \beta_p$ are **coefficients** (slopes) for features $x_1, x_2, \ldots, x_p$
 
 **Breaking down the equation:**
 
-- **Intercept** (\(\beta_0\)): The baseline prediction when all features are zero
-- **Coefficient** (\(\beta_j\)): How much \(\hat{y}\) changes when \(x_j\) increases by 1 unit, holding all other features constant
+- **Intercept** ($\beta_0$): The baseline prediction when all features are zero
+- **Coefficient** ($\beta_j$): How much $\hat{y}$ changes when $x_j$ increases by 1 unit, holding all other features constant
 - **Linear**: The relationship is a straight line (no curves, no interactions unless you add them)
 
 **Example:**
 
 Suppose you predict petal length from sepal length (both in cm):
-\[
-\hat{y} = -2.5 + 0.9 \cdot \text{sepal\_length}
-\]
 
-- If sepal length = 5 cm: \(\hat{y} = -2.5 + 4.5 = 2.0\) cm (predicted petal length)
-- If sepal length = 6 cm: \(\hat{y} = -2.5 + 5.4 = 2.9\) cm
-- If sepal length = 7 cm: \(\hat{y} = -2.5 + 6.3 = 3.8\) cm
+$$
+\hat{y} = -2.5 + 0.9 \cdot \text{sepal\_length}
+$$
+
+
+- If sepal length = 5 cm: $\hat{y} = -2.5 + 4.5 = 2.0$ cm (predicted petal length)
+- If sepal length = 6 cm: $\hat{y} = -2.5 + 5.4 = 2.9$ cm
+- If sepal length = 7 cm: $\hat{y} = -2.5 + 6.3 = 3.8$ cm
 
 Interpretation: For every 1 cm increase in sepal length, predicted petal length increases by 0.9 cm.
 
 **How linear regression is trained:**
 
-The algorithm finds coefficients \(\beta_0, \beta_1, \ldots, \beta_p\) that minimize the **Mean Squared Error (MSE)**:
+The algorithm finds coefficients $\beta_0, \beta_1, \ldots, \beta_p$ that minimize the **Mean Squared Error (MSE)**:
 
-\[
+
+$$
 \text{MSE} = \frac{1}{n}\sum_{i=1}^n (y_i - \hat{y}_i)^2
-\]
+$$
+
 
 This is done using **ordinary least squares (OLS)** or optimization methods (e.g., gradient descent). The solution has a closed form for OLS, making it fast to compute.
 
 **Visualization:**
 
-The figure below shows linear regression in action. Each point is a sample (e.g., one Iris flower: sepal length and some response). The line is the fitted model: \(\hat{y} = \beta_0 + \beta_1 x\). The vertical distances from points to the line are the errors (residuals). Linear regression minimizes the sum of squared errors.
+The figure below shows linear regression in action. Each point is a sample (e.g., one Iris flower: sepal length and some response). The line is the fitted model: $\hat{y} = \beta_0 + \beta_1 x$. The vertical distances from points to the line are the errors (residuals). Linear regression minimizes the sum of squared errors.
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter3/linear_regression.png" alt="Linear regression" />
-  <p class="caption"><strong>Figure 3.7.</strong> Linear regression example. Each point represents a sample (e.g., sepal length and petal length for one flower). The solid line is the fitted model \(\hat{y} = \beta_0 + \beta_1 x\). The vertical distances from points to the line are the residuals (errors). Linear regression finds the line that minimizes the sum of squared residuals. The relationship is assumed to be linear (straight line).</p>
+  <p class="caption"><strong>Figure 3.7.</strong> Linear regression example. Each point represents a sample (e.g., sepal length and petal length for one flower). The solid line is the fitted model $\hat{y} = \beta_0 + \beta_1 x$. The vertical distances from points to the line are the residuals (errors). Linear regression finds the line that minimizes the sum of squared residuals. The relationship is assumed to be linear (straight line).</p>
 </div>
 
 **Advantages:**
@@ -760,37 +782,41 @@ print(f"RMSE: {rmse:.2f}")
 
 **Interpreting coefficients:**
 
-- **Positive coefficient** (\(\beta_j > 0\)): Increasing \(x_j\) increases \(\hat{y}\)
-- **Negative coefficient** (\(\beta_j < 0\)): Increasing \(x_j\) decreases \(\hat{y}\)
-- **Larger absolute value**: Stronger effect on \(\hat{y}\)
+- **Positive coefficient** ($\beta_j > 0$): Increasing $x_j$ increases $\hat{y}$
+- **Negative coefficient** ($\beta_j < 0$): Increasing $x_j$ decreases $\hat{y}$
+- **Larger absolute value**: Stronger effect on $\hat{y}$
 
 ### 3.5.2 Polynomial Regression
 
 **What is polynomial regression?**
 
-**Polynomial regression** extends linear regression by adding **powers** of features (e.g., \(x^2\), \(x^3\)) so the model can capture curved relationships.
+**Polynomial regression** extends linear regression by adding **powers** of features (e.g., $x^2$, $x^3$) so the model can capture curved relationships.
 
 **The equation (one feature):**
 
-\[
-\hat{y} = \beta_0 + \beta_1 x + \beta_2 x^2 + \beta_3 x^3 + \cdots + \beta_d x^d
-\]
 
-where \(d\) is the **degree** of the polynomial.
+$$
+\hat{y} = \beta_0 + \beta_1 x + \beta_2 x^2 + \beta_3 x^3 + \cdots + \beta_d x^d
+$$
+
+
+where $d$ is the **degree** of the polynomial.
 
 **Breaking down the equation:**
 
-- \(d = 1\): Linear (straight line): \(\hat{y} = \beta_0 + \beta_1 x\)
-- \(d = 2\): Quadratic (one bend, parabola): \(\hat{y} = \beta_0 + \beta_1 x + \beta_2 x^2\)
-- \(d = 3\): Cubic (two bends): \(\hat{y} = \beta_0 + \beta_1 x + \beta_2 x^2 + \beta_3 x^3\)
-- \(d\) large: Very wiggly curves (risk of overfitting)
+- $d = 1$: Linear (straight line): $\hat{y} = \beta_0 + \beta_1 x$
+- $d = 2$: Quadratic (one bend, parabola): $\hat{y} = \beta_0 + \beta_1 x + \beta_2 x^2$
+- $d = 3$: Cubic (two bends): $\hat{y} = \beta_0 + \beta_1 x + \beta_2 x^2 + \beta_3 x^3$
+- $d$ large: Very wiggly curves (risk of overfitting)
 
 **Example:**
 
 The relationship between sepal length and petal length might not be perfectly linear. A quadratic model might be:
-\[
+
+$$
 \hat{y} = -1.0 + 0.5 \cdot \text{sepal\_length} + 0.1 \cdot \text{sepal\_length}^2
-\]
+$$
+
 
 This allows the predicted petal length to curve (e.g. increase more slowly at high sepal lengths).
 
@@ -845,9 +871,9 @@ y_pred = poly_pipeline.predict(X_val)
 
 **Choosing the degree:**
 
-- Start with \(d = 2\) (quadratic)
+- Start with $d = 2$ (quadratic)
 - Use cross-validation to compare different degrees
-- Avoid very high degrees (e.g., \(d > 5\)) unless you have a lot of data
+- Avoid very high degrees (e.g., $d > 5$) unless you have a lot of data
 - Consider regularization (see section 3.7) to reduce overfitting
 
 ## 3.6 Overfitting, Underfitting, and Model Complexity
@@ -930,11 +956,13 @@ The goal is to minimize total error by balancing bias and variance.
 
 **The general idea:**
 
-\[
-\text{Loss} = \text{Prediction Error} + \lambda \cdot \text{Penalty}
-\]
 
-where \(\lambda\) (lambda) controls how much we care about the penalty. Larger \(\lambda\) = stronger regularization = simpler models.
+$$
+\text{Loss} = \text{Prediction Error} + \lambda \cdot \text{Penalty}
+$$
+
+
+where $\lambda$ (lambda) controls how much we care about the penalty. Larger $\lambda$ = stronger regularization = simpler models.
 
 ### 3.7.1 L2 Regularization (Ridge)
 
@@ -944,17 +972,19 @@ where \(\lambda\) (lambda) controls how much we care about the penalty. Larger \
 
 **The equation:**
 
-\[
+
+$$
 \text{Loss} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^p \beta_j^2
-\]
+$$
+
 
 **Breaking down the equation:**
 
 - First sum: Usual squared errors (same as linear regression)
-- Second sum: Sum of squared coefficients (\(\beta_1^2 + \beta_2^2 + \cdots + \beta_p^2\))
-- \(\lambda\): Regularization strength (hyperparameter to tune)
-  - \(\lambda = 0\): No regularization (standard linear regression)
-  - \(\lambda\) large: Strong penalty, coefficients shrink toward zero
+- Second sum: Sum of squared coefficients ($\beta_1^2 + \beta_2^2 + \cdots + \beta_p^2$)
+- $\lambda$: Regularization strength (hyperparameter to tune)
+  - $\lambda = 0$: No regularization (standard linear regression)
+  - $\lambda$ large: Strong penalty, coefficients shrink toward zero
 
 **Effect:**
 
@@ -984,11 +1014,11 @@ y_pred = ridge.predict(X_val)
 coefficients = ridge.coef_
 ```
 
-**Choosing \(\lambda\) (alpha):**
+**Choosing $\lambda$ (alpha):**
 
-- Use cross-validation (e.g., GridSearchCV) to find the best \(\lambda\)
-- Common range: \(10^{-4}\) to \(10^4\) (log scale)
-- Larger \(\lambda\) = simpler model, but may underfit if too large
+- Use cross-validation (e.g., GridSearchCV) to find the best $\lambda$
+- Common range: $10^{-4}$ to $10^4$ (log scale)
+- Larger $\lambda$ = simpler model, but may underfit if too large
 
 ### 3.7.2 L1 Regularization (Lasso)
 
@@ -998,15 +1028,17 @@ coefficients = ridge.coef_
 
 **The equation:**
 
-\[
+
+$$
 \text{Loss} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^p |\beta_j|
-\]
+$$
+
 
 **Breaking down the equation:**
 
 - First sum: Usual squared errors
-- Second sum: Sum of absolute values of coefficients (\(|\beta_1| + |\beta_2| + \cdots + |\beta_p|\))
-- \(\lambda\): Regularization strength
+- Second sum: Sum of absolute values of coefficients ($|\beta_1| + |\beta_2| + \cdots + |\beta_p|$)
+- $\lambda$: Regularization strength
 
 **Effect:**
 
@@ -1058,9 +1090,11 @@ print(f"Selected {len(selected_features)} features out of {len(coefficients)}")
 
 **Elastic Net** combines L1 and L2 regularization:
 
-\[
+
+$$
 \text{Loss} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda_1 \sum_{j=1}^p |\beta_j| + \lambda_2 \sum_{j=1}^p \beta_j^2
-\]
+$$
+
 
 It balances the benefits of both: feature selection (from Lasso) and handling correlated features (from Ridge).
 
@@ -1070,7 +1104,7 @@ The figure below shows how Ridge and Lasso affect coefficients. Ridge (left) shr
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter3/ridge_vs_lasso.png" alt="Ridge vs Lasso regularization" />
-  <p class="caption"><strong>Figure 3.10.</strong> Effect of Ridge (L2) and Lasso (L1) regularization on coefficients. Ridge (left) shrinks all coefficients toward zero but keeps all features. Lasso (right) sets some coefficients to exactly zero (sparse solution), effectively performing feature selection. The x-axis shows different values of the regularization parameter \(\lambda\); as \(\lambda\) increases, coefficients shrink more. Lasso's ability to set coefficients to zero makes it useful for feature selection.</p>
+  <p class="caption"><strong>Figure 3.10.</strong> Effect of Ridge (L2) and Lasso (L1) regularization on coefficients. Ridge (left) shrinks all coefficients toward zero but keeps all features. Lasso (right) sets some coefficients to exactly zero (sparse solution), effectively performing feature selection. The x-axis shows different values of the regularization parameter $\lambda$; as $\lambda$ increases, coefficients shrink more. Lasso's ability to set coefficients to zero makes it useful for feature selection.</p>
 </div>
 
 ## 3.8 Feature Selection
@@ -1127,9 +1161,9 @@ print(f"Kept {selected_features.sum()} features out of {len(selected_features)}"
 
 **The F-statistic:**
 
-\[
+
 F = \frac{\text{between-group variance}}{\text{within-group variance}}
-\]
+
 
 **Breaking down:**
 
@@ -1373,7 +1407,7 @@ random_search.fit(X_train, y_train)
 **Regularization:**
 - **Ridge (L2)**: Shrinks coefficients, prevents overfitting
 - **Lasso (L1)**: Sets coefficients to zero, performs feature selection
-- Controlled by \(\lambda\) (alpha): larger = stronger regularization
+- Controlled by $\lambda$ (alpha): larger = stronger regularization
 
 **Feature selection:**
 - **Variance Threshold**: Removes constant/near-constant features
@@ -1418,3 +1452,4 @@ With these fundamentals in place, you are ready to build and evaluate ML models.
 **End of Chapter 3**
 
 In the next chapter, we will cover feature engineering, handling imbalanced data (common in biomedical datasets), and advanced evaluation metrics such as precision, recall, F1-score, and calibration curves.
+
