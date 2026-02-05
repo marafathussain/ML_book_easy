@@ -219,11 +219,12 @@
     let md = await res.text();
 
     // Preserve $$ blocks before Marked processes them
+    // Use a unique marker that won't be HTML-escaped
     const mathBlocks = [];
     let placeholderIndex = 0;
     md = md.replace(/\$\$([\s\S]*?)\$\$/g, (match, content) => {
-      const placeholder = `__MATH_DISPLAY_${placeholderIndex}__`;
-      mathBlocks[placeholderIndex] = `$$${content}$$`;
+      const placeholder = `⦅MATH${placeholderIndex}⦆`;
+      mathBlocks[placeholderIndex] = content.trim();
       placeholderIndex++;
       return placeholder;
     });
@@ -232,13 +233,21 @@
     let html = marked.parse(md);
     
     // Restore $$ blocks
-    mathBlocks.forEach((block, index) => {
-      html = html.replace(`__MATH_DISPLAY_${index}__`, block);
+    mathBlocks.forEach((mathContent, index) => {
+      const placeholder = `⦅MATH${index}⦆`;
+      html = html.replace(new RegExp(placeholder, 'g'), `$$${mathContent}$$`);
     });
     
-    // Also handle any remaining cases where $$ got wrapped
+    // Clean up any <p> tags that wrapped the $$ blocks
     html = html.replace(/<p>\s*\$\$/g, '$$');
     html = html.replace(/\$\$\s*<\/p>/g, '$$');
+    html = html.replace(/<p>(\s*\$\$[\s\S]*?\$\$\s*)<\/p>/g, '$1');
+    
+    // Also handle cases where Marked converted $$ to \[ \]
+    html = html.replace(/\\\[/g, '$$');
+    html = html.replace(/\\\]/g, '$$');
+    // But preserve actual \[ \] that should remain (if any)
+    // This is a fallback - the placeholder method should work
     
     content.innerHTML = html;
 
