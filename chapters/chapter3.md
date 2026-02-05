@@ -101,9 +101,9 @@ Accuracy is the simplest metric for classification: it is the fraction of predic
 
 
 
-$$
+\[
 \text{Accuracy} = \frac{\text{number of correct predictions}}{\text{total number of predictions}}
-$$
+\]
 
 
 
@@ -113,9 +113,9 @@ Suppose you have 100 flowers, and your model predicts species for each. If the m
 
 
 
-$$
+\[
 \text{Accuracy} = \frac{85}{100} = 0.85
-$$
+\]
 
 
 
@@ -211,9 +211,9 @@ RMSE (Root Mean Squared Error) measures prediction error for regression tasks. I
 
 
 
-$$
+\[
 \text{RMSE} = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2}
-$$
+\]
 
 
 
@@ -250,9 +250,9 @@ Mean Squared Error (MSE) = (4 + 4 + 4 + 9 + 36) / 5 = 57 / 5 = 11.4
 
 
 
-$$
+\[
 \text{RMSE} = \sqrt{11.4} \approx 3.38 \text{ months}
-$$
+\]
 
 
 
@@ -301,9 +301,9 @@ A **decision stump** is the simplest possible decision tree: it makes a single y
 
 
 
-$$
+\[
 \text{if } x_j \leq t \text{ then predict class } C_1 \text{ else predict class } C_2
-$$
+\]
 
 
 
@@ -423,9 +423,9 @@ A **random forest** is an **ensemble** method: it combines many decision trees a
 
 
 
-$$
+\[
 \hat{y} = \text{majority vote}\big(\hat{y}_{\text{tree}_1}, \hat{y}_{\text{tree}_2}, \ldots, \hat{y}_{\text{tree}_B}\big)
-$$
+\]
 
 
 
@@ -510,9 +510,9 @@ importances = forest.feature_importances_
 
 
 
-$$
+\[
 P(Y=1 \mid \mathbf{x}) = \frac{1}{1 + e^{-z}}, \quad z = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_p x_p
-$$
+\]
 
 
 
@@ -613,9 +613,9 @@ For a linear SVM, the decision function is:
 
 
 
-$$
+\[
 f(\mathbf{x}) = w_1 x_1 + w_2 x_2 + \cdots + w_p x_p + b = \mathbf{w}^\top \mathbf{x} + b
-$$
+\]
 
 
 
@@ -709,9 +709,9 @@ We now turn to regression algorithms for predicting continuous numeric values.
 
 
 
-$$
+\[
 \hat{y} = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_p x_p
-$$
+\]
 
 
 
@@ -731,9 +731,9 @@ where:
 Suppose you predict petal length from sepal length (both in cm):
 
 
-$$
+\[
 \hat{y} = -2.5 + 0.9 \cdot \text{sepal\_length}
-$$
+\]
 
 
 
@@ -749,9 +749,9 @@ The algorithm finds coefficients $\beta_0, \beta_1, \ldots, \beta_p$ that minimi
 
 
 
-$$
+\[
 \text{MSE} = \frac{1}{n}\sum_{i=1}^n (y_i - \hat{y}_i)^2
-$$
+\]
 
 
 
@@ -818,9 +818,9 @@ print(f"RMSE: {rmse:.2f}")
 
 
 
-$$
+\[
 \hat{y} = \beta_0 + \beta_1 x + \beta_2 x^2 + \beta_3 x^3 + \cdots + \beta_d x^d
-$$
+\]
 
 
 
@@ -838,9 +838,9 @@ where $d$ is the **degree** of the polynomial.
 The relationship between sepal length and petal length might not be perfectly linear. A quadratic model might be:
 
 
-$$
+\[
 \hat{y} = -1.0 + 0.5 \cdot \text{sepal\_length} + 0.1 \cdot \text{sepal\_length}^2
-$$
+\]
 
 
 
@@ -984,9 +984,9 @@ The goal is to minimize total error by balancing bias and variance.
 
 
 
-$$
+\[
 \text{Loss} = \text{Prediction Error} + \lambda \cdot \text{Penalty}
-$$
+\]
 
 
 
@@ -1002,9 +1002,9 @@ where $\lambda$ (lambda) controls how much we care about the penalty. Larger $\l
 
 
 
-$$
+\[
 \text{Loss} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^p \beta_j^2
-$$
+\]
 
 
 
@@ -1060,9 +1060,9 @@ coefficients = ridge.coef_
 
 
 
-$$
+\[
 \text{Loss} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^p |\beta_j|
-$$
+\]
 
 
 
@@ -1124,9 +1124,9 @@ print(f"Selected {len(selected_features)} features out of {len(coefficients)}")
 
 
 
-$$
+\[
 \text{Loss} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda_1 \sum_{j=1}^p |\beta_j| + \lambda_2 \sum_{j=1}^p \beta_j^2
-$$
+\]
 
 
 

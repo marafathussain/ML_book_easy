@@ -216,15 +216,32 @@
 
   async function loadChapter(path) {
     const res = await fetch(path);
-    const md = await res.text();
+    let md = await res.text();
+
+    // Temporarily replace \[ \] blocks with placeholders before Marked processes
+    const mathBlocks = [];
+    let placeholderIndex = 0;
+    md = md.replace(/\\\[([\s\S]*?)\\\]/g, (match, content) => {
+      const placeholder = `__MATH_BLOCK_${placeholderIndex}__`;
+      mathBlocks[placeholderIndex] = `\\[${content}\\]`;
+      placeholderIndex++;
+      return placeholder;
+    });
 
     const content = document.getElementById("content");
     let html = marked.parse(md);
     
-    // Fix: Ensure $$ blocks are not wrapped in <p> tags
-    // Replace <p>$$ with $$ and $$</p> with $$
-    html = html.replace(/<p>\$\$/g, '$$');
-    html = html.replace(/\$\$<\/p>/g, '$$');
+    // Restore \[ \] blocks (they should not be wrapped in <p> tags now)
+    mathBlocks.forEach((block, index) => {
+      html = html.replace(`__MATH_BLOCK_${index}__`, block);
+    });
+    
+    // Fix any cases where \[ or \] got wrapped in <p> tags
+    html = html.replace(/<p>\\\[/g, '\\[');
+    html = html.replace(/\\\]<\/p>/g, '\\]');
+    // Fix cases where they're split across tags
+    html = html.replace(/<p>\\\[\n/g, '\\[\n');
+    html = html.replace(/\n\\\]<\/p>/g, '\n\\]');
     
     content.innerHTML = html;
 
