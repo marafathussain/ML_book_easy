@@ -111,7 +111,7 @@ Suppose you have 100 flowers, and your model predicts species for each. If the m
 
 
 $$
-\text{Accuracy} = \frac{85}{100} = 0.85 \text{(or} 85\% \text{)}
+\text{Accuracy} = \frac{85}{100} = 0.85 \text{(or 85\%)}
 $$
 
 
