@@ -100,9 +100,11 @@ Before we introduce specific algorithms, we need to know how to measure whether 
 Accuracy is the simplest metric for classification: it is the fraction of predictions that are correct.
 
 
+
 $$
 \text{Accuracy} = \frac{\text{number of correct predictions}}{\text{total number of predictions}}
 $$
+
 
 
 **Example:**
@@ -110,9 +112,11 @@ $$
 Suppose you have 100 flowers, and your model predicts species for each. If the model predicts correctly for 85 flowers and incorrectly for 15, then:
 
 
+
 $$
-\text{Accuracy} = \frac{85}{100} = 0.85 \text{(or 85\%)}
+\text{Accuracy} = \frac{85}{100} = 0.85
 $$
+
 
 
 **When is accuracy useful?**
@@ -206,9 +210,11 @@ The figure below shows an example ROC curve. The x-axis is False Positive Rate; 
 RMSE (Root Mean Squared Error) measures prediction error for regression tasks. It tells you the "typical" error in the same units as your target variable.
 
 
+
 $$
 \text{RMSE} = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2}
 $$
+
 
 
 **Breaking down the equation:**
@@ -243,9 +249,11 @@ Suppose you predict survival time (in months) for 5 patients:
 Mean Squared Error (MSE) = (4 + 4 + 4 + 9 + 36) / 5 = 57 / 5 = 11.4
 
 
+
 $$
 \text{RMSE} = \sqrt{11.4} \approx 3.38 \text{ months}
 $$
+
 
 
 Interpretation: On average, predictions are off by about 3.38 months (in a root-mean-square sense).
@@ -292,9 +300,11 @@ A **decision stump** is the simplest possible decision tree: it makes a single y
 **The rule:**
 
 
+
 $$
 \text{if } x_j \leq t \text{ then predict class } C_1 \text{ else predict class } C_2
 $$
+
 
 
 where $x_j$ is a feature (e.g., petal length in cm), $t$ is a threshold, and $C_1$ and $C_2$ are the two classes.
@@ -412,9 +422,11 @@ A **random forest** is an **ensemble** method: it combines many decision trees a
 **The prediction rule (classification):**
 
 
+
 $$
 \hat{y} = \text{majority vote}\big(\hat{y}_{\text{tree}_1}, \hat{y}_{\text{tree}_2}, \ldots, \hat{y}_{\text{tree}_B}\big)
 $$
+
 
 
 where $B$ is the number of trees (e.g., 100 or 500), and $\hat{y}_{\text{tree}_i}$ is the prediction from tree $i$.
@@ -497,9 +509,11 @@ importances = forest.feature_importances_
 **The equation:**
 
 
+
 $$
 P(Y=1 \mid \mathbf{x}) = \frac{1}{1 + e^{-z}}, \quad z = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_p x_p
 $$
+
 
 
 where:
@@ -598,9 +612,11 @@ A **Support Vector Machine (SVM)** finds a **boundary** (line in 2D, hyperplane 
 For a linear SVM, the decision function is:
 
 
+
 $$
 f(\mathbf{x}) = w_1 x_1 + w_2 x_2 + \cdots + w_p x_p + b = \mathbf{w}^\top \mathbf{x} + b
 $$
+
 
 
 where:
@@ -692,9 +708,11 @@ We now turn to regression algorithms for predicting continuous numeric values.
 **The equation:**
 
 
+
 $$
 \hat{y} = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_p x_p
 $$
+
 
 
 where:
@@ -712,9 +730,11 @@ where:
 
 Suppose you predict petal length from sepal length (both in cm):
 
+
 $$
 \hat{y} = -2.5 + 0.9 \cdot \text{sepal\_length}
 $$
+
 
 
 - If sepal length = 5 cm: $\hat{y} = -2.5 + 4.5 = 2.0$ cm (predicted petal length)
@@ -728,9 +748,11 @@ Interpretation: For every 1 cm increase in sepal length, predicted petal length 
 The algorithm finds coefficients $\beta_0, \beta_1, \ldots, \beta_p$ that minimize the **Mean Squared Error (MSE)**:
 
 
+
 $$
 \text{MSE} = \frac{1}{n}\sum_{i=1}^n (y_i - \hat{y}_i)^2
 $$
+
 
 
 This is done using **ordinary least squares (OLS)** or optimization methods (e.g., gradient descent). The solution has a closed form for OLS, making it fast to compute.
@@ -795,9 +817,11 @@ print(f"RMSE: {rmse:.2f}")
 **The equation (one feature):**
 
 
+
 $$
 \hat{y} = \beta_0 + \beta_1 x + \beta_2 x^2 + \beta_3 x^3 + \cdots + \beta_d x^d
 $$
+
 
 
 where $d$ is the **degree** of the polynomial.
@@ -813,9 +837,11 @@ where $d$ is the **degree** of the polynomial.
 
 The relationship between sepal length and petal length might not be perfectly linear. A quadratic model might be:
 
+
 $$
 \hat{y} = -1.0 + 0.5 \cdot \text{sepal\_length} + 0.1 \cdot \text{sepal\_length}^2
 $$
+
 
 
 This allows the predicted petal length to curve (e.g. increase more slowly at high sepal lengths).
@@ -957,9 +983,11 @@ The goal is to minimize total error by balancing bias and variance.
 **The general idea:**
 
 
+
 $$
 \text{Loss} = \text{Prediction Error} + \lambda \cdot \text{Penalty}
 $$
+
 
 
 where $\lambda$ (lambda) controls how much we care about the penalty. Larger $\lambda$ = stronger regularization = simpler models.
@@ -973,9 +1001,11 @@ where $\lambda$ (lambda) controls how much we care about the penalty. Larger $\l
 **The equation:**
 
 
+
 $$
 \text{Loss} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^p \beta_j^2
 $$
+
 
 
 **Breaking down the equation:**
@@ -1029,9 +1059,11 @@ coefficients = ridge.coef_
 **The equation:**
 
 
+
 $$
 \text{Loss} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^p |\beta_j|
 $$
+
 
 
 **Breaking down the equation:**
@@ -1091,9 +1123,11 @@ print(f"Selected {len(selected_features)} features out of {len(coefficients)}")
 **Elastic Net** combines L1 and L2 regularization:
 
 
+
 $$
 \text{Loss} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda_1 \sum_{j=1}^p |\beta_j| + \lambda_2 \sum_{j=1}^p \beta_j^2
 $$
+
 
 
 It balances the benefits of both: feature selection (from Lasso) and handling correlated features (from Ridge).

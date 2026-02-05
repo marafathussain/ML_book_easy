@@ -193,7 +193,12 @@
   window.MathJax = {
     tex: {
       inlineMath: [['$', '$'], ['\\(', '\\)']],
-      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
     }
   };
 </script>
@@ -214,11 +219,25 @@
     const md = await res.text();
 
     const content = document.getElementById("content");
-    content.innerHTML = marked.parse(md);
+    let html = marked.parse(md);
+    
+    // Fix: Ensure $$ blocks are not wrapped in <p> tags
+    // Replace <p>$$ with $$ and $$</p> with $$
+    html = html.replace(/<p>\$\$/g, '$$');
+    html = html.replace(/\$\$<\/p>/g, '$$');
+    
+    content.innerHTML = html;
 
     generateChapterIndex();
     Prism.highlightAll();
-    MathJax.typesetPromise();
+    
+    // Wait for MathJax to be ready, then process equations
+    if (window.MathJax) {
+      await MathJax.startup.promise;
+      MathJax.typesetClear([content]);
+      await MathJax.typesetPromise([content]);
+    }
+    
     window.scrollTo({ top: 0 });
   }
 
