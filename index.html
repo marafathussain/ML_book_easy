@@ -216,15 +216,29 @@
 
   async function loadChapter(path) {
     const res = await fetch(path);
-    const md = await res.text();
+    let md = await res.text();
+
+    // Preserve $$ blocks before Marked processes them
+    const mathBlocks = [];
+    let placeholderIndex = 0;
+    md = md.replace(/\$\$([\s\S]*?)\$\$/g, (match, content) => {
+      const placeholder = `__MATH_DISPLAY_${placeholderIndex}__`;
+      mathBlocks[placeholderIndex] = `$$${content}$$`;
+      placeholderIndex++;
+      return placeholder;
+    });
 
     const content = document.getElementById("content");
     let html = marked.parse(md);
     
-    // Fix: Ensure $$ blocks are not wrapped in <p> tags
-    // Replace <p>$$ with $$ and $$</p> with $$
-    html = html.replace(/<p>\$\$/g, '$$');
-    html = html.replace(/\$\$<\/p>/g, '$$');
+    // Restore $$ blocks
+    mathBlocks.forEach((block, index) => {
+      html = html.replace(`__MATH_DISPLAY_${index}__`, block);
+    });
+    
+    // Also handle any remaining cases where $$ got wrapped
+    html = html.replace(/<p>\s*\$\$/g, '$$');
+    html = html.replace(/\$\$\s*<\/p>/g, '$$');
     
     content.innerHTML = html;
 
