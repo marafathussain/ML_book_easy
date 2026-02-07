@@ -623,7 +623,7 @@ We want a classifier that: (1) separates the classes correctly, and (2) stays **
 
 **The margin and support vectors:**
 
-The **margin** is the **distance** between the decision boundary and the closest data points from each class. Think of it as the width of a "street" or "corridor" between the two species. The SVM finds the **widest possible street**—the maximum margin.
+The **margin** is the **distance** between the decision boundary and the closest data points from each class. Think of it as the width of a "street" or "corridor" between the two species. The SVM finds the **widest possible street**, the maximum margin.
 
 The data points that lie exactly on the edges of this street (the closest to the boundary) are called **support vectors**. They "support" or define the decision boundary: if you removed all other points, the SVM would still find the same boundary. Only the support vectors matter.
 
