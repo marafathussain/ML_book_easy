@@ -613,7 +613,7 @@ Consider predicting **Iris setosa** vs **Iris versicolor** using only **petal le
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter3/svm_linear_classifiers.png" alt="Multiple linear classifiers on Iris" />
-  <p class="caption"><strong>Figure 3.6a.</strong> Iris setosa vs versicolor (petal length, petal width). Several linear classifiers can separate the classes. Classifier A and B classify all points correctly but run very close to one class—risky for new data. Classifier C misclassifies several points. Which line should we choose?</p>
+  <p class="caption"><strong>Figure 3.6a.</strong> Iris setosa vs versicolor (petal length, petal width). Several linear classifiers can separate the classes. Classifier A and B classify all points correctly but run very close to one class, risky for new data. Classifier C misclassifies several points. Which line should we choose?</p>
 </div>
 
 - **Classifier A** and **Classifier B** classify the training data correctly, but their boundaries are *too close* to one of the classes. A new flower that falls just across the line could easily be misclassified.
@@ -645,8 +645,8 @@ $$
 
 
 where:
-- $\mathbf{w} = (w_1, w_2, \ldots, w_p)$ is a weight vector
-- $b$ is a bias term
+- $\mathbf{w} = (w_1, w_2, \ldots, w_p)$ is a weight vector (determines the *direction* of the boundary)
+- $b$ is a bias term (determines the *position* of the boundary—where it is shifted in space)
 - $\mathbf{x} = (x_1, x_2, \ldots, x_p)$ is the feature vector
 
 **Making predictions:**
@@ -658,8 +658,14 @@ where:
 **Breaking down the equation:**
 
 - $\mathbf{w}^\top \mathbf{x}$ is the dot product (sum of element-wise products): $w_1 x_1 + w_2 x_2 + \cdots + w_p x_p$
-- Adding $b$ shifts the boundary
-- The magnitude of $\mathbf{w}$ determines the margin width (larger margin = smaller $\|\mathbf{w}\|$)
+- Adding $b$ shifts the boundary (moves it left/right, up/down in feature space)
+- Both $\mathbf{w}$ and $b$ are **optimized together** during training: the SVM finds the best combination that maximizes the margin while classifying all training points correctly.
+
+**How is the margin maximized? Why does smaller $\|\mathbf{w}\|$ give a larger margin?**
+
+The distance from a point $\mathbf{x}$ to the decision boundary $\mathbf{w}^\top \mathbf{x} + b = 0$ is proportional to $|\mathbf{w}^\top \mathbf{x} + b| / \|\mathbf{w}\|$. In the standard SVM formulation, we scale the model so that the support vectors (the closest points) satisfy $|\mathbf{w}^\top \mathbf{x} + b| = 1$. Therefore, the **margin**—the distance from the boundary to the nearest points—equals $1 / \|\mathbf{w}\|$.
+
+To **maximize** the margin, we must **minimize** $\|\mathbf{w}\|$ (or equivalently $\|\mathbf{w}\|^2$ for easier optimization). Intuitively: if $\mathbf{w}$ is large, the boundary is "steep" and the corridor between the classes is narrow; if $\mathbf{w}$ is small, the boundary is "gentler" and the corridor is wider. The SVM optimization therefore minimizes $\|\mathbf{w}\|^2$ subject to the constraint that all points are correctly classified with a margin of at least 1. The bias $b$ is part of this optimization too—it adjusts the boundary’s position so that the margin is centered between the two classes.
 
 **Kernels for non-linear boundaries:**
 
