@@ -605,7 +605,32 @@ intercept = logreg.intercept_[0]
 
 **What is an SVM?**
 
-A **Support Vector Machine (SVM)** finds a **boundary** (line in 2D, hyperplane in higher dimensions) that separates the two classes. The goal is to place this boundary so that the **margin** (the distance from the boundary to the nearest points of each class) is as large as possible.
+A **Support Vector Machine (SVM)** finds a **boundary** (line in 2D, hyperplane in higher dimensions) that separates the two classes. Unlike other classifiers that merely find *any* separating line, SVMs seek the **optimal** one: the boundary that stays **as far as possible** from both classes. This idea is called **maximum-margin classification**.
+
+**Why does the margin matter? An Iris example.**
+
+Consider predicting **Iris setosa** vs **Iris versicolor** using only **petal length** and **petal width**. These two species are linearly separable: we can draw a line to separate them. But many lines could do the job. The figure below shows three possible linear classifiers.
+
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter3/svm_linear_classifiers.png" alt="Multiple linear classifiers on Iris" />
+  <p class="caption"><strong>Figure 3.6a.</strong> Iris setosa vs versicolor (petal length, petal width). Several linear classifiers can separate the classes. Classifier A and B classify all points correctly but run very close to one class—risky for new data. Classifier C misclassifies several points. Which line should we choose?</p>
+</div>
+
+- **Classifier A** and **Classifier B** classify the training data correctly, but their boundaries are *too close* to one of the classes. A new flower that falls just across the line could easily be misclassified.
+- **Classifier C** misclassifies several points and is clearly poor.
+
+We want a classifier that: (1) separates the classes correctly, and (2) stays **as far away as possible** from both. That is exactly what the SVM does.
+
+**The margin and support vectors:**
+
+The **margin** is the **distance** between the decision boundary and the closest data points from each class. Think of it as the width of a "street" or "corridor" between the two species. The SVM finds the **widest possible street**—the maximum margin.
+
+The data points that lie exactly on the edges of this street (the closest to the boundary) are called **support vectors**. They "support" or define the decision boundary: if you removed all other points, the SVM would still find the same boundary. Only the support vectors matter.
+
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter3/svm_margin.png" alt="SVM with margin" />
+  <p class="caption"><strong>Figure 3.6b.</strong> SVM on Iris setosa vs versicolor. The solid line is the decision boundary. The dashed lines mark the edges of the margin (the "street"). The points on these edges (circled in red) are the support vectors. SVMs maximize the margin to improve generalization on new data.</p>
+</div>
 
 **The decision function:**
 
@@ -626,7 +651,7 @@ where:
 
 **Making predictions:**
 
-- If $f(\mathbf{x}) > 0$, predict class +1 (e.g., virginica)
+- If $f(\mathbf{x}) > 0$, predict class +1 (e.g., versicolor)
 - If $f(\mathbf{x}) < 0$, predict class -1 (e.g., setosa)
 - The **decision boundary** is where $f(\mathbf{x}) = 0$
 
@@ -635,19 +660,6 @@ where:
 - $\mathbf{w}^\top \mathbf{x}$ is the dot product (sum of element-wise products): $w_1 x_1 + w_2 x_2 + \cdots + w_p x_p$
 - Adding $b$ shifts the boundary
 - The magnitude of $\mathbf{w}$ determines the margin width (larger margin = smaller $\|\mathbf{w}\|$)
-
-**The margin:**
-
-The **margin** is the distance between the decision boundary and the nearest points (called **support vectors**). SVMs maximize this margin to improve generalization.
-
-**Visualization:**
-
-The figure below shows an SVM in 2D. The solid line is the decision boundary. The dashed lines show the margin boundaries. The points on the margin boundaries (circled) are the **support vectors**; only these points determine where the boundary is placed.
-
-<div class="figure">
-  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter3/svm_margin.png" alt="SVM with margin" />
-  <p class="caption"><strong>Figure 3.6.</strong> Support Vector Machine with maximum margin. The solid line is the decision boundary that separates two classes (e.g. setosa vs virginica). The dashed lines show the margin boundaries. The points on the margin boundaries (circled) are the support vectors. SVMs maximize the margin (the distance between the margin boundaries) to improve generalization. Only the support vectors matter for determining the boundary; other points can be removed without changing the model.</p>
-</div>
 
 **Kernels for non-linear boundaries:**
 
