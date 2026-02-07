@@ -646,7 +646,7 @@ $$
 
 where:
 - $\mathbf{w} = (w_1, w_2, \ldots, w_p)$ is a weight vector (determines the *direction* of the boundary)
-- $b$ is a bias term (determines the *position* of the boundary—where it is shifted in space)
+- $b$ is a bias term (determines the *position* of the boundary, where it is shifted in space)
 - $\mathbf{x} = (x_1, x_2, \ldots, x_p)$ is the feature vector
 
 **Making predictions:**
@@ -663,9 +663,9 @@ where:
 
 **How is the margin maximized? Why does smaller $\|\mathbf{w}\|$ give a larger margin?**
 
-The distance from a point $\mathbf{x}$ to the decision boundary $\mathbf{w}^\top \mathbf{x} + b = 0$ is proportional to $|\mathbf{w}^\top \mathbf{x} + b| / \|\mathbf{w}\|$. In the standard SVM formulation, we scale the model so that the support vectors (the closest points) satisfy $|\mathbf{w}^\top \mathbf{x} + b| = 1$. Therefore, the **margin**—the distance from the boundary to the nearest points—equals $1 / \|\mathbf{w}\|$.
+The distance from a point $\mathbf{x}$ to the decision boundary $\mathbf{w}^\top \mathbf{x} + b = 0$ is proportional to $|\mathbf{w}^\top \mathbf{x} + b| / \|\mathbf{w}\|$. In the standard SVM formulation, we scale the model so that the support vectors (the closest points) satisfy $|\mathbf{w}^\top \mathbf{x} + b| = 1$. Therefore, the **margin**, the distance from the boundary to the nearest points, equals $1 / \|\mathbf{w}\|$.
 
-To **maximize** the margin, we must **minimize** $\|\mathbf{w}\|$ (or equivalently $\|\mathbf{w}\|^2$ for easier optimization). Intuitively: if $\mathbf{w}$ is large, the boundary is "steep" and the corridor between the classes is narrow; if $\mathbf{w}$ is small, the boundary is "gentler" and the corridor is wider. The SVM optimization therefore minimizes $\|\mathbf{w}\|^2$ subject to the constraint that all points are correctly classified with a margin of at least 1. The bias $b$ is part of this optimization too—it adjusts the boundary’s position so that the margin is centered between the two classes.
+To **maximize** the margin, we must **minimize** $\|\mathbf{w}\|$ (or equivalently $\|\mathbf{w}\|^2$ for easier optimization). Intuitively: if $\mathbf{w}$ is large, the boundary is "steep" and the corridor between the classes is narrow; if $\mathbf{w}$ is small, the boundary is "gentler" and the corridor is wider. The SVM optimization therefore minimizes $\|\mathbf{w}\|^2$ subject to the constraint that all points are correctly classified with a margin of at least 1. The bias $b$ is part of this optimization too, it adjusts the boundary’s position so that the margin is centered between the two classes.
 
 **Kernels for non-linear boundaries:**
 
