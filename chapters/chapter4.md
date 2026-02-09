@@ -15,7 +15,318 @@ All examples use the **Iris dataset**. We treat one species as the **positive** 
 
 ---
 
-## 4.1 Regularization (Ridge and Lasso)
+## 4.1 Feature Selection
+
+**Feature selection** is the process of choosing a subset of relevant features for model training. Removing irrelevant or redundant features can improve model performance, reduce overfitting, and increase interpretability.
+
+**Why select features?**
+
+- **Reduce overfitting**: Fewer features = simpler model = less risk of memorizing noise
+- **Improve interpretability**: Easier to understand models with fewer features
+- **Faster training**: Less computation with fewer features
+- **Remove noise**: Irrelevant features can hurt performance
+
+### 4.1.1 Variance Threshold
+
+**What is variance threshold?**
+
+**Variance threshold** removes features with very low variance (almost constant values). If a feature has the same value for almost all samples, it cannot help distinguish between classes or predict the target.
+
+**The idea:**
+
+If a feature's variance is below a threshold, remove it.
+
+**Example:**
+
+A measurement column has the same value for all 150 flowers (e.g. always 1.0). Variance = 0. This feature provides no information, so remove it.
+
+**How to use variance threshold:**
+
+```python
+from sklearn.feature_selection import VarianceThreshold
+
+# Remove features with variance < 0.01
+selector = VarianceThreshold(threshold=0.01)
+X_train_selected = selector.fit_transform(X_train)
+X_val_selected = selector.transform(X_val)
+
+# See which features were removed
+selected_features = selector.get_support()
+print(f"Kept {selected_features.sum()} features out of {len(selected_features)}")
+```
+
+**When to use:**
+
+- As a first step to remove obviously uninformative features
+- When you have many features and want a quick filter
+- When you suspect some features are constant or nearly constant
+
+### 4.1.2 ANOVA F-test (Classification)
+
+**What is ANOVA F-test?**
+
+**ANOVA F-test** (Analysis of Variance) measures how well a feature separates different classes. It compares the variance between groups (classes) to the variance within groups.
+
+**The F-statistic:**
+
+$$
+F = \frac{\text{between-group variance}}{\text{within-group variance}}
+$$
+
+**Breaking down:**
+
+- **Between-group variance**: How much the feature's mean differs across classes (larger = better separation)
+- **Within-group variance**: How much the feature varies within each class (smaller = more consistent within classes)
+- **Larger F**: Feature separates classes better → more useful for prediction
+
+**Example:**
+
+Petal length: mean in virginica = 5.5 cm, in setosa = 1.5 cm → large between-group variance → high F → useful feature.
+
+Sepal width: mean in virginica = 3.0 cm, in setosa = 2.8 cm → small between-group variance → low F → less useful feature.
+
+**How to use ANOVA F-test:**
+
+```python
+from sklearn.feature_selection import f_classif, SelectKBest
+
+# Select top k features based on F-statistic
+selector = SelectKBest(score_func=f_classif, k=10)
+X_train_selected = selector.fit_transform(X_train, y_train)
+X_val_selected = selector.transform(X_val)
+
+# Get feature scores
+scores = selector.scores_
+feature_names = X_train.columns
+top_features = sorted(zip(feature_names, scores), key=lambda x: x[1], reverse=True)[:10]
+print("Top 10 features:", top_features)
+```
+
+**When to use:**
+
+- For classification tasks
+- When you want to rank features by how well they separate classes
+- As a filter before training models
+
+### 4.1.3 L1 Regularization (Lasso) for Feature Selection
+
+**Lasso** (covered in section 4.4) automatically performs feature selection by setting some coefficients to exactly zero. Features with zero coefficients are effectively removed.
+
+**How it works:**
+
+- Train a Lasso model
+- Check which coefficients are non-zero
+- Those features are selected
+
+**Example:**
+
+```python
+from sklearn.linear_model import Lasso
+
+# Train Lasso
+lasso = Lasso(alpha=0.1)
+lasso.fit(X_train, y_train)
+
+# Find selected features (non-zero coefficients)
+selected_features = [i for i, coef in enumerate(lasso.coef_) if coef != 0]
+print(f"Lasso selected {len(selected_features)} features")
+
+# Use only selected features
+X_train_selected = X_train.iloc[:, selected_features]
+X_val_selected = X_val.iloc[:, selected_features]
+```
+
+**Advantages of Lasso for feature selection:**
+
+- **Automatic**: No need to specify how many features to keep
+- **Model-based**: Selection is tied to prediction performance
+- **Interpretable**: Coefficients tell you feature importance
+
+**Comparison of feature selection methods:**
+
+| Method | Type | When to Use |
+|--------|------|-------------|
+| **Variance Threshold** | Filter | Remove constant/near-constant features |
+| **ANOVA F-test** | Filter | Rank features by class separation (classification) |
+| **Lasso** | Embedded | Automatic selection during model training |
+
+**Visualization:**
+
+The figure below compares feature selection methods. Variance threshold removes low-variance features. ANOVA F-test ranks features by F-statistic. Lasso sets some coefficients to zero, effectively selecting features.
+
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter3/feature_selection_comparison.png" alt="Feature selection methods comparison" />
+  <p class="caption"><strong>Figure 4.1.</strong> Comparison of feature selection methods. Variance threshold removes features with very low variance (almost constant). ANOVA F-test ranks features by how well they separate classes (higher F-statistic = better). Lasso sets some coefficients to exactly zero, automatically selecting a subset of features. Each method has strengths: variance threshold is fast and simple, ANOVA F-test is interpretable, and Lasso is model-based and automatic.</p>
+</div>
+
+## 4.2 Hyperparameter Tuning with GridSearchCV
+
+**Hyperparameters** are settings that control how a model is trained (e.g., tree depth, regularization strength). Unlike model parameters (coefficients), hyperparameters are not learned from data; you must choose them.
+
+**What is GridSearchCV?**
+
+**GridSearchCV** (Grid Search with Cross-Validation) is a method to find the best hyperparameters by:
+1. Defining a **grid** of candidate values for each hyperparameter
+2. Trying every combination
+3. Using **cross-validation** to estimate performance for each combination
+4. Selecting the combination with the best CV score
+
+**How GridSearchCV works:**
+
+1. **Define the grid**: List candidate values for each hyperparameter
+2. **For each combination**: Train the model and evaluate using k-fold CV
+3. **Select best**: Choose the combination with the highest average CV score
+
+**Example:**
+
+Suppose you want to tune a Decision Tree with two hyperparameters:
+- **max_depth**: [2, 5, 10]
+- **min_samples_leaf**: [1, 5]
+
+GridSearchCV tries all 6 combinations (3 × 2) and uses 5-fold CV for each:
+
+| max_depth | min_samples_leaf | CV Accuracy (mean) |
+|-----------|-----------------|-------------------|
+| 2 | 1 | 0.82 |
+| 2 | 5 | 0.81 |
+| 5 | 1 | 0.88 |
+| 5 | 5 | 0.86 |
+| 10 | 1 | 0.85 |
+| 10 | 5 | 0.83 |
+
+The best combination is max_depth=5, min_samples_leaf=1 with CV accuracy 0.88.
+
+**How to use GridSearchCV:**
+
+```python
+from sklearn.model_selection import GridSearchCV
+from sklearn.tree import DecisionTreeClassifier
+
+# Define the parameter grid
+param_grid = {
+    'max_depth': [2, 5, 10],
+    'min_samples_leaf': [1, 5],
+    'min_samples_split': [2, 5]
+}
+
+# Create the model
+tree = DecisionTreeClassifier(random_state=42)
+
+# Create GridSearchCV object
+grid_search = GridSearchCV(
+    tree,                    # Model to tune
+    param_grid,              # Parameter grid
+    cv=5,                    # 5-fold cross-validation
+    scoring='accuracy',      # Metric to optimize
+    n_jobs=-1                # Use all CPU cores
+)
+
+# Fit GridSearchCV (this trains models for all combinations)
+grid_search.fit(X_train, y_train)
+
+# Get best parameters and score
+print("Best parameters:", grid_search.best_params_)
+print("Best CV score:", grid_search.best_score_)
+
+# Use the best model
+best_model = grid_search.best_estimator_
+y_pred = best_model.predict(X_val)
+```
+
+**Important notes:**
+
+- **Use only training data**: Do not include test data in GridSearchCV
+- **Fit on training set**: GridSearchCV uses CV on the training set to select hyperparameters
+- **Evaluate on test set**: After selecting best hyperparameters, evaluate the final model on the held-out test set (only once)
+
+**Visualization:**
+
+The figure below illustrates GridSearchCV. The parameter grid defines candidate values. For each combination, k-fold CV is performed (here k=5). The combination with the best average CV score is selected.
+
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter3/gridsearchcv_concept.png" alt="GridSearchCV concept" />
+  <p class="caption"><strong>Figure 4.2.</strong> GridSearchCV workflow. A grid of hyperparameter combinations is defined (e.g., max_depth = [2,5,10], min_samples_leaf = [1,5]). For each combination, k-fold cross-validation (here k=5) is performed on the training data. The combination with the best average CV score is selected. This systematic search helps find hyperparameters that generalize well, not just fit the training data.</p>
+</div>
+
+**Tips for using GridSearchCV:**
+
+1. **Start with a coarse grid**: Try a few values first, then refine around the best region
+2. **Use appropriate scoring**: Choose a metric that matches your goal (accuracy, AUROC, RMSE, etc.)
+3. **Be patient**: GridSearchCV can be slow if the grid is large or models are complex
+4. **Consider RandomizedSearchCV**: For very large grids, random search can be faster and often finds good solutions
+
+**RandomizedSearchCV (alternative):**
+
+Instead of trying all combinations, **RandomizedSearchCV** samples a fixed number of random combinations. This is faster for large grids:
+
+```python
+from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import randint, uniform
+
+# Define distributions (not fixed lists)
+param_distributions = {
+    'max_depth': randint(2, 20),
+    'min_samples_leaf': randint(1, 10)
+}
+
+random_search = RandomizedSearchCV(
+    tree,
+    param_distributions,
+    n_iter=20,  # Try 20 random combinations
+    cv=5,
+    random_state=42
+)
+random_search.fit(X_train, y_train)
+```
+
+## 4.3 Summary and Key Takeaways (Chapter 3)
+
+**Machine learning vs. classical statistics:**
+- **Statistics**: Tests hypotheses, explains relationships, prioritizes interpretability
+- **ML**: Makes predictions, prioritizes accuracy on new data
+- Both use similar math but have different goals
+
+**Classification vs. regression:**
+- **Classification**: Predicts categories (e.g., disease vs healthy)
+- **Regression**: Predicts numbers (e.g., survival time)
+- Different algorithms and metrics for each task type
+
+**Key metrics:**
+- **Accuracy**: Fraction of correct predictions (classification)
+- **AUROC**: Ranking quality, robust to class imbalance (classification)
+- **RMSE**: Typical prediction error in original units (regression)
+
+**Classification algorithms:**
+- **Decision Stump**: Simplest rule (one feature, one threshold)
+- **Decision Tree**: Sequence of yes/no questions, interpretable
+- **Random Forest**: Ensemble of trees, reduces overfitting
+- **Logistic Regression**: Models probability using sigmoid function
+- **SVM**: Finds maximum-margin boundary, supports kernels for non-linearity
+
+**Regression algorithms:**
+- **Linear Regression**: Straight-line relationship, interpretable
+- **Polynomial Regression**: Curved relationships, risk of overfitting
+
+**Overfitting and underfitting:**
+- **Underfitting**: Model too simple, high error on train and test
+- **Overfitting**: Model too complex, low error on train but high on test
+- Find the sweet spot that balances bias and variance
+
+**Feature selection:** (section 4.1)
+- **Variance Threshold**: Removes constant/near-constant features
+- **ANOVA F-test**: Ranks features by class separation (classification)
+- **Lasso**: Automatic selection by setting coefficients to zero (section 4.4)
+
+**Hyperparameter tuning:** (section 4.2)
+- **GridSearchCV**: Systematic search over parameter grid with cross-validation
+- Use training data only; evaluate final model on test set once
+- Consider RandomizedSearchCV for large grids
+
+With these fundamentals in place, you are ready to build and evaluate ML models. The rest of this chapter covers regularization (Ridge and Lasso), then precision, recall, F1-score, handling imbalanced data, and calibration.
+
+---
+
+## 4.4 Regularization (Ridge and Lasso)
 
 **Regularization** is a technique to prevent overfitting by penalizing large coefficients. Instead of only minimizing prediction error, we minimize error plus a penalty term that encourages smaller coefficients.
 
@@ -27,7 +338,7 @@ $$
 
 where $\lambda$ (lambda) controls how much we care about the penalty. Larger $\lambda$ = stronger regularization = simpler models.
 
-### 4.1.1 L2 Regularization (Ridge)
+### 4.4.1 L2 Regularization (Ridge)
 
 **What is Ridge regression?**
 
@@ -72,7 +383,7 @@ coefficients = ridge.coef_
 
 **Choosing $\lambda$ (alpha):** Use cross-validation (e.g., GridSearchCV). Common range: $10^{-4}$ to $10^4$ (log scale). Larger $\lambda$ = simpler model, but may underfit if too large.
 
-### 4.1.2 L1 Regularization (Lasso)
+### 4.4.2 L1 Regularization (Lasso)
 
 **What is Lasso?**
 
@@ -115,12 +426,12 @@ The optimization problem is: minimize prediction error subject to a constraint o
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter3/ridge_vs_lasso.png" alt="Ridge vs Lasso regularization" />
-  <p class="caption"><strong>Figure 4.1.</strong> Effect of Ridge (L2) and Lasso (L1) regularization on coefficients. Ridge (left) shrinks all coefficients toward zero but keeps all features. Lasso (right) sets some coefficients to exactly zero (sparse solution), effectively performing feature selection.</p>
+  <p class="caption"><strong>Figure 4.3.</strong> Effect of Ridge (L2) and Lasso (L1) regularization on coefficients. Ridge (left) shrinks all coefficients toward zero but keeps all features. Lasso (right) sets some coefficients to exactly zero (sparse solution), effectively performing feature selection.</p>
 </div>
 
 ---
 
-## 4.2 The Confusion Matrix: Counting Right and Wrong Predictions
+## 4.5 The Confusion Matrix: Counting Right and Wrong Predictions
 
 Before we define precision and recall, we need a clear way to count different types of correct and incorrect predictions. The **confusion matrix** does exactly that.
 
@@ -148,16 +459,16 @@ The figure below shows an example confusion matrix for an Iris classifier (virgi
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter4/confusion_matrix_iris.png" alt="Confusion matrix for Iris virginica vs rest" />
-  <p class="caption"><strong>Figure 4.2.</strong> Confusion matrix for a binary classifier: virginica (positive) vs setosa + versicolor (negative). Rows = true labels; columns = predictions. Diagonal cells are correct (TN, TP); off-diagonal are errors (FP, FN).</p>
+  <p class="caption"><strong>Figure 4.4.</strong> Confusion matrix for a binary classifier: virginica (positive) vs setosa + versicolor (negative). Rows = true labels; columns = predictions. Diagonal cells are correct (TN, TP); off-diagonal are errors (FP, FN).</p>
 </div>
 
 From these four numbers we can define accuracy, precision, recall, and F1.
 
 ---
 
-## 4.3 Precision, Recall, and F1-Score
+## 4.6 Precision, Recall, and F1-Score
 
-### 4.3.1 Why accuracy can be misleading
+### 4.6.1 Why accuracy can be misleading
 
 **Accuracy** is the fraction of all predictions that are correct:
 
@@ -167,7 +478,7 @@ $$
 
 When the positive class is rare, a model that always predicts "negative" can still have high accuracy. For example: 10% of flowers are virginica, 90% are not. If the model always says "not virginica," accuracy = 90%, but we never detect any virginica. So we need metrics that focus on the **positive** class.
 
-### 4.3.2 Recall (Sensitivity, True Positive Rate)
+### 4.6.2 Recall (Sensitivity, True Positive Rate)
 
 **Recall** answers: *Of all the actual positives, how many did we correctly predict as positive?*
 
@@ -180,7 +491,7 @@ $$
 
 **Iris example:** If there are 10 virginica flowers in the test set and we correctly predict 8 of them as virginica, then TP = 8, FN = 2, and Recall = 8/(8+2) = 0.8 (80%).
 
-### 4.3.3 Precision (Positive Predictive Value)
+### 4.6.3 Precision (Positive Predictive Value)
 
 **Precision** answers: *Of all the samples we predicted as positive, how many were actually positive?*
 
@@ -193,11 +504,11 @@ $$
 
 **Iris example:** If we predicted 12 flowers as virginica and 9 of them were truly virginica, then TP = 9, FP = 3, and Precision = 9/12 = 0.75 (75%).
 
-### 4.3.4 The precision–recall trade-off
+### 4.6.4 The precision–recall trade-off
 
 Often, **increasing recall** (catching more positives) means lowering the decision threshold, so we predict "positive" more often. That can **increase false positives** and thus **lower precision**. So we usually have a trade-off: we can be more cautious (high precision, lower recall) or more aggressive (high recall, lower precision). The choice depends on the application.
 
-### 4.3.5 F1-Score: Combining precision and recall
+### 4.6.5 F1-Score: Combining precision and recall
 
 The **F1-score** is the **harmonic mean** of precision and recall. It combines both into a single number:
 
@@ -216,7 +527,7 @@ The figure below shows precision, recall, and F1 for an Iris classifier (virgini
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter4/precision_recall_f1_iris.png" alt="Precision, recall, F1 for Iris classifier" />
-  <p class="caption"><strong>Figure 4.3.</strong> Precision, recall, and F1-score for a binary Iris classifier (virginica vs non-virginica). Bars show the values; the confusion matrix counts (TP, FP, FN) that go into each metric are indicated.</p>
+  <p class="caption"><strong>Figure 4.5.</strong> Precision, recall, and F1-score for a binary Iris classifier (virginica vs non-virginica). Bars show the values; the confusion matrix counts (TP, FP, FN) that go into each metric are indicated.</p>
 </div>
 
 **How to compute in Python:**
@@ -235,7 +546,7 @@ cm = confusion_matrix(y_true, y_pred)  # [[TN, FP], [FN, TP]]
 
 ---
 
-## 4.4 Precision–Recall Curves
+## 4.7 Precision–Recall Curves
 
 So far we have assumed a **fixed** decision threshold (e.g., predict "positive" if predicted probability > 0.5). In practice, you can **vary the threshold**: a lower threshold means we predict "positive" more often (higher recall, usually lower precision); a higher threshold means we are stricter (higher precision, usually lower recall). A **Precision–Recall (PR) curve** shows this trade-off.
 
@@ -247,7 +558,7 @@ So far we have assumed a **fixed** decision threshold (e.g., predict "positive" 
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter4/pr_curve_iris.png" alt="Precision-Recall curve for Iris" />
-  <p class="caption"><strong>Figure 4.4.</strong> Precision–Recall curve for an Iris classifier (virginica vs non-virginica). Each point corresponds to a different decision threshold. The area under the curve (AUPRC) summarizes performance; a curve that stays high and to the right is better.</p>
+  <p class="caption"><strong>Figure 4.6.</strong> Precision–Recall curve for an Iris classifier (virginica vs non-virginica). Each point corresponds to a different decision threshold. The area under the curve (AUPRC) summarizes performance; a curve that stays high and to the right is better.</p>
 </div>
 
 **How to compute in Python:**
@@ -263,15 +574,15 @@ ap = average_precision_score(y_true, y_scores)  # Area under PR curve
 
 ---
 
-## 4.5 Class Weighting vs. Oversampling (SMOTE)
+## 4.8 Class Weighting vs. Oversampling (SMOTE)
 
 When one class is much rarer than the other, many classifiers tend to predict the majority class most of the time. Two common ways to address this are **class weighting** and **oversampling** (e.g., **SMOTE**).
 
-### 4.5.1 The problem: imbalanced training data
+### 4.8.1 The problem: imbalanced training data
 
 Suppose we have 20 virginica flowers (positive) and 80 non-virginica (negative). A classifier trained to minimize overall error might learn to predict "negative" almost always, because that minimizes the number of mistakes on the training set. As a result, recall for the positive class is poor. We want the model to pay more attention to the minority class.
 
-### 4.5.2 Class weighting (balanced weights)
+### 4.8.2 Class weighting (balanced weights)
 
 **Idea:** Make each **error** on the minority class count more than an error on the majority class. Many algorithms (e.g., logistic regression, SVM, decision trees in scikit-learn) accept a `class_weight` argument. Setting `class_weight='balanced'` sets the weight of each class inversely proportional to how often it appears: the rarer class gets a higher weight. So the loss function penalizes mistakes on virginica more than mistakes on non-virginica.
 
@@ -280,7 +591,7 @@ Suppose we have 20 virginica flowers (positive) and 80 non-virginica (negative).
 
 **Formula (conceptually):** If class \(k\) has \(n_k\) samples and there are \(K\) classes, a common choice is \(w_k = n / (K \cdot n_k)\), so that the total weight per class is the same. The classifier then minimizes a weighted sum of errors.
 
-### 4.5.3 Oversampling and SMOTE
+### 4.8.3 Oversampling and SMOTE
 
 **Idea:** Increase the number of **training** samples from the minority class so the classifier sees more positives. **Random oversampling** duplicates existing minority samples. **SMOTE (Synthetic Minority Over-sampling Technique)** goes further: it creates **new** synthetic minority samples in feature space.
 
@@ -293,7 +604,7 @@ Suppose we have 20 virginica flowers (positive) and 80 non-virginica (negative).
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter4/class_weight_vs_smote_iris.png" alt="Class weighting vs SMOTE on Iris" />
-  <p class="caption"><strong>Figure 4.5.</strong> Handling imbalanced Iris data (virginica = minority). Left: no balancing. Center: class_weight='balanced'. Right: SMOTE oversampling. The decision boundary and/or recall for virginica can improve with balancing or SMOTE.</p>
+  <p class="caption"><strong>Figure 4.7.</strong> Handling imbalanced Iris data (virginica = minority). Left: no balancing. Center: class_weight='balanced'. Right: SMOTE oversampling. The decision boundary and/or recall for virginica can improve with balancing or SMOTE.</p>
 </div>
 
 **How to use in Python:**
@@ -313,15 +624,15 @@ model.fit(X_train_resampled, y_train_resampled)
 
 ---
 
-## 4.6 Calibration Curves
+## 4.9 Calibration Curves
 
 A classifier often outputs a **probability** (e.g., "probability of virginica = 0.7"). We use a threshold (e.g., 0.5) to turn this into a class prediction. But we also care whether these probabilities are **calibrated**: when the model says 70%, do about 70% of such samples actually belong to the positive class?
 
-### 4.6.1 What is calibration?
+### 4.9.1 What is calibration?
 
 **Calibrated probabilities** mean: among all samples that received a predicted probability of about \(p\), the fraction that are actually positive should be about \(p\). For example, among flowers with predicted P(virginica) between 0.6 and 0.7, roughly 60–70% should be virginica. If the model says 0.7 but only 40% of those are virginica, the model is **overconfident** (poorly calibrated).
 
-### 4.6.2 Calibration curve (reliability diagram)
+### 4.9.2 Calibration curve (reliability diagram)
 
 A **calibration curve** (or **reliability diagram**) is a plot that helps you check this:
 
@@ -334,10 +645,10 @@ If the model is perfectly calibrated, the curve lies along the **diagonal** (pre
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter4/calibration_curve_iris.png" alt="Calibration curve for Iris classifier" />
-  <p class="caption"><strong>Figure 4.6.</strong> Calibration curve for an Iris classifier (virginica vs rest). Each point is a bin of predicted probability. Y-axis: fraction of samples in that bin that are actually virginica. A well-calibrated model follows the diagonal (dashed).</p>
+  <p class="caption"><strong>Figure 4.8.</strong> Calibration curve for an Iris classifier (virginica vs rest). Each point is a bin of predicted probability. Y-axis: fraction of samples in that bin that are actually virginica. A well-calibrated model follows the diagonal (dashed).</p>
 </div>
 
-### 4.6.3 How to improve calibration
+### 4.9.3 How to improve calibration
 
 Some models (e.g., logistic regression) are often reasonably calibrated by default. Others (e.g., decision trees, random forests, SVMs) can be over- or underconfident. **Platt scaling** or **isotonic regression** can post-process the predicted probabilities to make them more calibrated; scikit-learn provides **CalibratedClassifierCV** to wrap a base estimator and calibrate its outputs.
 
@@ -354,9 +665,13 @@ frac_of_positives, mean_predicted_value = calibration_curve(y_true, y_prob, n_bi
 
 ---
 
-## 4.7 Summary and Key Takeaways
+## 4.10 Summary and Key Takeaways
 
-**Regularization (Ridge and Lasso):** Penalize large coefficients to prevent overfitting. Ridge (L2) shrinks all coefficients; Lasso (L1) can set many to zero (feature selection). Lasso's L1 constraint has corners on the axes, so solutions often hit zero; Ridge's L2 constraint is smooth, so coefficients rarely hit exactly zero.
+**Feature selection (section 4.1):** Variance threshold, ANOVA F-test, and Lasso can reduce features to improve interpretability and reduce overfitting.
+
+**Hyperparameter tuning (section 4.2):** GridSearchCV (and RandomizedSearchCV) search over parameter grids with cross-validation to find hyperparameters that generalize well.
+
+**Regularization (Ridge and Lasso, section 4.4):** Penalize large coefficients to prevent overfitting. Ridge (L2) shrinks all coefficients; Lasso (L1) can set many to zero (feature selection). Lasso's L1 constraint has corners on the axes, so solutions often hit zero; Ridge's L2 constraint is smooth, so coefficients rarely hit exactly zero.
 
 **Confusion matrix:** Counts TP, TN, FP, FN. Rows = true labels, columns = predictions. Foundation for precision, recall, and F1.
 
@@ -377,7 +692,7 @@ With these tools, you can evaluate and improve classifiers when accuracy alone i
 
 ---
 
-## 4.8 Further Reading
+## 4.11 Further Reading
 
 **Regularization:**
 - [Ridge and Lasso](https://scikit-learn.org/stable/modules/linear_model.html#ridge-regression-and-classification)
