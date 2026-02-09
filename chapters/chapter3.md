@@ -145,12 +145,25 @@ AUROC (Area Under the Receiver Operating Characteristic Curve) measures how well
 
 **The ROC curve:**
 
-Many classification models output a **score** or **probability** (e.g., probability of "virginica" from 0 to 1). To convert this to a class prediction, you choose a **threshold** (e.g., predict "virginica" if probability > 0.5). The ROC curve plots the trade-off between two rates as you vary this threshold:
+Many classification models output a **score** or **probability** (e.g., probability of "virginica" from 0 to 1). To convert this to a class prediction, you choose a **threshold** (e.g., predict "virginica" if probability > 0.5). Think of the ROC curve as a thought experiment where you slowly relax how picky your classifier is.
 
-- **True Positive Rate (TPR)**: Of all actual positives, what fraction did we correctly predict as positive?
-- **False Positive Rate (FPR)**: Of all actual negatives, what fraction did we incorrectly predict as positive?
+First, the axes:
+- **TPR (true positive rate)** is the fraction of real positives you correctly catch: TP / (TP + FN).
+- **FPR (false positive rate)** is the fraction of real negatives you accidentally flag: FP / (FP + TN).
 
-The **AUROC** is the area under this curve. It ranges from 0 to 1:
+Now imagine a classifier that outputs a score, and you slide the decision threshold from very strict to completely careless.
+
+At the **very strict** extreme, the threshold is so high that nothing is called positive. No true positives, so TPR = 0. No false positives, so FPR = 0. That is the origin: (0, 0).
+
+As you **lower the threshold**, you start calling more samples positive. Some of those are real positives, so TPR increases. Some are negatives, so FPR increases. This tracing-out of (FPR, TPR) pairs is the ROC curve.
+
+Why do both go to 1 at the far end? At the **most permissive** extreme, the threshold is so low that everything is labeled positive. All actual positives are predicted positive, so TP = (TP + FN) and TPR = 1. All actual negatives are also predicted positive, so FP = (FP + TN) and FPR = 1. So the rightmost point must be (1, 1). It is not a bug or a property of your model, it is a logical consequence of what happens when the threshold says "yes" to everyone.
+
+This reveals something important: the ROC curve always starts at (0, 0) and ends at (1, 1), no matter how good or bad the model is. The shape in between is what matters.
+
+**AUROC** is the area under this curve. It can be interpreted as the probability that a randomly chosen positive example gets a higher score than a randomly chosen negative one. A perfect model bends sharply toward the top-left. A random model meanders along the diagonal (TPR ≈ FPR). A perversely wrong model bows below the diagonal. ROC is threshold-free because it asks: "If I keep changing my mind about what 'positive' means, how well do positives stay ahead of negatives?" That is why it is popular, and also why it can be misleading when class imbalance or absolute error costs matter. The curve going to (1, 1) is not optimism, it is inevitability.
+
+The **AUROC** ranges from 0 to 1:
 - **AUROC = 0.5**: Random guessing (no better than flipping a coin)
 - **AUROC = 1.0**: Perfect ranking (all positives rank higher than all negatives)
 - **AUROC > 0.7**: Generally considered good
@@ -918,7 +931,7 @@ y_pred = poly_pipeline.predict(X_val)
 - Start with $d = 2$ (quadratic)
 - Use cross-validation to compare different degrees
 - Avoid very high degrees (e.g., $d > 5$) unless you have a lot of data
-- Consider regularization (see section 3.7) to reduce overfitting
+- Consider regularization (see Chapter 4) to reduce overfitting
 
 ## 3.6 Overfitting, Underfitting, and Model Complexity
 
@@ -968,16 +981,16 @@ The figure below shows the relationship between model complexity and error. As c
 - **Number of parameters**: More parameters = more complex
 - **Tree depth**: Deeper trees = more complex
 - **Polynomial degree**: Higher degree = more complex
-- **Regularization strength**: Lower regularization = more complex (see section 3.7)
+- **Regularization strength**: Lower regularization = more complex (see Chapter 4)
 
 **Strategies to avoid overfitting:**
 
 1. **Use simpler models**: Start with linear models or shallow trees
-2. **Regularization**: Penalize large coefficients (see section 3.7)
+2. **Regularization**: Penalize large coefficients (see Chapter 4)
 3. **Cross-validation**: Use validation set to choose model complexity
 4. **More data**: More training data helps complex models generalize
 5. **Early stopping**: Stop training before the model memorizes training data
-6. **Feature selection**: Remove irrelevant features (see section 3.8)
+6. **Feature selection**: Remove irrelevant features (see section 3.7)
 
 **Strategies to avoid underfitting:**
 
@@ -994,172 +1007,7 @@ The figure below shows the relationship between model complexity and error. As c
 
 The goal is to minimize total error by balancing bias and variance.
 
-## 3.7 Regularization
-
-**Regularization** is a technique to prevent overfitting by penalizing large coefficients. Instead of only minimizing prediction error, we minimize error plus a penalty term that encourages smaller coefficients.
-
-**The general idea:**
-
-
-
-$$
-\text{Loss} = \text{Prediction Error} + \lambda \cdot \text{Penalty}
-$$
-
-
-
-where $\lambda$ (lambda) controls how much we care about the penalty. Larger $\lambda$ = stronger regularization = simpler models.
-
-### 3.7.1 L2 Regularization (Ridge)
-
-**What is Ridge regression?**
-
-**Ridge regression** adds a penalty proportional to the **sum of squared coefficients**. It shrinks coefficients toward zero but does not set them to exactly zero.
-
-**The equation:**
-
-
-
-$$
-\text{Loss} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^p \beta_j^2
-$$
-
-
-
-**Breaking down the equation:**
-
-- First sum: Usual squared errors (same as linear regression)
-- Second sum: Sum of squared coefficients ($\beta_1^2 + \beta_2^2 + \cdots + \beta_p^2$)
-- $\lambda$: Regularization strength (hyperparameter to tune)
-  - $\lambda = 0$: No regularization (standard linear regression)
-  - $\lambda$ large: Strong penalty, coefficients shrink toward zero
-
-**Effect:**
-
-- Coefficients become smaller (shrink toward zero)
-- Model becomes smoother and less sensitive to noise
-- All features remain in the model (coefficients are not exactly zero)
-
-**When to use Ridge:**
-
-- When you have many features and want to prevent overfitting
-- When you believe many features are relevant (do not want to remove any)
-- When features are correlated (Ridge handles multicollinearity better than Lasso)
-
-**How to use Ridge:**
-
-```python
-from sklearn.linear_model import Ridge
-
-# Create and train Ridge regression
-ridge = Ridge(alpha=1.0)  # alpha is lambda
-ridge.fit(X_train, y_train)
-
-# Make predictions
-y_pred = ridge.predict(X_val)
-
-# Get coefficients (smaller than without regularization)
-coefficients = ridge.coef_
-```
-
-**Choosing $\lambda$ (alpha):**
-
-- Use cross-validation (e.g., GridSearchCV) to find the best $\lambda$
-- Common range: $10^{-4}$ to $10^4$ (log scale)
-- Larger $\lambda$ = simpler model, but may underfit if too large
-
-### 3.7.2 L1 Regularization (Lasso)
-
-**What is Lasso?**
-
-**Lasso** (Least Absolute Shrinkage and Selection Operator) adds a penalty proportional to the **sum of absolute values of coefficients**. Unlike Ridge, Lasso can set coefficients to exactly zero, effectively performing **feature selection**.
-
-**The equation:**
-
-
-
-$$
-\text{Loss} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^p |\beta_j|
-$$
-
-
-
-**Breaking down the equation:**
-
-- First sum: Usual squared errors
-- Second sum: Sum of absolute values of coefficients ($|\beta_1| + |\beta_2| + \cdots + |\beta_p|$)
-- $\lambda$: Regularization strength
-
-**Effect:**
-
-- Some coefficients become exactly zero (features are removed)
-- Performs automatic **feature selection**
-- Model becomes simpler and more interpretable
-
-**Example:**
-
-Suppose you have 100 measurements as features. Lasso might set 80 coefficients to zero, keeping only 20 features. This tells you which measurements matter most for prediction (e.g. which sepal/petal columns matter for Iris species).
-
-**When to use Lasso:**
-
-- When you want feature selection (identify which features matter)
-- When you have many features and suspect many are irrelevant
-- When interpretability is important (fewer features = easier to explain)
-
-**How to use Lasso:**
-
-```python
-from sklearn.linear_model import Lasso
-
-# Create and train Lasso regression
-lasso = Lasso(alpha=0.1)  # alpha is lambda
-lasso.fit(X_train, y_train)
-
-# Make predictions
-y_pred = lasso.predict(X_val)
-
-# Get coefficients (some will be exactly zero)
-coefficients = lasso.coef_
-
-# Find which features were selected (non-zero coefficients)
-selected_features = [i for i, coef in enumerate(coefficients) if coef != 0]
-print(f"Selected {len(selected_features)} features out of {len(coefficients)}")
-```
-
-**Ridge vs Lasso:**
-
-| Aspect | Ridge (L2) | Lasso (L1) |
-|--------|------------|------------|
-| **Penalty** | Sum of squared coefficients | Sum of absolute coefficients |
-| **Effect on coefficients** | Shrinks toward zero | Can set to exactly zero |
-| **Feature selection** | No (all features kept) | Yes (removes irrelevant features) |
-| **Use when** | Many relevant features | Many irrelevant features |
-| **Interpretability** | Moderate | High (fewer features) |
-
-**Elastic Net:**
-
-**Elastic Net** combines L1 and L2 regularization:
-
-
-
-$$
-\text{Loss} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda_1 \sum_{j=1}^p |\beta_j| + \lambda_2 \sum_{j=1}^p \beta_j^2
-$$
-
-
-
-It balances the benefits of both: feature selection (from Lasso) and handling correlated features (from Ridge).
-
-**Visualization:**
-
-The figure below shows how Ridge and Lasso affect coefficients. Ridge (left) shrinks all coefficients toward zero but keeps all features. Lasso (right) sets some coefficients to exactly zero, effectively removing those features.
-
-<div class="figure">
-  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter3/ridge_vs_lasso.png" alt="Ridge vs Lasso regularization" />
-  <p class="caption"><strong>Figure 3.10.</strong> Effect of Ridge (L2) and Lasso (L1) regularization on coefficients. Ridge (left) shrinks all coefficients toward zero but keeps all features. Lasso (right) sets some coefficients to exactly zero (sparse solution), effectively performing feature selection. The x-axis shows different values of the regularization parameter $\lambda$; as $\lambda$ increases, coefficients shrink more. Lasso's ability to set coefficients to zero makes it useful for feature selection.</p>
-</div>
-
-## 3.8 Feature Selection
+## 3.7 Feature Selection
 
 **Feature selection** is the process of choosing a subset of relevant features for model training. Removing irrelevant or redundant features can improve model performance, reduce overfitting, and increase interpretability.
 
@@ -1170,7 +1018,7 @@ The figure below shows how Ridge and Lasso affect coefficients. Ridge (left) shr
 - **Faster training**: Less computation with fewer features
 - **Remove noise**: Irrelevant features can hurt performance
 
-### 3.8.1 Variance Threshold
+### 3.7.1 Variance Threshold
 
 **What is variance threshold?**
 
@@ -1205,7 +1053,7 @@ print(f"Kept {selected_features.sum()} features out of {len(selected_features)}"
 - When you have many features and want a quick filter
 - When you suspect some features are constant or nearly constant
 
-### 3.8.2 ANOVA F-test (Classification)
+### 3.7.2 ANOVA F-test (Classification)
 
 **What is ANOVA F-test?**
 
@@ -1252,9 +1100,9 @@ print("Top 10 features:", top_features)
 - When you want to rank features by how well they separate classes
 - As a filter before training models
 
-### 3.8.3 L1 Regularization (Lasso) for Feature Selection
+### 3.7.3 L1 Regularization (Lasso) for Feature Selection
 
-**Lasso** (covered in section 3.7.2) automatically performs feature selection by setting some coefficients to exactly zero. Features with zero coefficients are effectively removed.
+**Lasso** (covered in Chapter 4) automatically performs feature selection by setting some coefficients to exactly zero. Features with zero coefficients are effectively removed.
 
 **How it works:**
 
@@ -1303,7 +1151,7 @@ The figure below compares feature selection methods. Variance threshold removes 
   <p class="caption"><strong>Figure 3.11.</strong> Comparison of feature selection methods. Variance threshold removes features with very low variance (almost constant). ANOVA F-test ranks features by how well they separate classes (higher F-statistic = better). Lasso sets some coefficients to exactly zero, automatically selecting a subset of features. Each method has strengths: variance threshold is fast and simple, ANOVA F-test is interpretable, and Lasso is model-based and automatic.</p>
 </div>
 
-## 3.9 Hyperparameter Tuning with GridSearchCV
+## 3.8 Hyperparameter Tuning with GridSearchCV
 
 **Hyperparameters** are settings that control how a model is trained (e.g., tree depth, regularization strength). Unlike model parameters (coefficients), hyperparameters are not learned from data; you must choose them.
 
@@ -1423,7 +1271,7 @@ random_search = RandomizedSearchCV(
 random_search.fit(X_train, y_train)
 ```
 
-## 3.10 Summary and Key Takeaways
+## 3.9 Summary and Key Takeaways
 
 **Machine learning vs. classical statistics:**
 - **Statistics**: Tests hypotheses, explains relationships, prioritizes interpretability
@@ -1456,24 +1304,19 @@ random_search.fit(X_train, y_train)
 - **Overfitting**: Model too complex, low error on train but high on test
 - Find the sweet spot that balances bias and variance
 
-**Regularization:**
-- **Ridge (L2)**: Shrinks coefficients, prevents overfitting
-- **Lasso (L1)**: Sets coefficients to zero, performs feature selection
-- Controlled by $\lambda$ (alpha): larger = stronger regularization
-
 **Feature selection:**
 - **Variance Threshold**: Removes constant/near-constant features
 - **ANOVA F-test**: Ranks features by class separation (classification)
-- **Lasso**: Automatic selection by setting coefficients to zero
+- **Lasso**: Automatic selection by setting coefficients to zero (Lasso and Ridge are covered in Chapter 4)
 
 **Hyperparameter tuning:**
 - **GridSearchCV**: Systematic search over parameter grid with cross-validation
 - Use training data only; evaluate final model on test set once
 - Consider RandomizedSearchCV for large grids
 
-With these fundamentals in place, you are ready to build and evaluate ML models. In the next chapter, we will cover feature engineering, handling imbalanced data, and advanced evaluation metrics for biomedical applications.
+With these fundamentals in place, you are ready to build and evaluate ML models. In the next chapter, we cover regularization (Ridge and Lasso), then precision, recall, F1-score, handling imbalanced data, and calibration.
 
-## 3.11 Further Reading
+## 3.10 Further Reading
 
 **Machine learning fundamentals:**
 - [Scikit-learn user guide](https://scikit-learn.org/stable/user_guide.html): Comprehensive documentation for all algorithms covered
@@ -1488,10 +1331,6 @@ With these fundamentals in place, you are ready to build and evaluate ML models.
 - [Linear Regression](https://scikit-learn.org/stable/modules/linear_model.html#ordinary-least-squares)
 - [Polynomial Regression](https://scikit-learn.org/stable/modules/preprocessing.html#polynomial-features)
 
-**Regularization:**
-- [Ridge and Lasso](https://scikit-learn.org/stable/modules/linear_model.html#ridge-regression-and-classification)
-- [Elastic Net](https://scikit-learn.org/stable/modules/linear_model.html#elastic-net)
-
 **Feature selection:**
 - [Feature selection in scikit-learn](https://scikit-learn.org/stable/modules/feature_selection.html)
 
@@ -1503,5 +1342,5 @@ With these fundamentals in place, you are ready to build and evaluate ML models.
 
 **End of Chapter 3**
 
-In the next chapter, we will cover feature engineering, handling imbalanced data (common in biomedical datasets), and advanced evaluation metrics such as precision, recall, F1-score, and calibration curves.
+In the next chapter, we cover regularization (Ridge and Lasso), then precision, recall, F1-score, handling imbalanced data, and calibration curves.
 
