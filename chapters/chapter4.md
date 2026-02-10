@@ -371,16 +371,63 @@ selected_features = [i for i, coef in enumerate(coefficients) if coef != 0]
 | **Effect on coefficients** | Shrinks toward zero | Can set to exactly zero |
 | **Feature selection** | No (all features kept) | Yes (removes irrelevant features) |
 
-**Why does Lasso set many weights to zero but Ridge does not?**
+### 4.3.3 The unit ball concept: constraint form vs penalty form
 
-The optimization problem is: minimize prediction error subject to a constraint on the size of the coefficients. Ridge constrains the **sum of squared** coefficients (an L2 ball); Lasso constrains the **sum of absolute** coefficients (an L1 ball). In 2D, the L2 ball is a circle and the L1 ball is a diamond (with corners on the axes). When you shrink the allowed region, the optimal coefficients are where the "error contour" first touches the constraint region. The circle is smooth, so the solution typically stays away from the axes: all coefficients get smaller but rarely hit exactly zero. The diamond has **corners on the axes**, so the solution often hits a corner, meaning one or more coefficients become exactly zero. In higher dimensions the same idea holds: Lasso's constraint has sharp edges and corners on the coordinate axes, so many weights are driven to zero; Ridge's constraint is smooth, so weights shrink but do not hit zero. That is why Lasso performs feature selection and Ridge does not.
+Confusion often comes from mixing two different but equivalent ways of thinking about regularization and expecting the boundary to literally appear in the equation. The two views are equivalent; keeping them separate removes the confusion.
 
-The figure below shows the L1 and L2 balls in 2D (coefficient space). The L2 ball is a circle; the L1 ball is a diamond with corners on the axes. When the optimal solution lies where the contour first touches the constraint, the L1 diamond often touches at a corner (one coefficient = 0), while the L2 circle usually does not.
+**Two formulations, one idea**
+
+There are two mathematically equivalent ways to do regularization:
+
+**1. Constraint form (explicit boundary)**
+
+$$
+\min \;\; \text{Loss} \quad \text{subject to} \quad \|\boldsymbol{\beta}\| \leq c
+$$
+
+Here the boundary is explicit: anything with norm greater than $c$ is not allowed. This is where the "L1 ball" or "L2 ball" language comes from. For L2, $\|\boldsymbol{\beta}\|$ is the usual Euclidean norm; for L1, it is the sum of absolute values. The allowed set is a ball (circle in 2D for L2, diamond in 2D for L1) of radius $c$.
+
+**2. Penalty form (what we use in practice)**
+
+$$
+\min \;\; \text{Loss} + \lambda \|\boldsymbol{\beta}\|
+$$
+
+Here there is no explicit boundary. Nothing is forbidden or discarded; all points are allowed. Instead of "you are not allowed past this wall," we say "you can go there, but it will cost you dearly." Large norms are not illegal, they are just too expensive to be optimal. So the boundary did not disappear, it became **implicit** in the trade-off.
+
+**Why values greater than 1 are not a problem**
+
+In the penalty form, the total cost is $\text{Cost} = \text{Loss} + \lambda \|\boldsymbol{\beta}\|$. If one point has very low loss but very large norm, its total cost is large because of the penalty. Compare that to a point with slightly higher loss but much smaller norm: the second point wins. So optimization naturally avoids large norms without ever banning them. Nothing special happens at 1; there is no magic cutoff. Coefficients can be greater than 1 in the penalty form.
+
+**Where the "ball of radius 1" comes from**
+
+For every value of $\lambda$, there exists a value of $c$ such that the constraint formulation and the penalty formulation give the **same solution**. So penalty strength $\lambda$ corresponds to ball size $c$: small $\lambda$ corresponds to a big ball, large $\lambda$ to a small ball. When textbooks draw $\|\boldsymbol{\beta}\| \leq 1$, they are fixing $c = 1$ and letting $\lambda$ absorb the scale. It is pure convenience for drawing, not a requirement that coefficients stay inside 1.
+
+**Mental picture**
+
+Think of two landscapes added together: a **Loss** landscape (lowest at the best-fit solution) and a **penalty** landscape (lowest at zero). We minimize the sum. The minimum ends up somewhere in between. No walls, no discarding, just trade-offs. The "boundary" only appears when we redraw the same problem in constraint form.
+
+**Why the L1 vs L2 geometry still matters**
+
+Even though the penalty form has no explicit boundary, the **shape** of the penalty still determines whether coefficients hit zero. The L2 penalty uses $\beta_j^2$: near zero, this curve is flat (its derivative goes to zero), so the optimizer tends to shrink $\beta_j$ slowly and rarely lands exactly at zero. The L1 penalty uses $|\beta_j|$: it has a sharp corner at zero (a "kink"), so the optimizer can hit zero and stay there. The figure below illustrates this: as a coefficient moves toward zero, the squared term (L2) tapers off slowly, while the absolute term (L1) reaches zero quickly and can push the coefficient exactly to zero.
+
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter4/l1_l2_penalty_near_zero.png" alt="L1 and L2 penalty shape near zero" />
+  <p class="caption"><strong>Figure 4.3a.</strong> L2 penalty (squared, $\beta^2$) is flat near zero, so coefficients shrink slowly and rarely hit exactly zero. L1 penalty (absolute value, $|\beta|$) has a sharp corner at zero, so coefficients can reach zero and stay there. This is why Lasso zeros out weights and Ridge does not.</p>
+</div>
+
+**Why does Lasso set many weights to zero but Ridge does not? (geometry)**
+
+In the equivalent constraint picture: Ridge constrains the sum of squared coefficients (an L2 ball, a circle in 2D); Lasso constrains the sum of absolute coefficients (an L1 ball, a diamond in 2D). When we shrink the allowed region, the optimal coefficients sit where the loss contour first touches the constraint. The circle is smooth, so the solution usually stays away from the axes and coefficients rarely hit exactly zero. The diamond has **corners on the axes**, so the solution often hits a corner, meaning one or more coefficients become exactly zero. So Lasso performs feature selection and Ridge does not.
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter4/l1_l2_ball.png" alt="L1 and L2 balls in 2D" />
-  <p class="caption"><strong>Figure 4.3.</strong> L1 ball (diamond) and L2 ball (circle) in 2D coefficient space. The L1 constraint has corners on the axes, so the solution often hits a corner (e.g., $\beta_1 = 0$). The L2 constraint is smooth, so the solution rarely lands exactly on an axis. This is why Lasso drives coefficients to zero and Ridge does not.</p>
+  <p class="caption"><strong>Figure 4.3b.</strong> L1 ball (diamond) and L2 ball (circle) in 2D coefficient space. The L1 constraint has corners on the axes, so the solution often hits a corner (e.g., $\beta_1 = 0$). The L2 constraint is smooth, so the solution rarely lands exactly on an axis.</p>
 </div>
+
+**One-sentence takeaway**
+
+In the penalty form, nothing is discarded and norms can be greater than 1; the "boundary" is an equivalent geometric picture where the effect of $\lambda$ is re-expressed as a constraint radius. The geometry is a visualization tool for the same trade-off, not a literal step-by-step process.
 
 **Elastic Net** combines L1 and L2: $\text{Loss} = \sum (y_i - \hat{y}_i)^2 + \lambda_1 \sum |\beta_j| + \lambda_2 \sum \beta_j^2$. It balances feature selection (from Lasso) and handling correlated features (from Ridge).
 
