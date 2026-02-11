@@ -26,13 +26,46 @@
       background: #fff;
     }
 
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: #f0f0f0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    header .nav-btn {
+      padding: 0.5rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: #fff;
+      color: #0366d6;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    header .nav-btn:hover {
+      background: #e8f4ff;
+      border-color: #0366d6;
+    }
+
+    header .nav-btn.active {
+      background: #0366d6;
+      color: #fff;
+      border-color: #0366d6;
+    }
+
     #container {
       display: flex;
-      min-height: 100vh;
+      min-height: calc(100vh - 52px);
     }
 
     nav {
       width: 260px;
+      min-width: 220px;
       padding: 1.5rem;
       background: #f6f6f6;
       border-right: 1px solid #ddd;
@@ -41,17 +74,31 @@
 
     nav h2 {
       margin-top: 0;
+      font-size: 1rem;
     }
 
-    nav a {
+    #chapterToc ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    #chapterToc li {
+      margin: 0.4rem 0;
+    }
+
+    #chapterToc li.h3 {
+      margin-left: 1rem;
+    }
+
+    #chapterToc a {
       display: block;
-      margin: 0.5rem 0;
       color: #0366d6;
       cursor: pointer;
       text-decoration: none;
+      font-size: 0.9rem;
     }
 
-    nav a:hover {
+    #chapterToc a:hover {
       text-decoration: underline;
     }
 
@@ -82,27 +129,6 @@
     h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); }
     h2 { margin-top: 2.5rem; }
 
-    .chapter-index {
-      background: #fafafa;
-      border-left: 4px solid #ddd;
-      padding: 1rem;
-      margin: 2rem 0;
-      font-size: 0.95rem;
-    }
-
-    .chapter-index ul {
-      list-style: none;
-      padding-left: 0;
-    }
-
-    .chapter-index li {
-      margin: 0.4rem 0;
-    }
-
-    .chapter-index li.h3 {
-      margin-left: 1rem;
-    }
-
     #toTop {
       position: fixed;
       bottom: 1.2rem;
@@ -125,6 +151,7 @@
 
       nav {
         width: 100%;
+        min-width: 100%;
         border-right: none;
         border-bottom: 1px solid #ddd;
       }
@@ -133,7 +160,10 @@
         display: block;
       }
 
-      nav.collapsed a,
+      nav.collapsed #chapterToc {
+        display: none;
+      }
+
       nav.collapsed h2 {
         display: none;
       }
@@ -165,15 +195,21 @@
 
 <button id="toTop">↑</button>
 
+<header>
+  <button class="nav-btn" data-chapter="chapter1" onclick="navigate('chapter1')">Chapter 1</button>
+  <button class="nav-btn" data-chapter="chapter2" onclick="navigate('chapter2')">Chapter 2</button>
+  <button class="nav-btn" data-chapter="chapter3" onclick="navigate('chapter3')">Chapter 3</button>
+  <button class="nav-btn" data-chapter="chapter4" onclick="navigate('chapter4')">Chapter 4</button>
+  <button class="nav-btn" data-chapter="Books" onclick="navigate('Books')">Books for Reference</button>
+</header>
+
 <div id="container">
-  <nav class="collapsed">
-    <button id="menuToggle">☰ Contents</button>
-    <h2>Chapters</h2>
-    <a onclick="navigate('chapter1')">Chapter 1</a>
-    <a onclick="navigate('chapter2')">Chapter 2</a>
-    <a onclick="navigate('chapter3')">Chapter 3</a>
-    <a onclick="navigate('chapter4')">Chapter 4</a>
-    <a onclick="navigate('Books')">Books for Reference</a>
+  <nav>
+    <button id="menuToggle">☰ In this chapter</button>
+    <div id="chapterToc">
+      <h2>In this chapter</h2>
+      <p id="tocPlaceholder" style="color:#666;font-size:0.9rem;">Load a chapter to see sections.</p>
+    </div>
   </nav>
 
   <main>
@@ -268,15 +304,25 @@
 
   function generateChapterIndex() {
     const content = document.getElementById("content");
+    const tocContainer = document.getElementById("chapterToc");
+    const placeholder = document.getElementById("tocPlaceholder");
     const headings = [...content.querySelectorAll("h2, h3")];
-    if (!headings.length) return;
 
-    const box = document.createElement("div");
-    box.className = "chapter-index";
-    box.innerHTML = "<strong>In this chapter</strong>";
+    // Remove old list if any
+    const oldList = tocContainer.querySelector("ul");
+    if (oldList) oldList.remove();
+    if (placeholder) placeholder.remove();
+
+    if (!headings.length) {
+      const p = document.createElement("p");
+      p.id = "tocPlaceholder";
+      p.style.cssText = "color:#666;font-size:0.9rem;";
+      p.textContent = "No sections in this chapter.";
+      tocContainer.appendChild(p);
+      return;
+    }
 
     const ul = document.createElement("ul");
-
     headings.forEach(h => {
       const li = document.createElement("li");
       if (h.tagName === "H3") li.className = "h3";
@@ -290,19 +336,24 @@
           block: "start"
         });
       };
-      
       li.appendChild(a);
       ul.appendChild(li);
     });
 
-    box.appendChild(ul);
-    content.querySelector("h1")?.after(box);
+    tocContainer.appendChild(ul);
+  }
+
+  function setActiveChapterButton(id) {
+    document.querySelectorAll("header .nav-btn").forEach(btn => {
+      btn.classList.toggle("active", btn.getAttribute("data-chapter") === id);
+    });
   }
 
   function navigate(id) {
     location.hash = id;
+    setActiveChapterButton(id);
     loadChapter(chapters[id]);
-    document.querySelector("nav").classList.add("collapsed");
+    document.querySelector("nav").classList.remove("collapsed");
   }
 
   document.getElementById("menuToggle").onclick = () =>
@@ -317,6 +368,7 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
 
   const initial = location.hash.replace("#", "") || "chapter1";
+  setActiveChapterButton(initial);
   loadChapter(chapters[initial]);
 </script>
 
