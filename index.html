@@ -36,6 +36,29 @@
       border-bottom: 1px solid #ddd;
     }
 
+    #headerToggle {
+      display: none;
+      padding: 0.5rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: #fff;
+      color: #0366d6;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    #headerToggle:hover {
+      background: #e8f4ff;
+      border-color: #0366d6;
+    }
+
+    #headerNav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
     header .nav-btn {
       padding: 0.5rem 1rem;
       border: 1px solid #ccc;
@@ -145,13 +168,43 @@
     }
 
     @media (max-width: 900px) {
+      header {
+        padding: 0.75rem 1rem;
+      }
+
+      #headerToggle {
+        display: block;
+      }
+
+      #headerNav {
+        display: none;
+        width: 100%;
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid #ddd;
+      }
+
+      header.expanded #headerNav {
+        display: flex;
+      }
+
       #container {
         flex-direction: column;
+      }
+
+      main {
+        padding: 0 1rem;
+      }
+
+      #content {
+        padding: 1.5rem 0.75rem;
+        max-width: 100%;
       }
 
       nav {
         width: 100%;
         min-width: 100%;
+        padding: 1rem;
         border-right: none;
         border-bottom: 1px solid #ddd;
       }
@@ -166,6 +219,17 @@
 
       nav.collapsed h2 {
         display: none;
+      }
+    }
+
+    /* Extra padding for very small screens (phones) */
+    @media (max-width: 480px) {
+      main {
+        padding: 0 0.75rem;
+      }
+
+      #content {
+        padding: 1.25rem 0.5rem;
       }
     }
 
@@ -196,11 +260,14 @@
 <button id="toTop">↑</button>
 
 <header>
-  <button class="nav-btn" data-chapter="chapter1" onclick="navigate('chapter1')">Chapter 1</button>
-  <button class="nav-btn" data-chapter="chapter2" onclick="navigate('chapter2')">Chapter 2</button>
-  <button class="nav-btn" data-chapter="chapter3" onclick="navigate('chapter3')">Chapter 3</button>
-  <button class="nav-btn" data-chapter="chapter4" onclick="navigate('chapter4')">Chapter 4</button>
-  <button class="nav-btn" data-chapter="Books" onclick="navigate('Books')">Books for Reference</button>
+  <button id="headerToggle" type="button" aria-label="Show chapters">☰ Chapters</button>
+  <div id="headerNav">
+    <button class="nav-btn" data-chapter="chapter1" onclick="navigate('chapter1')">Chapter 1</button>
+    <button class="nav-btn" data-chapter="chapter2" onclick="navigate('chapter2')">Chapter 2</button>
+    <button class="nav-btn" data-chapter="chapter3" onclick="navigate('chapter3')">Chapter 3</button>
+    <button class="nav-btn" data-chapter="chapter4" onclick="navigate('chapter4')">Chapter 4</button>
+    <button class="nav-btn" data-chapter="Books" onclick="navigate('Books')">Books for Reference</button>
+  </div>
 </header>
 
 <div id="container">
@@ -354,7 +421,11 @@
     setActiveChapterButton(id);
     loadChapter(chapters[id]);
     document.querySelector("nav").classList.remove("collapsed");
+    document.querySelector("header").classList.remove("expanded");
   }
+
+  document.getElementById("headerToggle").onclick = () =>
+    document.querySelector("header").classList.toggle("expanded");
 
   document.getElementById("menuToggle").onclick = () =>
     document.querySelector("nav").classList.toggle("collapsed");
