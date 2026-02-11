@@ -183,6 +183,8 @@ Suppose you want to tune a Decision Tree with two hyperparameters:
 - **max_depth**: [2, 5, 10]
 - **min_samples_leaf**: [1, 5]
 
+*min_samples_leaf*: The minimum number of samples required to be at a leaf node. A split point at any depth will only be considered if it leaves at least min_samples_leaf training samples in each of the left. 
+
 GridSearchCV tries all 6 combinations (3 × 2) and uses 5-fold CV for each:
 
 | max_depth | min_samples_leaf | CV Accuracy (mean) |
