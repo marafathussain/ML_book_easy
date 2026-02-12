@@ -159,7 +159,7 @@ So we can put $A$ (and hence $\bar{A}$ after discretization) into a nicer form b
 
 ### Diagonal case: Vandermonde = fast kernel
 
-Suppose $\bar{A}$ is diagonal with entries $\bar{A}_0, \bar{A}_1, \ldots, \bar{A}_{N-1}$. Then the $\ell$-th entry of the kernel is a sum over the $N$ dimensions:
+Suppose $\bar{A}$ is diagonal with entries $\bar{A}_0$, $\bar{A}_1$, $\ldots$, $\bar{A}_{N-1}$. Then the $\ell$-th entry of the kernel is a sum over the $N$ dimensions:
 
 $$
 \bar{K}[\ell] = C \bar{A}^{\ell} B = \sum_{n=0}^{N-1} C_n \bar{A}_n^{\ell} B_n
