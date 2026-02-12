@@ -1,10 +1,10 @@
 # Miscellaneous Notes
 
-Personal notes on selected topics for later review. 
+Personal notes on selected topics. 
 
 ---
 
-## S4 / State Space Models — Sections 2.2–2.4 and Section 3 (Gu et al., 2022)
+## S4 (Structured State Space for Sequence modeling) / State Space Models — Sections 2.2–2.4 and Section 3 (Gu et al., 2022)
 
 Reference: *Efficiently Modeling Long Sequences with Structured State Spaces*, Gu et al., arXiv:2111.00396v3. The following summarizes Sections 2.2–2.4 (background on SSMs, HiPPO, discrete recurrence, convolutional view) and Section 3 (S4 parameterization: how to compute the convolution kernel efficiently).
 
