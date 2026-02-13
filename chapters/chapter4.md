@@ -626,7 +626,15 @@ $$
 w_k = \frac{n}{K \cdot n_k}
 $$
 
-where $n = n_1 + \cdots + n_K$ is the total number of samples. The classifier then minimizes a weighted sum of errors (errors on the minority class count more).
+where $n = n_1 + \cdots + n_K$ is the total number of samples.
+
+**Conceptual loss with class weights:** The classifier minimizes a *weighted* loss: each sample’s contribution is multiplied by the weight of its class. If sample $i$ belongs to class $y_i \in \{1,\ldots,K\}$, we use weight $w_{y_i}$. So the total loss has the form:
+
+$$
+\text{Loss} = \sum_{i=1}^{n} w_{y_i} \cdot \ell(y_i, \hat{y}_i)
+$$
+
+Here $\ell(y_i, \hat{y}_i)$ is the usual per-sample loss (e.g. log loss or hinge loss). Because $w_k$ is larger for classes with fewer samples, an error on a minority-class sample increases the loss more than an error on a majority-class sample. The model is therefore encouraged to fit the minority class better. With $w_k = n/(K \cdot n_k)$, the total weight of all samples in each class is the same ($n/K$), so no single class dominates the loss simply by having more samples.
 
 ### 4.7.3 Oversampling and SMOTE
 
