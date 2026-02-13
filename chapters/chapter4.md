@@ -34,7 +34,17 @@ All examples use the **Iris dataset**. We treat one species as the **positive** 
 
 **The idea:**
 
-If a feature's variance is below a threshold, remove it.
+If a feature's variance is below a threshold, remove it. Variance measures how spread out the values of that feature are across samples. We estimate it from the training data.
+
+**Estimating variance:**
+
+For a single feature, let $x_1, x_2, \ldots, x_n$ be its values over $n$ samples, and $\bar{x} = \frac{1}{n}\sum_{i=1}^n x_i$ the sample mean. The (sample) variance is:
+
+$$
+s^2 = \frac{1}{n-1} \sum_{i=1}^n (x_i - \bar{x})^2
+$$
+
+This is the unbiased estimator: we divide by $n-1$ so that on average it equals the true variance. Low $s^2$ means the feature is almost constant; variance threshold removes features whose $s^2$ is below the chosen threshold.
 
 **Example:**
 
