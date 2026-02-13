@@ -620,7 +620,13 @@ Suppose we have 20 virginica flowers (positive) and 80 non-virginica (negative).
 **Pros:** No change to the number of samples; no synthetic data; easy to use.  
 **Cons:** Does not add new information; it only reweights existing examples.
 
-**Formula (conceptually):** If class \(k\) has \(n_k\) samples and there are \(K\) classes, a common choice is \(w_k = n / (K \cdot n_k)\), so that the total weight per class is the same. The classifier then minimizes a weighted sum of errors.
+**Formula (conceptually):** If class $k$ has $n_k$ samples and there are $K$ classes, a common choice is to set the weight for class $k$ so that the total weight per class is the same:
+
+$$
+w_k = \frac{n}{K \cdot n_k}
+$$
+
+where $n = n_1 + \cdots + n_K$ is the total number of samples. The classifier then minimizes a weighted sum of errors (errors on the minority class count more).
 
 ### 4.7.3 Oversampling and SMOTE
 
@@ -661,7 +667,7 @@ A classifier often outputs a **probability** (e.g., "probability of virginica = 
 
 ### 4.8.1 What is calibration?
 
-**Calibrated probabilities** mean: among all samples that received a predicted probability of about \(p\), the fraction that are actually positive should be about \(p\). For example, among flowers with predicted P(virginica) between 0.6 and 0.7, roughly 60–70% should be virginica. If the model says 0.7 but only 40% of those are virginica, the model is **overconfident** (poorly calibrated).
+**Calibrated probabilities** mean: among all samples that received a predicted probability of about $p$, the fraction that are actually positive should be about $p$. For example, among flowers with predicted P(virginica) between 0.6 and 0.7, roughly 60–70% should be virginica. If the model says 0.7 but only 40% of those are virginica, the model is **overconfident** (poorly calibrated).
 
 ### 4.8.2 Calibration curve (reliability diagram)
 
