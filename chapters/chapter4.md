@@ -44,7 +44,9 @@ $$
 s^2 = \frac{1}{n-1} \sum_{i=1}^n (x_i - \bar{x})^2
 $$
 
-This is the unbiased estimator: we divide by $n-1$ so that on average it equals the true variance. Low $s^2$ means the feature is almost constant; variance threshold removes features whose $s^2$ is below the chosen threshold.
+**Why divide by $n-1$ instead of $n$?** If we knew the true mean $\mu$, we could use $\frac{1}{n}\sum_{i=1}^n (x_i - \mu)^2$ and that would be an unbiased estimate of the variance. But we do not know $\mu$; we use the sample mean $\bar{x}$. The data are necessarily "closer" to $\bar{x}$ than to $\mu$ (because $\bar{x}$ is chosen to minimize exactly $\sum (x_i - \bar{x})^2$). So $\frac{1}{n}\sum (x_i - \bar{x})^2$ tends to underestimate the true variance. Dividing by $n-1$ instead of $n$ corrects this bias: on average, $s^2$ then equals the true variance (it is an *unbiased* estimator). Informally, we "used up" one degree of freedom by estimating the mean from the same data, so we have $n-1$ left when estimating spread. In practice, with moderate or large $n$, the difference between $n$ and $n-1$ is small; the convention in statistics and in tools like scikit-learn is to use $n-1$.
+
+Low $s^2$ means the feature is almost constant; variance threshold removes features whose $s^2$ is below the chosen threshold.
 
 **Example:**
 
