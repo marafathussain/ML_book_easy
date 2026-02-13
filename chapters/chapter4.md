@@ -303,16 +303,26 @@ $$
 
 where $\lambda$ (lambda) controls how much we care about the penalty. Larger $\lambda$ = stronger regularization = simpler models.
 
+**The p-norm (for the penalty):**
+
+The size of the coefficient vector $\boldsymbol{\beta} = (\beta_1, \ldots, \beta_p)$ is often measured by a **p-norm**:
+
+$$
+\|\boldsymbol{\beta}\|_p = \left( \sum_{j=1}^p |\beta_j|^p \right)^{1/p}
+$$
+
+For $p = 1$: $\|\boldsymbol{\beta}\|_1 = |\beta_1| + |\beta_2| + \cdots + |\beta_p|$ (sum of absolute values). For $p = 2$: $\|\boldsymbol{\beta}\|_2 = \sqrt{\beta_1^2 + \beta_2^2 + \cdots + \beta_p^2}$ (Euclidean length). Higher $p$ emphasizes larger coefficients more. Ridge and Lasso correspond to specific choices of $p$, as below.
+
 ### 4.3.1 L2 Regularization (Ridge)
 
 **What is Ridge regression?**
 
-**Ridge regression** adds a penalty proportional to the **sum of squared coefficients**. It shrinks coefficients toward zero but does not set them to exactly zero.
+**Ridge regression** adds a penalty proportional to the **sum of squared coefficients**. It shrinks coefficients toward zero but does not set them to exactly zero. In terms of the p-norm above, Ridge uses **$p = 2$**: the penalty is $\lambda \|\boldsymbol{\beta}\|_2^2$, i.e. $\lambda$ times the squared L2 norm.
 
 **The equation:**
 
 $$
-\text{Loss} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^p \beta_j^2
+\text{Loss} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^p \beta_j^2 = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda \|\boldsymbol{\beta}\|_2^2
 $$
 
 **Breaking down the equation:**
@@ -352,12 +362,12 @@ coefficients = ridge.coef_
 
 **What is Lasso?**
 
-**Lasso** (Least Absolute Shrinkage and Selection Operator) adds a penalty proportional to the **sum of absolute values of coefficients**. Unlike Ridge, Lasso can set coefficients to exactly zero, effectively performing **feature selection**.
+**Lasso** (Least Absolute Shrinkage and Selection Operator) adds a penalty proportional to the **sum of absolute values of coefficients**. Unlike Ridge, Lasso can set coefficients to exactly zero, effectively performing **feature selection**. In terms of the p-norm above, Lasso uses **$p = 1$**: the penalty is $\lambda \|\boldsymbol{\beta}\|_1$, i.e. $\lambda$ times the L1 norm.
 
 **The equation:**
 
 $$
-\text{Loss} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^p |\beta_j|
+\text{Loss} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda \sum_{j=1}^p |\beta_j| = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \lambda \|\boldsymbol{\beta}\|_1
 $$
 
 **Effect:** Some coefficients become exactly zero (features are removed), so Lasso performs automatic feature selection and the model becomes simpler and more interpretable.
