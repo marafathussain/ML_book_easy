@@ -1,4 +1,4 @@
-# Chapter 4: Beyond Accuracy, Precision, Recall, Imbalance, and Calibration
+# Chapter 4: Beyond Accuracy; Precision, Recall, Imbalance, and Calibration
 
 ## Introduction
 
