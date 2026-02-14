@@ -675,7 +675,46 @@ A classifier often outputs a **probability** (e.g., "probability of virginica = 
 
 ### 4.8.1 What is calibration?
 
-**Calibrated probabilities** mean: among all samples that received a predicted probability of about $p$, the fraction that are actually positive should be about $p$. For example, among flowers with predicted P(virginica) between 0.6 and 0.7, roughly 60–70% should be virginica. If the model says 0.7 but only 40% of those are virginica, the model is **overconfident** (poorly calibrated).
+**Calibrated probabilities** mean: among all samples that received a predicted probability of about $p$, the fraction that are actually positive should be about $p$.
+
+**Concrete example:** Suppose you run your classifier on 100 flowers. Out of those 100:
+
+- 20 flowers received predicted probability between 0.65 and 0.75 (we’ll call that the “0.70 bin”).
+- Among those 20 flowers, 14 are actually virginica.
+
+Then the empirical frequency in that bin is:
+
+$$
+\frac{14}{20} = 0.70
+$$
+
+That model is perfectly calibrated in that bin: it said about 70%, and 70% were actually virginica.
+
+If instead 18 out of 20 were virginica:
+
+$$
+\frac{18}{20} = 0.90
+$$
+
+Then the model was **underconfident** in that region. It said 70%, reality was 90%.
+
+If only 8 out of 20 were virginica:
+
+$$
+\frac{8}{20} = 0.40
+$$
+
+Then the model was **overconfident**. It claimed 70%, reality was 40%.
+
+So calibration is about matching predicted probability to empirical frequency within groups of similar predictions.
+
+**Mathematically,** calibration means:
+
+$$
+P(Y = 1 \mid \hat{y} = p) = p
+$$
+
+That is a conditional probability: given that the model outputs $p$, the true event frequency (fraction of positives among those samples) should be $p$.
 
 ### 4.8.2 Calibration curve (reliability diagram)
 
