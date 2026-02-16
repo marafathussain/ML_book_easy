@@ -179,36 +179,29 @@ Mean of A = 3, mean of B = 1.5. After **centering** (subtract the mean from each
 
 So along the "A axis" (petal length) the spread is 2.5; along the "B axis" (petal width) the spread is 0.625. The data are more spread out along A than along B. **Total variance** (sum of the two) = 2.5 + 0.625 = **3.125**.
 
-### 5.2.2 How PCA uses variance: new axes and component ranking
+### 5.2.2 How PCA uses variance: continuing the same example
 
-The key idea of PCA: instead of only looking at variance along the **original** axes (A and B), we ask: "Is there another **direction** (a slanted line through the cloud) along which the variance is even larger?"
+We just saw that in our 5-sample table, **variance along A** = 2.5 and **variance along B** = 0.625, so **total variance** = 3.125. So far we only measured spread along the **original** axes (the "horizontal" and "vertical" directions). PCA asks a different question: *"Is there a **slanted** direction (a line through the cloud) along which the variance is even bigger?"*
 
-In our small example, the points lie almost on a straight line (B is half of A). So there is one direction (along that line) where the spread is **maximum**: that is the **first principal component (PC1)**. The variance of the data when we project them onto PC1 is **larger** than the variance along either A or B alone. The direction **perpendicular** to PC1 has the remaining spread; that is the **second principal component (PC2)**.
+**Back to our numbers.** In the table, notice that B is always exactly half of A (0.5, 1.0, 1.5, 2.0, 2.5). So all five points lie on a single straight line: the line "B = 0.5 × A". If you draw that line and project each point onto it, the projected values are spread out a lot. If you draw the direction **perpendicular** to that line and project the points onto it, they all land almost on top of each other (no spread). So:
 
-**Ranking components by variance:**
+- **First principal component (PC1):** the direction along that line. The variance of the data when we project onto this direction is **as large as it can get**; here it actually equals the total variance 3.125 (because all the spread in the data is along that one line).
+- **Second principal component (PC2):** the direction perpendicular to PC1. The variance along PC2 is (in this ideal case) zero, because the points have no spread in that direction.
 
-- PCA finds directions in order of **decreasing variance**.
-  - **PC1:** direction of **maximum** variance.
-  - **PC2:** direction of maximum variance among all directions **perpendicular** to PC1.
-  - **PC3:** direction of maximum variance perpendicular to PC1 and PC2, and so on.
+So we **rank** the components by how much variance they capture: PC1 has the **largest** variance (3.125), PC2 has the **next** (0). That is exactly what "component ranking" means: PC1 is first because it has the most variance, PC2 is second, and so on.
 
-- For each component, we compute the **variance of the projected data** along that direction. That number is the **variance explained** by that component (often reported as an eigenvalue).
+**Variance explained ratio.** We already had total variance = 3.125. So:
 
-- **Variance explained ratio** for a component = (variance of that component) / (total variance of all features). So we get a percentage or fraction for each component. For example: PC1 explains 80%, PC2 explains 15%, PC3 explains 4%, PC4 explains 1%. That is what you see in a **scree plot**: each bar or point is the variance (or % variance) of one component, in order PC1, PC2, PC3, …
+- Variance explained by PC1 = 3.125 → **ratio** = 3.125 / 3.125 = **100%**.
+- Variance explained by PC2 = 0 → **ratio** = 0%.
 
-- **Why ranking matters:** We keep the top components (e.g., PC1 and PC2) because they capture most of the spread. The later components often capture mostly noise. So we reduce dimensions by keeping only the first few components and throwing away the rest.
+In a real dataset the points do not lie on a perfect line, so PC1 will capture most but not all of the variance, and PC2 will capture the rest. For example you might get PC1 ≈ 80%, PC2 ≈ 15%, PC3 ≈ 4%, PC4 ≈ 1%. A **scree plot** is just a bar or line plot of these ratios (or the raw variances) in order: PC1, then PC2, then PC3, … So the example above is the same idea: we **rank** components by variance, and the **variance explained ratio** is each component’s variance divided by total variance.
 
-**Summary in one sentence:** PCA finds new axes (principal components) so that the first axis has the largest variance, the second has the next largest (and is perpendicular to the first), and so on; we rank components by this variance and use the top ones to summarize the data.
+**Why this matters.** We keep the first few components (e.g. PC1 and PC2) because they contain most of the spread. The later components often add little; we drop them to reduce dimension. So PCA uses the **same** variance we computed in 5.2.1; it just measures that variance along **new** directions (PC1, PC2, …) instead of only along the original features (A, B), and then **ranks** those directions by how much variance they have.
 
-**Mathematical formulation (for reference):**
+**In one sentence:** PCA finds new axes (PC1, PC2, …) so that the first axis has the largest variance, the second has the next largest and is perpendicular to the first, and so on; we rank components by this variance and use the top ones to summarize the data.
 
-The first principal component $\mathbf{w}_1$ is the unit vector that maximizes the variance of the projected data:
-
-$$
-\mathbf{w}_1 = \arg\max_{\|\mathbf{w}\|=1} \text{Var}(\mathbf{X} \mathbf{w})
-$$
-
-The second component $\mathbf{w}_2$ is orthogonal to $\mathbf{w}_1$ and maximizes the remaining variance. The variances along these directions (eigenvalues of the covariance matrix) are exactly the "variance explained" values we use for ranking and for the scree plot.
+**Math (for reference):** The first component $\mathbf{w}_1$ is the unit direction that maximizes the variance of the projected data: $\mathbf{w}_1 = \arg\max_{\|\mathbf{w}\|=1} \text{Var}(\mathbf{X} \mathbf{w})$. The second is perpendicular to $\mathbf{w}_1$ and maximizes the remaining variance. The variances along these directions (eigenvalues) are the numbers we use for ranking and for the scree plot.
 
 ### 5.2.3 Projections
 
