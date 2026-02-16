@@ -96,7 +96,7 @@ $$
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter5/hierarchical_iris.png" alt="Hierarchical clustering on Iris" />
-  <p class="caption"><strong>Figure 5.2.</strong> Agglomerative hierarchical clustering on Iris (30 samples for a readable dendrogram). Left: dendrogram; x-axis shows sample indices. A horizontal cut at a given height defines clusters. Right: cluster assignment (3 clusters) in 2D for the same 30 samples.</p>
+  <p class="caption"><strong>Figure 5.2.</strong> Agglomerative hierarchical clustering on Iris. Left: dendrogram. A horizontal cut at a given height defines clusters. Right: cluster assignment (e.g., 3 clusters) in 2D.</p>
 </div>
 
 **How to use in Python:**
