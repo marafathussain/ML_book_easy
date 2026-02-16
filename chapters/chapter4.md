@@ -535,11 +535,35 @@ $$
 
 **Iris example:** If we predicted 12 flowers as virginica and 9 of them were truly virginica, then TP = 9, FP = 3, and Precision = 9/12 = 0.75 (75%).
 
-### 4.5.4 The precision–recall trade-off
+### 4.5.4 Specificity (True Negative Rate)
+
+**Specificity** answers: *Of all the actual negatives, how many did we correctly predict as negative?*
+
+$$
+\text{Specificity} = \frac{TN}{TN + FP} = \frac{TN}{\text{all actual negatives}}
+$$
+
+- **High specificity** means we correctly reject most negatives (low FP). Few false alarms among truly negative samples.
+- **Low specificity** means many false positives: we wrongly call negatives "positive" too often.
+
+**Why is specificity important?** Recall and precision focus on the positive class (how well we find positives, how often our positive predictions are correct). Specificity focuses on the **negative** class: when we say "negative," how often are we right? In many applications, both matter. For example, in disease screening:
+- **Recall** (sensitivity): of all diseased people, how many do we catch? We want to miss few.
+- **Specificity**: of all healthy people, how many do we correctly label as healthy? We want to avoid wrongly alarming healthy people (false positives).
+
+If specificity is low, healthy people receive positive predictions and may undergo unnecessary follow-up tests or treatment. That is costly and stressful. So we often want both high recall (catch the disease) and high specificity (avoid false alarms in healthy people).
+
+**Where to use specificity:**
+- **Medical diagnostics:** Avoid unnecessary procedures for healthy patients; balance sensitivity and specificity.
+- **Spam detection:** High specificity means few legitimate emails flagged as spam.
+- **Rare-event screening:** When negatives vastly outnumber positives, specificity tells us how well we handle the majority (negatives), complementing recall and precision which focus on positives.
+
+**Iris example:** If there are 40 non-virginica flowers in the test set and we correctly predict 36 of them as non-virginica, then TN = 36, FP = 4, and Specificity = 36/40 = 0.90 (90%).
+
+### 4.5.5 The precision–recall trade-off
 
 Often, **increasing recall** (catching more positives) means lowering the decision threshold, so we predict "positive" more often. That can **increase false positives** and thus **lower precision**. So we usually have a trade-off: we can be more cautious (high precision, lower recall) or more aggressive (high recall, lower precision). The choice depends on the application.
 
-### 4.5.5 F1-Score: Combining precision and recall
+### 4.5.6 F1-Score: Combining precision and recall
 
 The **F1-score** is the **harmonic mean** of precision and recall. It combines both into a single number:
 
@@ -552,6 +576,7 @@ $$
 **When to use which:**
 - **Recall** when missing a positive is worse (e.g., screening for disease).
 - **Precision** when false positives are worse (e.g., when a positive triggers an expensive follow-up).
+- **Specificity** when correctly identifying negatives matters (e.g., avoiding false alarms in healthy people, spam filtering).
 - **F1** when you want a single balance between precision and recall (e.g., default for imbalanced classification).
 
 The figure below shows precision, recall, and F1 for an Iris classifier (virginica vs rest) at a fixed threshold, and how they relate to the confusion matrix.
@@ -759,9 +784,10 @@ frac_of_positives, mean_predicted_value = calibration_curve(y_true, y_prob, n_bi
 
 **Confusion matrix:** Counts TP, TN, FP, FN. Rows = true labels, columns = predictions. Foundation for precision, recall, and F1.
 
-**Precision and recall:**
+**Precision, recall, and specificity:**
 - **Recall** = TP / (TP + FN): of all actual positives, how many did we find? Use when missing a positive is costly.
 - **Precision** = TP / (TP + FP): of all predicted positives, how many were correct? Use when false positives are costly.
+- **Specificity** = TN / (TN + FP): of all actual negatives, how many did we correctly reject? Use when avoiding false alarms in negatives is important.
 - **F1** = harmonic mean of precision and recall; balances both.
 
 **Precision–Recall curve:** Plot precision vs recall as the decision threshold changes. Area under the curve (AUPRC) summarizes performance. Especially useful when the positive class is rare.
