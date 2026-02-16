@@ -232,9 +232,24 @@ Imagine a 2D vector $\mathbf{v}$. When we apply the matrix $\mathbf{A}$, we get 
   <p class="caption"><strong>Figure 5.3a.</strong> An eigenvector $\mathbf{v}$ of a matrix $\mathbf{A}$: when we multiply $\mathbf{A}\mathbf{v}$, the result lies on the same line as $\mathbf{v}$, scaled by the eigenvalue $\lambda$. Left: $\lambda > 1$ (stretch). Right: $0 < \lambda < 1$ (shrink). For other vectors (not eigenvectors), $\mathbf{A}$ would change the direction as well.</p>
 </div>
 
-**How eigenvalues and eigenvectors give us PCA.**
+**Example: the same 5-sample, 2-feature data from section 5.2.1.**
 
-For centered data, the **covariance matrix** summarizes the variances and covariances of the features. It turns out that:
+We had two centered features A and B with variance of A = 2.5, variance of B = 0.625, and total variance = 3.125. The **covariance matrix** of that centered data is a 2×2 square matrix:
+
+$$
+\mathbf{\Sigma} = \begin{pmatrix} \text{Var}(A) & \text{Cov}(A,B) \\ \text{Cov}(A,B) & \text{Var}(B) \end{pmatrix} = \begin{pmatrix} 2.5 & 1.25 \\ 1.25 & 0.625 \end{pmatrix}
+$$
+
+(The covariance of A and B here is 1.25; it is the same in both off-diagonal positions.) This is the matrix whose eigenvectors and eigenvalues we care about. For this small example you can check that:
+
+- The **eigenvalues** of $\mathbf{\Sigma}$ are $\lambda_1 = 3.125$ and $\lambda_2 = 0$. So the first eigenvalue equals the total variance (all spread is along one line), and the second is zero (no spread perpendicular to that line). That is exactly the variance we attributed to PC1 and PC2 in section 5.2.2.
+- The **eigenvector** for $\lambda_1 = 3.125$ points in the direction (2, 1) (or any multiple of it), i.e. the line "B = 0.5 × A" along which the five points lie. So that eigenvector is PC1. The eigenvector for $\lambda_2 = 0$ is perpendicular to that and is PC2.
+
+So the same numbers we used earlier (2.5, 0.625, 3.125) appear in this square matrix; its eigenvalues are the variances of the components, and its eigenvectors are the component directions.
+
+**How eigenvalues and eigenvectors give us PCA (in general).**
+
+For centered data, the **covariance matrix** (like the 2×2 example above) summarizes the variances and covariances of the features. It turns out that:
 
 1. The **eigenvectors** of the covariance matrix are exactly the **principal component directions** (PC1, PC2, …). So the first principal component is the eigenvector with the **largest** eigenvalue, the second is the eigenvector with the **second-largest** eigenvalue, and so on. We rank components by eigenvalue.
 
