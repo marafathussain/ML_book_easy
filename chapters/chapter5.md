@@ -201,9 +201,55 @@ In a real dataset the points do not lie on a perfect line, so PC1 will capture m
 
 **In one sentence:** PCA finds new axes (PC1, PC2, …) so that the first axis has the largest variance, the second has the next largest and is perpendicular to the first, and so on; we rank components by this variance and use the top ones to summarize the data.
 
-**Math (for reference):** The first component $\mathbf{w}_1$ is the unit direction that maximizes the variance of the projected data: $\mathbf{w}_1 = \arg\max_{\|\mathbf{w}\|=1} \text{Var}(\mathbf{X} \mathbf{w})$. The second is perpendicular to $\mathbf{w}_1$ and maximizes the remaining variance. The variances along these directions (eigenvalues) are the numbers we use for ranking and for the scree plot.
+**Math (for reference):** The first component is the unit direction $\mathbf{w}_1$ that maximizes the variance of the projected data:
 
-### 5.2.3 Projections
+$$
+\mathbf{w}_1 = \arg\max_{\|\mathbf{w}\|=1} \text{Var}(\mathbf{X} \mathbf{w})
+$$
+
+The second component is perpendicular to $\mathbf{w}_1$ and maximizes the remaining variance. The variances along these directions are the **eigenvalues** of the covariance matrix; they are the numbers we use for ranking and for the scree plot. The next section explains what eigenvalues and eigenvectors are and how PCA uses them.
+
+### 5.2.3 Eigenvalues and eigenvectors: what they are and how PCA uses them
+
+PCA is computed using **eigenvalues** and **eigenvectors** of the data’s covariance matrix. This section explains what those are and how they give us the principal components.
+
+**What is an eigenvector?**
+
+Suppose we have a square matrix $\mathbf{A}$ (for PCA, this will be the covariance matrix of the centered data). An **eigenvector** of $\mathbf{A}$ is a nonzero vector $\mathbf{v}$ such that when we multiply $\mathbf{A}$ by $\mathbf{v}$, we get a vector that points in the **same direction** as $\mathbf{v}$, just possibly scaled:
+
+$$
+\mathbf{A} \mathbf{v} = \lambda \mathbf{v}
+$$
+
+The number $\lambda$ (lambda) is called the **eigenvalue** for that eigenvector. So the matrix $\mathbf{A}$ does not rotate $\mathbf{v}$; it only **stretches or shrinks** it by the factor $\lambda$. If $\lambda > 1$, the vector gets longer; if $0 < \lambda < 1$, it gets shorter; if $\lambda < 0$, it flips to the opposite direction and then is scaled.
+
+**Picture: how the eigenvalue changes vector length.**
+
+Imagine a 2D vector $\mathbf{v}$. When we apply the matrix $\mathbf{A}$, we get a new vector $\mathbf{A}\mathbf{v}$. For most vectors, $\mathbf{A}\mathbf{v}$ points in a **different** direction than $\mathbf{v}$. But for **eigenvectors**, $\mathbf{A}\mathbf{v}$ stays on the same line as $\mathbf{v}$: it is just $\lambda$ times $\mathbf{v}$. So the eigenvalue $\lambda$ is the factor by which the length of $\mathbf{v}$ changes (stretch or shrink). The figure below illustrates this: an eigenvector $\mathbf{v}$ and the result $\mathbf{A}\mathbf{v} = \lambda \mathbf{v}$ lie on the same line; the ratio of their lengths is $|\lambda|$.
+
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter5/eigenvalue_eigenvector.png" alt="Eigenvalue and eigenvector: matrix stretches vector along same direction" />
+  <p class="caption"><strong>Figure 5.3a.</strong> An eigenvector $\mathbf{v}$ of a matrix $\mathbf{A}$: when we multiply $\mathbf{A}\mathbf{v}$, the result lies on the same line as $\mathbf{v}$, scaled by the eigenvalue $\lambda$. Left: $\lambda > 1$ (stretch). Right: $0 < \lambda < 1$ (shrink). For other vectors (not eigenvectors), $\mathbf{A}$ would change the direction as well.</p>
+</div>
+
+**How eigenvalues and eigenvectors give us PCA.**
+
+For centered data, the **covariance matrix** summarizes the variances and covariances of the features. It turns out that:
+
+1. The **eigenvectors** of the covariance matrix are exactly the **principal component directions** (PC1, PC2, …). So the first principal component is the eigenvector with the **largest** eigenvalue, the second is the eigenvector with the **second-largest** eigenvalue, and so on. We rank components by eigenvalue.
+
+2. The **eigenvalues** are exactly the **variances** of the data when projected onto the corresponding eigenvectors. So the eigenvalue for PC1 is the variance along PC1 (the number we plot in the scree plot). The sum of all eigenvalues equals the total variance of the data.
+
+So when we said earlier that "we rank components by variance," that variance is the **eigenvalue** of the covariance matrix for that direction; and the direction itself is the **eigenvector**. PCA is nothing more than: (1) center the data, (2) compute the covariance matrix, (3) find its eigenvectors and eigenvalues, (4) sort by eigenvalue (largest first), and (5) use the top eigenvectors as the new axes (principal components).
+
+**Summary:** Eigenvectors are directions that the matrix only stretches or shrinks (no rotation). Eigenvalues are the stretch factors. For the covariance matrix, the eigenvectors are the PC directions and the eigenvalues are the variances along those directions, so they tell us how to rank and plot the principal components.
+
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter5/pca_eigenvectors_iris.png" alt="PCA: eigenvectors on scatter plot" />
+  <p class="caption"><strong>Figure 5.3b.</strong> PCA on Iris (petal length, petal width). The arrows show the two eigenvectors of the covariance matrix (PC1 and PC2). PC1 (largest eigenvalue) points along the direction of maximum variance; PC2 (smaller eigenvalue) is perpendicular. The lengths of the arrows can be drawn proportional to the square root of the eigenvalue (standard deviation along that direction).</p>
+</div>
+
+### 5.2.4 Projections
 
 **Projection** means projecting each sample onto a principal component. If $\mathbf{w}_1$ is the first component (a unit vector), the projection of sample $\mathbf{x}_i$ onto PC1 is:
 
@@ -215,7 +261,7 @@ The projected values $z_{i1}, z_{i2}, \ldots$ are the **scores** or **coordinate
 
 **Centering:** PCA is usually applied to **centered** data (subtract the mean of each feature). The components then pass through the center of the cloud.
 
-### 5.2.4 Interpreting PCA for Biologists
+### 5.2.5 Interpreting PCA for Biologists
 
 - **PC1** often captures the main gradient or axis of variation (e.g., cell type, treatment effect, developmental stage).
 - **Loadings:** The weight of each original feature in a component. High loading means that feature contributes a lot to that component. For gene expression, genes with high loadings on PC1 are the ones that vary most along PC1.
