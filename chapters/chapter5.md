@@ -121,17 +121,86 @@ labels = agg.fit_predict(X)
 
 ## 5.2 PCA: Principal Component Analysis
 
-When you have many features (e.g., thousands of genes), visualization and analysis become difficult. **PCA** reduces the number of dimensions while keeping as much variance (spread) as possible. It finds new directions (principal components) that capture the most variation in the data.
+When you have many features (e.g., thousands of genes), visualization and analysis become difficult. **PCA** reduces the number of dimensions while keeping as much variance (spread) as possible. It finds new directions (principal components) that capture the most variation in the data. To understand PCA, you first need to understand **variance** and how we use it to rank components. Below we build this from the ground up.
 
-### 5.2.1 Variance and Components
+### 5.2.1 What is variance? A step-by-step example
 
-**Variance** measures how spread out the data is along a direction. PCA finds directions of **maximum variance** and projects the data onto them.
+**Variance** is a number that measures how spread out a set of values is. If all values are the same, variance is zero. If they are very different from each other, variance is large.
 
-**First principal component (PC1):** The direction along which the data have the largest variance. It is the "best" single line to summarize the data.
+**How we compute variance (one feature):**
 
-**Second principal component (PC2):** The direction of maximum variance that is **orthogonal** (perpendicular) to PC1. And so on for PC3, PC4, etc.
+1. Compute the **mean** (average) of the values.
+2. For each value, compute how far it is from the mean: (value minus mean).
+3. Square those differences (so positive and negative do not cancel).
+4. Average those squared differences. (In practice we often divide by $n-1$ instead of $n$ for a sample, as in Chapter 4.)
 
-**Mathematical formulation (conceptually):**
+So variance is the **average squared distance from the mean**. In a formula, for values $x_1, x_2, \ldots, x_n$ with mean $\bar{x}$:
+
+$$
+\text{Variance} = \frac{1}{n-1} \sum_{i=1}^n (x_i - \bar{x})^2
+$$
+
+**Tiny example with numbers:**
+
+Suppose we have 5 flowers and one feature, **petal length (cm):** 1, 2, 3, 4, 5.
+
+- Mean = (1+2+3+4+5) / 5 = **3**.
+- Differences from mean: -2, -1, 0, 1, 2.
+- Squared differences: 4, 1, 0, 1, 4.
+- Variance = (4+1+0+1+4) / 4 = **2.5** (using $n-1=4$ in the denominator).
+
+So the variance of this small set is 2.5. If we had another feature (e.g., petal width) we could compute its variance the same way. Each feature has its own variance.
+
+**Two features: variance along each axis**
+
+Imagine we have 5 samples and 2 features (e.g., petal length and petal width):
+
+| Sample | Petal length (A) | Petal width (B) |
+|--------|------------------|------------------|
+| 1      | 1                | 0.5              |
+| 2      | 2                | 1.0              |
+| 3      | 3                | 1.5              |
+| 4      | 4                | 2.0              |
+| 5      | 5                | 2.5              |
+
+Mean of A = 3, mean of B = 1.5. After **centering** (subtract the mean from each column), we get:
+
+| Sample | A (centered) | B (centered) |
+|--------|--------------|--------------|
+| 1      | -2           | -1.0         |
+| 2      | -1           | -0.5         |
+| 3      | 0            | 0            |
+| 4      | 1            | 0.5          |
+| 5      | 2            | 1.0          |
+
+**Variance of A** = ((-2)² + (-1)² + 0² + 1² + 2²) / 4 = 10/4 = **2.5**.
+
+**Variance of B** = ((-1)² + (-0.5)² + 0² + (0.5)² + (1)²) / 4 = 2.5/4 = **0.625**.
+
+So along the "A axis" (petal length) the spread is 2.5; along the "B axis" (petal width) the spread is 0.625. The data are more spread out along A than along B. **Total variance** (sum of the two) = 2.5 + 0.625 = **3.125**.
+
+### 5.2.2 How PCA uses variance: new axes and component ranking
+
+The key idea of PCA: instead of only looking at variance along the **original** axes (A and B), we ask: "Is there another **direction** (a slanted line through the cloud) along which the variance is even larger?"
+
+In our small example, the points lie almost on a straight line (B is half of A). So there is one direction (along that line) where the spread is **maximum**: that is the **first principal component (PC1)**. The variance of the data when we project them onto PC1 is **larger** than the variance along either A or B alone. The direction **perpendicular** to PC1 has the remaining spread; that is the **second principal component (PC2)**.
+
+**Ranking components by variance:**
+
+- PCA finds directions in order of **decreasing variance**.
+  - **PC1:** direction of **maximum** variance.
+  - **PC2:** direction of maximum variance among all directions **perpendicular** to PC1.
+  - **PC3:** direction of maximum variance perpendicular to PC1 and PC2, and so on.
+
+- For each component, we compute the **variance of the projected data** along that direction. That number is the **variance explained** by that component (often reported as an eigenvalue).
+
+- **Variance explained ratio** for a component = (variance of that component) / (total variance of all features). So we get a percentage or fraction for each component. For example: PC1 explains 80%, PC2 explains 15%, PC3 explains 4%, PC4 explains 1%. That is what you see in a **scree plot**: each bar or point is the variance (or % variance) of one component, in order PC1, PC2, PC3, …
+
+- **Why ranking matters:** We keep the top components (e.g., PC1 and PC2) because they capture most of the spread. The later components often capture mostly noise. So we reduce dimensions by keeping only the first few components and throwing away the rest.
+
+**Summary in one sentence:** PCA finds new axes (principal components) so that the first axis has the largest variance, the second has the next largest (and is perpendicular to the first), and so on; we rank components by this variance and use the top ones to summarize the data.
+
+**Mathematical formulation (for reference):**
 
 The first principal component $\mathbf{w}_1$ is the unit vector that maximizes the variance of the projected data:
 
@@ -139,11 +208,9 @@ $$
 \mathbf{w}_1 = \arg\max_{\|\mathbf{w}\|=1} \text{Var}(\mathbf{X} \mathbf{w})
 $$
 
-The second component $\mathbf{w}_2$ is orthogonal to $\mathbf{w}_1$ and maximizes the remaining variance, and so on. The eigenvalues of the covariance matrix give the variance explained by each component.
+The second component $\mathbf{w}_2$ is orthogonal to $\mathbf{w}_1$ and maximizes the remaining variance. The variances along these directions (eigenvalues of the covariance matrix) are exactly the "variance explained" values we use for ranking and for the scree plot.
 
-**Variance explained:** Each principal component explains a fraction of the total variance. We often plot a **scree plot** (variance or % variance vs component number) to see how many components to keep.
-
-### 5.2.2 Projections
+### 5.2.3 Projections
 
 **Projection** means projecting each sample onto a principal component. If $\mathbf{w}_1$ is the first component (a unit vector), the projection of sample $\mathbf{x}_i$ onto PC1 is:
 
@@ -155,7 +222,7 @@ The projected values $z_{i1}, z_{i2}, \ldots$ are the **scores** or **coordinate
 
 **Centering:** PCA is usually applied to **centered** data (subtract the mean of each feature). The components then pass through the center of the cloud.
 
-### 5.2.3 Interpreting PCA for Biologists
+### 5.2.4 Interpreting PCA for Biologists
 
 - **PC1** often captures the main gradient or axis of variation (e.g., cell type, treatment effect, developmental stage).
 - **Loadings:** The weight of each original feature in a component. High loading means that feature contributes a lot to that component. For gene expression, genes with high loadings on PC1 are the ones that vary most along PC1.
@@ -293,6 +360,15 @@ In biology, clustering and visualization are often used together to **discover**
 - **PCA** finds directions of maximum variance and projects data onto them. Use it to reduce dimensions, visualize main gradients, and as a preprocessing step before t-SNE or UMAP.
 - **t-SNE and UMAP** create 2D (or 3D) embeddings for visualization. Both preserve local structure; UMAP often preserves global structure better and is faster. Use them to explore cell populations, sample heterogeneity, and high-dimensional biological data.
 - **Biological workflow:** Preprocess, reduce (PCA), visualize (t-SNE or UMAP), cluster, and annotate with markers or metadata. Interpret with caution and validate with domain knowledge.
+
+---
+
+## Topics for the Next Class
+
+- **Why deep learning?** When and why to move from classical ML to neural networks.
+- **Structure of a neural network** Layers, neurons, and connections.
+- **Activations, loss functions, optimizers** Building blocks for training.
+- **Training loops and overfitting** How networks learn, and how to prevent overfitting.
 
 ---
 
