@@ -86,12 +86,14 @@ Hierarchical clustering builds a **tree** (dendrogram) of clusters. You can cut 
 - **Agglomerative (bottom-up):** Start with each sample as its own cluster (n clusters). Repeatedly merge the two closest clusters until you have one cluster.
 - **Divisive (top-down):** Start with all samples in one cluster, and split recursively. Less common in practice.
 
-**How "closeness" is defined:**
+**How "closeness" between two clusters is defined (linkage):**
 
-- **Single linkage:** Distance between two clusters = minimum distance between any pair of points, one from each cluster.
-- **Complete linkage:** Distance = maximum distance between any pair.
-- **Average linkage:** Distance = average pairwise distance between points in the two clusters.
-- **Ward:** Merge the two clusters that give the smallest increase in total within-cluster variance (similar to k-means).
+When we have two clusters (e.g., two groups of Iris flowers), we must define a single "distance" between them so we can decide which pair of clusters to merge next. Different **linkage** methods define this differently; all use the same pairwise Euclidean distances between individual flowers.
+
+- **Single linkage:** The distance between cluster A and cluster B is the **smallest** distance between any flower in A and any flower in B. So we look at the two closest flowers (one in A, one in B) and use that distance. Example: if one setosa and one versicolor flower are very close, the two clusters containing them are considered close and may merge early.
+- **Complete linkage:** The distance between A and B is the **largest** distance between any flower in A and any flower in B. We use the two farthest flowers, one from each cluster. Clusters stay "far" until even their most distant members are close.
+- **Average linkage:** The distance between A and B is the **average** of all pairwise distances (every flower in A with every flower in B). So we average over all cross-cluster pairs. It is a compromise between single and complete.
+- **Ward:** We do not use a direct "distance" between A and B. Instead, we merge the two clusters whose merger causes the **smallest increase** in total within-cluster variance (sum of squared distances from each point to its cluster mean). So we merge clusters that, when combined, stay as compact as possible. This is similar in spirit to k-means, which also minimizes within-cluster spread.
 
 **The distance matrix:** We need distances between all pairs of samples. For vectors, Euclidean distance is common:
 
@@ -99,13 +101,17 @@ $$
 d(\mathbf{x}_i, \mathbf{x}_j) = \| \mathbf{x}_i - \mathbf{x}_j \| = \sqrt{\sum_{f=1}^{p} (x_{if} - x_{jf})^2}
 $$
 
-**Dendrogram:** The tree shows merge order. The vertical axis is distance (or similarity); cutting at a given height gives a partition into clusters.
+Here $p$ is the number of features (e.g., $p=2$ for petal length and petal width), and $x_{if}$ is the value of feature $f$ for sample $i$.
 
-**Iris example:** Hierarchical clustering on Iris produces a dendrogram. Cutting at a low height gives many small clusters; cutting higher gives fewer, larger clusters. The figure below shows an example dendrogram.
+**Dendrogram:** The tree shows merge order. The vertical axis is distance (or the linkage value at which clusters merge); cutting the dendrogram at a given height gives a partition into a fixed number of clusters.
+
+**Iris example:** Hierarchical clustering on Iris produces a dendrogram. Cutting at a low height gives many small clusters; cutting higher gives fewer, larger clusters. The figure below shows an example dendrogram and the corresponding cluster assignment in 2D.
+
+**Connection between the left and right panels (both are hierarchical clustering, not k-means):** The **left** plot is the **dendrogram**: each leaf is one of the 150 flowers, and the tree shows the order in which clusters were merged (bottom to top). The **right** plot shows the same 150 flowers in 2D (petal length vs petal width), colored by **cluster label**. Those labels come from **cutting the dendrogram** at a chosen height so that we get exactly 3 clusters. So: (1) run agglomerative clustering and build the dendrogram (left), (2) choose "3 clusters" by cutting the tree at the height that yields 3 groups, (3) assign each flower to one of those 3 clusters, (4) plot the flowers in 2D and color them by that assignment (right). The three colors on the right are therefore the three clusters from **hierarchical** clustering (same method as the dendrogram), not from k-means.
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter5/hierarchical_iris.png" alt="Hierarchical clustering on Iris" />
-  <p class="caption"><strong>Figure 5.2.</strong> Agglomerative hierarchical clustering on Iris. Left: dendrogram. A horizontal cut at a given height defines clusters. Right: cluster assignment (e.g., 3 clusters) in 2D.</p>
+  <p class="caption"><strong>Figure 5.2.</strong> Agglomerative hierarchical clustering on Iris. Left: dendrogram (merge order of the 150 flowers). A horizontal cut at a given height defines how many clusters we get. Right: the same 150 flowers in 2D, colored by the 3-cluster assignment obtained by cutting the dendrogram at a height that gives 3 clusters. Both panels come from the same hierarchical clustering; the right plot is not k-means.</p>
 </div>
 
 **How to use in Python:**
