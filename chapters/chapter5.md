@@ -44,7 +44,16 @@ Here $\mathbf{x}_i$ is sample $i$, $c_i$ is the cluster assigned to sample $i$, 
 3. Update each center to be the mean of all samples assigned to it.
 4. Repeat steps 2 and 3 until assignments do not change.
 
-**How to choose $k$:** There is no single correct answer. Use domain knowledge (e.g., you expect 3 cell types) or try several $k$ and compare. The **elbow method** plots the total within-cluster distance vs $k$; look for a "bend" where adding more clusters does not help much.
+**How to choose $k$:** There is no single correct answer. Use domain knowledge (e.g., you expect 3 cell types) or try several $k$ and compare. The **elbow method** plots the total within-cluster sum of squares (inertia) vs $k$; look for a "bend" where adding more clusters does not help much.
+
+**Elbow plot and how to interpret it.**
+
+We run k-means for $k = 1, 2, 3, \ldots$ and plot the **inertia** (within-cluster sum of squares) on the y-axis vs $k$ on the x-axis. As $k$ increases, inertia goes down (more clusters mean points are closer to their centroids). The **elbow** is the value of $k$ where the curve bends: before the elbow, adding a cluster reduces inertia a lot; after the elbow, adding more clusters gives only a small improvement. That $k$ is a reasonable choice. The plot below shows this for Iris (petal length and width). The curve drops sharply from $k=1$ to $k=2$ and again to $k=3$, then flattens. So $k=3$ is a natural elbow and matches the three species in the data. If there were no clear bend, you would use domain knowledge or other criteria to pick $k$.
+
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter5/kmeans_elbow_iris.png" alt="Elbow plot for k-means on Iris" />
+  <p class="caption"><strong>Figure 5.1a.</strong> Elbow method for k-means on Iris (petal length, petal width). Inertia (within-cluster sum of squares) is plotted vs number of clusters $k$. The bend near $k=3$ suggests three clusters are a good choice.</p>
+</div>
 
 **Iris example:** With Iris petal length and width, k-means with $k=3$ typically recovers the three species reasonably well, even without using species labels. The figure below shows k-means clusters on Iris in 2D.
 
