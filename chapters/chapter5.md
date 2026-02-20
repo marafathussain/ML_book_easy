@@ -391,11 +391,15 @@ UMAP also maps high-D data to 2D (or 3D) for visualization. It assumes the data 
   $$
   So the closest neighbors get weight near 1; farther neighbors get smaller weights. The $\sigma_i$ are chosen so that the weights sum to a prescribed value (related to **n_neighbors**). The graph is symmetrized so we get pairwise "similarities" $p_{ij}$ between nearby points. This encodes the manifold structure: who is close to whom along the curved surface.
 
-- **Low-dimensional layout.** In the embedding, UMAP defines similarities $q_{ij}$ between low-D points $\mathbf{y}_i$ and $\mathbf{y}_j$ using a curve that stays close to 1 for small distances and drops toward 0 for large distances (e.g. $q_{ij} \propto (1 + a\,\|\mathbf{y}_i - \mathbf{y}_j\|^{2b})^{-1}$ for chosen $a$, $b$). It then minimizes a **cross-entropy**-type objective:
+- **Low-dimensional layout.** In the embedding, UMAP defines similarities between low-D points using a curve that stays close to 1 for small distances and drops toward 0 for large distances, e.g.
+  $$
+  q_{ij} \propto \bigl(1 + a\,\|\mathbf{y}_i - \mathbf{y}_j\|^{2b}\bigr)^{-1}
+  $$
+  for chosen constants $a$ and $b$. It then minimizes a **cross-entropy**-type objective:
   $$
   -\sum_{i,j} \Bigl( p_{ij} \log q_{ij} + (1 - p_{ij}) \log(1 - q_{ij}) \Bigr).
   $$
-  So we want $q_{ij}$ high when $p_{ij}$ is high (neighbors in high-D should be close in 2D) and $q_{ij}$ low when $p_{ij}$ is low (non-neighbors can be far apart). Unlike t-SNE’s KL divergence, this objective explicitly pulls non-neighbors apart, which helps preserve global structure and relative distances.
+  So we want the low-D similarities high when the high-D similarities are high (neighbors in high-D should be close in 2D) and low when they are low (non-neighbors can be far apart). Unlike t-SNE’s KL divergence, this objective explicitly pulls non-neighbors apart, which helps preserve global structure and relative distances.
 
 - **Manifold view.** UMAP’s theory is phrased in terms of **fuzzy simplicial sets**: the high-D graph is seen as an approximation of the manifold, and the algorithm finds a low-D representation that preserves the structure of that graph. The **min_dist** parameter controls how tightly points can sit in the embedding (low min_dist = tighter clusters; high = more spread out).
 
