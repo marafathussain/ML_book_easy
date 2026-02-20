@@ -209,3 +209,118 @@ So S4 keeps the benefits of HiPPO (long-range dependencies) but makes the convol
 
 So Section 3 answers: “How do we compute the SSM convolution kernel $K$ efficiently?” By structuring $A$ as DPLR (inspired by HiPPO), S4 reduces the work to a Cauchy kernel and achieves nearly linear cost in $N$ and $L$, which is what makes long-sequence SSMs practical. Later work (e.g. S4D) showed that in many cases a purely diagonal $A$ with a good initialization can also capture long-range dependencies and simplifies the implementation (e.g. kernel = one Vandermonde product) while keeping similar efficiency.
 
+---
+
+## PCA: One Equation and What It Means
+
+The following notes unpack the core of Principal Component Analysis (PCA): a single equation, then variance and covariance, then the quadratic form that ties them together.
+
+### The beating heart of PCA
+
+This equation is the beating heart of Principal Component Analysis (PCA). It looks compact and innocent, but it is really asking a single question:
+
+*"In which direction should I look at my data so that I see the most variation?"*
+
+We have:
+
+$$
+\mathbf{w}_1 = \arg\max_{\|\mathbf{w}\|=1} \text{Var}(\mathbf{X} \mathbf{w})
+$$
+
+Unpacking it slowly:
+
+**What is $\mathbf{X}$?** It is your data matrix. Each row is a sample; each column is a feature. Usually we assume it is mean-centered (we have subtracted the column means so the data cloud is centered at the origin). That centering matters because variance is about spread around the mean (or zero after centering).
+
+**What is $\mathbf{X}\mathbf{w}$?** This is the projection of the data onto a direction $\mathbf{w}$. Geometrically: your dataset is a cloud of points in high-dimensional space. Multiplying by $\mathbf{w}$ collapses that cloud onto a single line. So $\mathbf{X}\mathbf{w}$ gives the coordinates of every point along that line.
+
+**What is $\text{Var}(\mathbf{X}\mathbf{w})$?** The variance of those projected values. In plain terms: how spread out is the data along that direction?
+
+**What does $\arg\max_{\|\mathbf{w}\|=1}$ mean?** Among all vectors $\mathbf{w}$ that have length 1, find the one that maximizes the variance. Why force $\|\mathbf{w}\| = 1$? Because otherwise we could cheat: we could scale $\mathbf{w}$ to be huge and artificially inflate the variance. The unit-length constraint makes it a pure direction problem.
+
+So the equation says: *The first principal component $\mathbf{w}_1$ is the unit vector that makes the projected data have the largest possible variance.* That is the whole idea of PCA in one line.
+
+**The structure underneath.** If the data is centered, we can rewrite:
+
+$$
+\text{Var}(\mathbf{X}\mathbf{w}) = \mathbf{w}^\top \mathbf{S} \mathbf{w}
+$$
+
+where $\mathbf{S}$ is the covariance matrix, $\mathbf{S} = \frac{1}{n} \mathbf{X}^\top \mathbf{X}$. So the optimization becomes:
+
+$$
+\max_{\|\mathbf{w}\|=1} \mathbf{w}^\top \mathbf{S} \mathbf{w}
+$$
+
+This is an eigenvalue problem. The solution: $\mathbf{w}_1$ is the eigenvector of $\mathbf{S}$ with the largest eigenvalue, and that eigenvalue equals the maximum variance. So PCA is saying: *Find the direction in which the covariance matrix stretches space the most.* Geometrically, if your data cloud is an ellipse (or ellipsoid in higher dimensions), PCA finds the long axis first, then the second longest axis orthogonal to the first, and so on.
+
+PCA does not care about labels or prediction. It just asks: *Where is the structure?* In high-dimensional settings (e.g. many features, relatively few samples), this equation finds the dominant modes of variability before overfitting dominates.
+
+### Variance and covariance: same family, different jobs
+
+Variance and covariance are cousins. Same family. Different jobs.
+
+**Variance** answers: "How much does one variable wiggle?"
+
+**Covariance** answers: "How do two variables wiggle together?"
+
+When we stack all pairwise covariances into a grid, we get the **covariance matrix**. That matrix is the full story of how everything co-moves.
+
+**Concrete example.** Imagine three students and two exam scores:
+
+- Math: 70, 80, 90  
+- Physics: 65, 85, 95  
+
+**Variance** of Math measures how spread out those math scores are around their mean. If the math scores were 80, 80, 80 then variance = 0 (no spread). With 70, 80, 90 they spread out, so variance is positive:
+
+$$
+\text{Var}(X) = \frac{1}{n} \sum (x_i - \bar{x})^2
+$$
+
+We square deviations because we care about magnitude of spread, not direction.
+
+**Covariance** between Math and Physics looks at whether they increase together. If higher math tends to come with higher physics, covariance is positive. If higher math comes with lower physics, covariance is negative. If no pattern, near zero:
+
+$$
+\text{Cov}(X,Y) = \frac{1}{n} \sum (x_i - \bar{x})(y_i - \bar{y})
+$$
+
+Notice: variance is just covariance of a variable with itself, $\text{Var}(X) = \text{Cov}(X,X)$.
+
+**The covariance matrix.** For two variables (Math and Physics):
+
+$$
+\mathbf{S} =
+\begin{bmatrix}
+\text{Var}(\text{Math}) & \text{Cov}(\text{Math, Physics}) \\
+\text{Cov}(\text{Physics, Math}) & \text{Var}(\text{Physics})
+\end{bmatrix}
+$$
+
+Diagonal entries are variances; off-diagonal entries are covariances. So variance is a single number; the covariance matrix is the full interaction blueprint.
+
+**Geometric intuition.** Variance tells you how wide the data cloud is along one axis. Covariance tells you whether the cloud is tilted. If covariance is zero, the cloud is axis-aligned. If positive, the cloud tilts upward; if negative, downward. That is why in PCA the optimization $\max_{\|\mathbf{w}\|=1} \mathbf{w}^\top \mathbf{S} \mathbf{w}$ uses $\mathbf{S}$: variance alone gives spread in each coordinate, but covariance tells you how directions combine. The eigenvectors of $\mathbf{S}$ find the tilted axes of the ellipsoid. In high dimensions (e.g. many MRI features), variance tells you which single feature fluctuates most; the covariance matrix tells you which *patterns* of features fluctuate together. Variance is local; the covariance matrix is structural.
+
+### Unpacking the quadratic form $\mathbf{w}^\top \mathbf{S} \mathbf{w}$
+
+We can write $\mathbf{w}^\top \mathbf{S} \mathbf{w}$ in element form. Assume $\mathbf{w}$ is $p \times 1$ and $\mathbf{S}$ is $p \times p$. Then:
+
+$$
+\mathbf{w}^\top \mathbf{S} \mathbf{w} = \sum_{i=1}^{p} \sum_{j=1}^{p} w_i S_{ij} w_j
+$$
+
+**Interpretation.** Split into two parts:
+
+1. **Diagonal terms** ($i = j$): $\sum_{i=1}^{p} w_i^2 S_{ii}$. Since $S_{ii} = \text{Var}(X_i)$, this is a weighted sum of individual variances.
+
+2. **Off-diagonal terms** ($i \neq j$): $\sum_{i \neq j} w_i w_j S_{ij}$. These involve covariances between different features.
+
+So:
+
+$$
+\mathbf{w}^\top \mathbf{S} \mathbf{w} = \sum_{i=1}^{p} w_i^2 \text{Var}(X_i) + \sum_{i \neq j} w_i w_j \text{Cov}(X_i, X_j)
+$$
+
+The variance of the projection is not just "variance of features times weights squared." It also includes every pairwise interaction, weighted by $w_i w_j$. That is why PCA does not simply pick the feature with the largest variance; it finds a direction that uses the covariance structure. In high dimensions (e.g. thousands of features), this expression contains a huge number of interaction terms; the geometry of that quadratic form determines how the data cloud is shaped.
+
+**Punchline:** If $\mathbf{w}$ is an eigenvector of $\mathbf{S}$ with eigenvalue $\lambda$, then $\mathbf{w}^\top \mathbf{S} \mathbf{w} = \lambda$ (for a unit $\mathbf{w}$). So the messy double sum collapses to a single number. That is why PCA reduces to "largest eigenvalue."
+
