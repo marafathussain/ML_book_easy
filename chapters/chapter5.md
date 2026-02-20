@@ -349,6 +349,26 @@ t-SNE constructs a 2D (or low-D) embedding where points that are **close in the 
 2. In low-D, define a similar probability distribution (using a Student-t distribution, hence "t-SNE").
 3. Minimize the mismatch between the two distributions (Kullback-Leibler divergence) by moving points in the low-D space.
 
+**In equations:**
+
+- **High-dimensional similarities.** For each point $i$, t-SNE turns distances into conditional probabilities using a Gaussian. The probability that point $j$ is a "neighbor" of $i$ (under a Gaussian centered at $i$) is:
+  $$
+  p_{j \mid i} = \frac{\exp\bigl(-\|\mathbf{x}_i - \mathbf{x}_j\|^2 / (2\sigma_i^2)\bigr)}{\sum_{k \neq i} \exp\bigl(-\|\mathbf{x}_i - \mathbf{x}_k\|^2 / (2\sigma_i^2)\bigr)}.
+  $$
+  So the closer $j$ is to $i$, the larger $p_{j \mid i}$. The **perplexity** parameter controls how many effective neighbors each point has; for each $i$, $\sigma_i$ is chosen so that the distribution $p_{\cdot \mid i}$ has that perplexity. Then we symmetrize: $p_{ij} = (p_{j \mid i} + p_{i \mid j}) / (2n)$ so that $p_{ij}$ is the (symmetric) probability that $i$ and $j$ are neighbors in high-D.
+
+- **Low-dimensional similarities.** In the 2D (or low-D) embedding, we have points $\mathbf{y}_i$. t-SNE uses a **Student-t distribution with one degree of freedom** (heavy tails) to define similarities:
+  $$
+  q_{ij} = \frac{\bigl(1 + \|\mathbf{y}_i - \mathbf{y}_j\|^2\bigr)^{-1}}{\sum_{k \neq \ell} \bigl(1 + \|\mathbf{y}_k - \mathbf{y}_\ell\|^2\bigr)^{-1}}.
+  $$
+  Heavy tails mean that moderate distances in 2D do not get crushed to near zero; that helps keep clusters from crowding the center and pushes dissimilar points apart.
+
+- **What we minimize.** t-SNE moves the low-D points $\mathbf{y}_i$ to make $q_{ij}$ as close as possible to $p_{ij}$. The cost function is the **Kullback–Leibler (KL) divergence** of the high-D distribution $P$ from the low-D distribution $Q$:
+  $$
+  \text{KL}(P \| Q) = \sum_{i \neq j} p_{ij} \log \frac{p_{ij}}{q_{ij}}.
+  $$
+  Minimizing KL penalizes places where $p_{ij}$ is large but $q_{ij}$ is small (we wanted $i$ and $j$ close in high-D but put them far in 2D) and encourages the low-D layout to match the high-D neighbor structure.
+
 **Important caveats:**
 
 - t-SNE is for **visualization only**. Do not use t-SNE output for clustering or downstream analysis; distances and cluster sizes in the plot can be distorted.
@@ -362,6 +382,22 @@ t-SNE constructs a 2D (or low-D) embedding where points that are **close in the 
 **What does UMAP do?**
 
 UMAP also maps high-D data to 2D (or 3D) for visualization. It assumes the data lie on a **manifold** (a curved surface in high-D) and approximates it in low dimensions. UMAP tends to preserve both local and global structure better than t-SNE in many cases.
+
+**In equations (simplified):**
+
+- **High-dimensional structure.** UMAP builds a weighted graph on the data. For each point $i$, it finds the $k$ nearest neighbors (e.g. $k = 15$). For neighbors $j$ of $i$, it assigns a weight that decays with distance. A common way to describe this is: let $d_{ij} = \|\mathbf{x}_i - \mathbf{x}_j\|$, let $\rho_i$ be the distance from $i$ to its nearest neighbor, and set
+  $$
+  w_{ij} = \exp\bigl(-(d_{ij} - \rho_i) / \sigma_i\bigr).
+  $$
+  So the closest neighbors get weight near 1; farther neighbors get smaller weights. The $\sigma_i$ are chosen so that the weights sum to a prescribed value (related to **n_neighbors**). The graph is symmetrized so we get pairwise "similarities" $p_{ij}$ between nearby points. This encodes the manifold structure: who is close to whom along the curved surface.
+
+- **Low-dimensional layout.** In the embedding, UMAP defines similarities $q_{ij}$ between low-D points $\mathbf{y}_i$ and $\mathbf{y}_j$ using a curve that stays close to 1 for small distances and drops toward 0 for large distances (e.g. $q_{ij} \propto (1 + a\,\|\mathbf{y}_i - \mathbf{y}_j\|^{2b})^{-1}$ for chosen $a$, $b$). It then minimizes a **cross-entropy**-type objective:
+  $$
+  -\sum_{i,j} \Bigl( p_{ij} \log q_{ij} + (1 - p_{ij}) \log(1 - q_{ij}) \Bigr).
+  $$
+  So we want $q_{ij}$ high when $p_{ij}$ is high (neighbors in high-D should be close in 2D) and $q_{ij}$ low when $p_{ij}$ is low (non-neighbors can be far apart). Unlike t-SNE’s KL divergence, this objective explicitly pulls non-neighbors apart, which helps preserve global structure and relative distances.
+
+- **Manifold view.** UMAP’s theory is phrased in terms of **fuzzy simplicial sets**: the high-D graph is seen as an approximation of the manifold, and the algorithm finds a low-D representation that preserves the structure of that graph. The **min_dist** parameter controls how tightly points can sit in the embedding (low min_dist = tighter clusters; high = more spread out).
 
 **Advantages over t-SNE (in practice):**
 
