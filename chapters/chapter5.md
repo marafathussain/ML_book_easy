@@ -369,7 +369,7 @@ $$
 q_{ij} = \frac{\bigl(1 + \|\mathbf{y}_i - \mathbf{y}_j\|^2\bigr)^{-1}}{\sum_{k \neq \ell} \bigl(1 + \|\mathbf{y}_k - \mathbf{y}_\ell\|^2\bigr)^{-1}}.
 $$
 
-Notice what changed: we no longer use a Gaussian. We use a **Student-t distribution with one degree of freedom**. That heavy tail is critical. A Gaussian shrinks rapidly; moderate distances become almost zero probability, which causes crowding—everything piles into the center. The Student-t decays slowly, so moderately distant points still repel each other and clusters spread apart. This “heavy tail trick” is what makes t-SNE work.
+Notice what changed: we no longer use a Gaussian. We use a **Student-t distribution with one degree of freedom**. That heavy tail is critical. A Gaussian shrinks rapidly; moderate distances become almost zero probability, which causes crowding, everything piles into the center. The Student-t decays slowly, so moderately distant points still repel each other and clusters spread apart. This “heavy tail trick” is what makes t-SNE work.
 
 **The objective**
 
@@ -379,7 +379,7 @@ $$
 \mathrm{KL}(P \| Q) = \sum_{i \neq j} p_{ij} \log \frac{p_{ij}}{q_{ij}}.
 $$
 
-KL measures how different two probability distributions are. What does minimizing it do? If $p_{ij}$ is large (points are close in high-D) and $q_{ij}$ is small (far in 2D), the term becomes large—big penalty. If $p_{ij}$ is tiny and $q_{ij}$ is moderate, the penalty is small. So t-SNE cares a lot about preserving **true neighbors**, and cares less about falsely making distant points somewhat close. That is why t-SNE preserves local clusters extremely well, but global distances between clusters can be distorted. It is intentionally biased toward getting neighborhoods right.
+KL measures how different two probability distributions are. What does minimizing it do? If $p_{ij}$ is large (points are close in high-D) and $q_{ij}$ is small (far in 2D), the term becomes large, big penalty. If $p_{ij}$ is tiny and $q_{ij}$ is moderate, the penalty is small. So t-SNE cares a lot about preserving **true neighbors**, and cares less about falsely making distant points somewhat close. That is why t-SNE preserves local clusters extremely well, but global distances between clusters can be distorted. It is intentionally biased toward getting neighborhoods right.
 
 **What t-SNE is actually doing**
 
@@ -419,9 +419,9 @@ Break this down. Here $d_{ij}$ is the actual distance between the points; $\rho_
 
 **Why subtract $\rho_i$?** Because UMAP wants the closest neighbor to have weight about 1. It shifts distances so that the first neighbor effectively sits at zero.
 
-**Why divide by $\sigma_i$?** Different regions of the dataset have different densities. In a dense region, distances are small; in sparse regions, they are larger. The factor $\sigma_i$ rescales things so that each point has roughly the same "effective neighborhood size." The exponential means: close points get weight near 1, far points get weight near 0. This builds a fuzzy graph — not just "connected" or "not connected," but weighted closeness.
+**Why divide by $\sigma_i$?** Different regions of the dataset have different densities. In a dense region, distances are small; in sparse regions, they are larger. The factor $\sigma_i$ rescales things so that each point has roughly the same "effective neighborhood size." The exponential means: close points get weight near 1, far points get weight near 0. This builds a fuzzy graph, not just "connected" or "not connected," but weighted closeness.
 
-In the simplified story above, we quietly switched from $w_{ij}$ to $p_{ij}$. That is not magic — it is bookkeeping that hides a few steps. Let us walk through it cleanly.
+In the simplified story above, we quietly switched from $w_{ij}$ to $p_{ij}$. That is not magic, it is bookkeeping that hides a few steps. Let us walk through it cleanly.
 
 **First: directed fuzzy weights**
 
@@ -443,7 +443,7 @@ So the flow is: raw distances → directional exponential weights $w_{ij}$ → s
 
 UMAP builds what it calls a **fuzzy simplicial set**. Instead of saying two points are either connected or not, we assign a connection strength in $[0,1]$. The directed weights describe local neighborhood belief; the symmetric $p_{ij}$ describes mutual connection strength. That becomes the target probability in the low-D matching. When we minimize the cross-entropy, we are matching the high-D fuzzy graph $p_{ij}$ to the low-D fuzzy graph $q_{ij}$. No distances are directly preserved; what is preserved is fuzzy connectivity structure.
 
-This is the deep idea: UMAP does not reduce geometry directly. It reduces a **probabilistic topological object** built from that geometry. And that is why the algorithm often feels more "global" than t-SNE — because it explicitly models both presence and absence of connections. The symbol swap from $w_{ij}$ to $p_{ij}$ hides the bridge between geometry and topology.
+This is the deep idea: UMAP does not reduce geometry directly. It reduces a **probabilistic topological object** built from that geometry. And that is why the algorithm often feels more "global" than t-SNE, because it explicitly models both presence and absence of connections. The symbol swap from $w_{ij}$ to $p_{ij}$ hides the bridge between geometry and topology.
 
 **Build similarities in low dimensions**
 
@@ -460,7 +460,7 @@ UMAP minimizes:
   $$
   -\sum_{i,j} \Bigl( p_{ij} \log q_{ij} + (1 - p_{ij}) \log(1 - q_{ij}) \Bigr).
   $$
-  This is **binary cross-entropy**. If $p_{ij}$ is high (points are neighbors in high-D), we want $q_{ij}$ high — they should be close in 2D. If $p_{ij}$ is low (not neighbors), we want $q_{ij}$ small — they should be far apart. The second term $(1-p_{ij})\log(1-q_{ij})$ explicitly penalizes false neighbors. That is something t-SNE does less directly, which is why UMAP often spreads clusters in a way that reflects larger-scale structure better.
+  This is **binary cross-entropy**. If $p_{ij}$ is high (points are neighbors in high-D), we want $q_{ij}$ high, they should be close in 2D. If $p_{ij}$ is low (not neighbors), we want $q_{ij}$ small, they should be far apart. The second term $(1-p_{ij})\log(1-q_{ij})$ explicitly penalizes false neighbors. That is something t-SNE does less directly, which is why UMAP often spreads clusters in a way that reflects larger-scale structure better.
 
 **Geometrically, what is happening?** You first build a weighted neighborhood graph in high dimensions. Then you move 2D points around so that the 2D graph matches the high-D graph as closely as possible.
 **The manifold language**
@@ -473,7 +473,7 @@ This controls how close points are allowed to sit in 2D. Low min_dist means poin
 
 **Big-picture intuition**
 
-UMAP is not trying to preserve raw distances. It is trying to preserve neighborhood relationships — the local geometry of the manifold — while still pushing non-neighbors apart enough to maintain larger structure. Think of it like flattening a crumpled brain cortex onto a sheet without gluing together gyri that should not touch. Some distortion is inevitable; the art is choosing where to allow it.
+UMAP is not trying to preserve raw distances. It is trying to preserve neighborhood relationships, the local geometry of the manifold, while still pushing non-neighbors apart enough to maintain larger structure. Think of it like flattening a crumpled brain cortex onto a sheet without gluing together gyri that should not touch. Some distortion is inevitable; the art is choosing where to allow it.
 
 **A quiet philosophical point:** UMAP does not "discover the true 2D structure." It finds one 2D configuration that preserves neighborhood relationships according to its assumptions. Different random seeds give slightly different maps. That is not a flaw; it is the geometry admitting ambiguity. Dimensionality reduction is not truth extraction. It is controlled distortion. The craft lies in distorting the right things.
 
