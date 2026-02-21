@@ -421,7 +421,29 @@ Break this down. Here $d_{ij}$ is the actual distance between the points; $\rho_
 
 **Why divide by $\sigma_i$?** Different regions of the dataset have different densities. In a dense region, distances are small; in sparse regions, they are larger. The factor $\sigma_i$ rescales things so that each point has roughly the same "effective neighborhood size." The exponential means: close points get weight near 1, far points get weight near 0. This builds a fuzzy graph — not just "connected" or "not connected," but weighted closeness.
 
-Then the graph is symmetrized so similarity between two points is mutual. That gives high-D similarities $p_{ij}$. Step one: encode who is close to whom on the manifold.
+In the simplified story above, we quietly switched from $w_{ij}$ to $p_{ij}$. That is not magic — it is bookkeeping that hides a few steps. Let us walk through it cleanly.
+
+**First: directed fuzzy weights**
+
+For each point $i$, UMAP computes the weight $w_{ij}$ as above. Important: this is **directional**. The scale $\sigma_i$ depends only on point $i$, so generally $w_{ij} \neq w_{ji}$. At this stage we have a directed weighted graph; each node defines its own local neighborhood probabilities.
+
+**From directed to symmetric: fuzzy union**
+
+For the optimization we need a **symmetric** similarity between pairs. UMAP combines the two directions using:
+
+$$
+p_{ij} = w_{ij} + w_{ji} - w_{ij} w_{ji}
+$$
+
+That formula is not random. It is exactly the probabilistic formula for $P(A \cup B) = P(A) + P(B) - P(A)P(B)$. So you can interpret $w_{ij}$ as the probability that $j$ is connected to $i$, and $w_{ji}$ as the probability that $i$ is connected to $j$. Then $p_{ij}$ is the probability that **either direction connects them**. This creates a symmetric fuzzy edge weight. The symmetric matrix $P = [p_{ij}]$ is what appears in the cross-entropy objective.
+
+So the flow is: raw distances → directional exponential weights $w_{ij}$ → symmetric fuzzy union $p_{ij}$ → used in cross-entropy loss. That is how $p_{ij}$ emerges.
+
+**Zooming out: fuzzy simplicial set**
+
+UMAP builds what it calls a **fuzzy simplicial set**. Instead of saying two points are either connected or not, we assign a connection strength in $[0,1]$. The directed weights describe local neighborhood belief; the symmetric $p_{ij}$ describes mutual connection strength. That becomes the target probability in the low-D matching. When we minimize the cross-entropy, we are matching the high-D fuzzy graph $p_{ij}$ to the low-D fuzzy graph $q_{ij}$. No distances are directly preserved; what is preserved is fuzzy connectivity structure.
+
+This is the deep idea: UMAP does not reduce geometry directly. It reduces a **probabilistic topological object** built from that geometry. And that is why the algorithm often feels more "global" than t-SNE — because it explicitly models both presence and absence of connections. The symbol swap from $w_{ij}$ to $p_{ij}$ hides the bridge between geometry and topology.
 
 **Build similarities in low dimensions**
 
