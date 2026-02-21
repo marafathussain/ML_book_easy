@@ -400,29 +400,60 @@ It is not preserving Euclidean structure; it is preserving neighbor likelihoods.
 
 ### 5.3.2 UMAP (Uniform Manifold Approximation and Projection)
 
-**What does UMAP do?**
+UMAP was introduced by Leland McInnes and John Healy. The phrase "fuzzy simplicial sets on manifolds" sounds mystical, but underneath it is disciplined geometry plus probability. The core idea is simple: high-dimensional data often lie on a lower-dimensional curved surface (a **manifold**). We want to unfold that surface into 2D without tearing it apart too badly. Let us dismantle it step by step.
 
-UMAP also maps high-D data to 2D (or 3D) for visualization. It assumes the data lie on a **manifold** (a curved surface in high-D) and approximates it in low dimensions. UMAP tends to preserve both local and global structure better than t-SNE in many cases.
+**Build structure in high dimensions**
 
-**In equations (simplified):**
+You have points $\mathbf{x}_i$ in high-D space. For each point, find its k nearest neighbors. That builds a local neighborhood graph. For two nearby points, compute their distance:
+$$
+d_{ij} = \|\mathbf{x}_i - \mathbf{x}_j\|
+$$
 
-- **High-dimensional structure.** UMAP builds a weighted graph on the data. For each point, it finds the k nearest neighbors (e.g. k = 15). For each neighbor, it assigns a weight that decays with distance. The weight uses the distance between the two points, the distance from a point to its nearest neighbor, and a scale chosen so the weights sum to a value related to **n_neighbors**. Explicitly:
-  $$
-  w_{ij} = \exp\bigl(-(d_{ij} - \rho_i) / \sigma_i\bigr),
-  $$
-  The closest neighbors get weight near 1; farther neighbors get smaller weights. The graph is symmetrized to get pairwise similarities between nearby points. This encodes the manifold structure: who is close to whom along the curved surface.
+Then UMAP assigns a weight:
 
-- **Low-dimensional layout.** In the embedding, UMAP defines similarities between low-D points using a curve that stays close to 1 for small distances and drops toward 0 for large distances, e.g.
+$$
+w_{ij} = \exp\bigl(-(d_{ij} - \rho_i) / \sigma_i\bigr)
+$$
+
+Break this down. Here $d_{ij}$ is the actual distance between the points; $\rho_i$ is the distance from a point to its closest neighbor; and $\sigma_i$ is a local scaling factor.
+
+**Why subtract $\rho_i$?** Because UMAP wants the closest neighbor to have weight about 1. It shifts distances so that the first neighbor effectively sits at zero.
+
+**Why divide by $\sigma_i$?** Different regions of the dataset have different densities. In a dense region, distances are small; in sparse regions, they are larger. The factor $\sigma_i$ rescales things so that each point has roughly the same "effective neighborhood size." The exponential means: close points get weight near 1, far points get weight near 0. This builds a fuzzy graph — not just "connected" or "not connected," but weighted closeness.
+
+Then the graph is symmetrized so similarity between two points is mutual. That gives high-D similarities $p_{ij}$. Step one: encode who is close to whom on the manifold.
+
+**Build similarities in low dimensions**
+
+We assign each point a 2D coordinate. Then we define:
   $$
   q_{ij} \propto \bigl(1 + a\,\|\mathbf{y}_i - \mathbf{y}_j\|^{2b}\bigr)^{-1}
   $$
-  for chosen constants $a$ and $b$. It then minimizes a **cross-entropy**-type objective:
+
+Break this apart. We take the 2D distance, raise it to power $2b$, multiply by constant $a$, add 1, and take the reciprocal. This curve behaves like: small distance gives value near 1; large distance decays smoothly toward 0. Unlike a Gaussian (used in t-SNE), this function has heavier tails. Distant points do not get squashed as aggressively, which helps preserve more global relationships.
+
+**The optimization**
+
+UMAP minimizes:
   $$
   -\sum_{i,j} \Bigl( p_{ij} \log q_{ij} + (1 - p_{ij}) \log(1 - q_{ij}) \Bigr).
   $$
-  So we want the low-D similarities high when the high-D similarities are high (neighbors in high-D should be close in 2D) and low when they are low (non-neighbors can be far apart). Unlike t-SNE’s KL divergence, this objective explicitly pulls non-neighbors apart, which helps preserve global structure and relative distances.
+  This is **binary cross-entropy**. If $p_{ij}$ is high (points are neighbors in high-D), we want $q_{ij}$ high — they should be close in 2D. If $p_{ij}$ is low (not neighbors), we want $q_{ij}$ small — they should be far apart. The second term $(1-p_{ij})\log(1-q_{ij})$ explicitly penalizes false neighbors. That is something t-SNE does less directly, which is why UMAP often spreads clusters in a way that reflects larger-scale structure better.
 
-- **Manifold view.** UMAP’s theory is phrased in terms of **fuzzy simplicial sets**: the high-D graph is seen as an approximation of the manifold, and the algorithm finds a low-D representation that preserves the structure of that graph. The **min_dist** parameter controls how tightly points can sit in the embedding (low min_dist = tighter clusters; high = more spread out).
+**Geometrically, what is happening?** You first build a weighted neighborhood graph in high dimensions. Then you move 2D points around so that the 2D graph matches the high-D graph as closely as possible.
+**The manifold language**
+
+"Fuzzy simplicial set" sounds like it escaped a topology seminar. In practice it means: instead of "these points are connected," we say "these points are connected with strength 0.83." That fuzzy graph approximates the manifold structure. The embedding tries to preserve that fuzzy connectivity.
+
+**The min_dist parameter**
+
+This controls how close points are allowed to sit in 2D. Low min_dist means points can pack tightly (sharp clusters); high min_dist means clusters spread out more. It does not change the high-D structure; it changes how compressed the embedding is.
+
+**Big-picture intuition**
+
+UMAP is not trying to preserve raw distances. It is trying to preserve neighborhood relationships — the local geometry of the manifold — while still pushing non-neighbors apart enough to maintain larger structure. Think of it like flattening a crumpled brain cortex onto a sheet without gluing together gyri that should not touch. Some distortion is inevitable; the art is choosing where to allow it.
+
+**A quiet philosophical point:** UMAP does not "discover the true 2D structure." It finds one 2D configuration that preserves neighborhood relationships according to its assumptions. Different random seeds give slightly different maps. That is not a flaw; it is the geometry admitting ambiguity. Dimensionality reduction is not truth extraction. It is controlled distortion. The craft lies in distorting the right things.
 
 **Advantages over t-SNE (in practice):**
 
