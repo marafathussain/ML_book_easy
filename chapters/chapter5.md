@@ -339,43 +339,61 @@ PCA is linear: it finds straight lines that capture variance. Many biological da
 
 ### 5.3.1 t-SNE (t-Distributed Stochastic Neighbor Embedding)
 
-**What does t-SNE do?**
+t-SNE was introduced by Laurens van der Maaten and Geoffrey Hinton. The goal is simple: take high-dimensional points $\mathbf{x}_i$, place them in 2D as $\mathbf{y}_i$, and make neighbors stay neighbors. The clever move is that instead of preserving distances directly, t-SNE preserves **probabilities of being neighbors**. That shift changes everything. Below we peel it apart step by step.
 
-t-SNE constructs a 2D (or low-D) embedding where points that are **close in the original space** stay close in the embedding, and points that are far apart tend to stay far apart. It converts distances in high-D into probabilities (similarities) and tries to match those probabilities in low-D.
+**High-dimensional similarities**
 
-**Key ideas (simplified):**
+For each point $\mathbf{x}_i$, we define a probability distribution over all other points:
 
-1. In high-D, for each point, define a probability distribution over all other points: close points get high probability, far points get low probability.
-2. In low-D, define a similar probability distribution (using a Student-t distribution, hence "t-SNE").
-3. Minimize the mismatch between the two distributions (Kullback-Leibler divergence) by moving points in the low-D space.
+$$
+p_{j \mid i} = \frac{\exp\bigl(-\|\mathbf{x}_i - \mathbf{x}_j\|^2 / (2\sigma_i^2)\bigr)}{\sum_{k \neq i} \exp\bigl(-\|\mathbf{x}_i - \mathbf{x}_k\|^2 / (2\sigma_i^2)\bigr)}.
+$$
 
-**In equations:**
+Break this down slowly. The term $\|\mathbf{x}_i - \mathbf{x}_j\|^2$ is squared distance in high-D. We divide by $2\sigma_i^2$ (a Gaussian width), exponentiate so that closer points get a bigger value, and normalize so the probabilities sum to 1. So for each point $i$, you have a probability distribution over all other points. Interpretation: “If I pick a neighbor of $i$, how likely is it to be $j$?” Close points get high probability; far points get tiny probability.
 
-- **High-dimensional similarities.** For each point, t-SNE turns distances into conditional probabilities using a Gaussian. The probability that another point is a "neighbor" (under a Gaussian centered at the first point) is:
-  $$
-  p_{j \mid i} = \frac{\exp\bigl(-\|\mathbf{x}_i - \mathbf{x}_j\|^2 / (2\sigma_i^2)\bigr)}{\sum_{k \neq i} \exp\bigl(-\|\mathbf{x}_i - \mathbf{x}_k\|^2 / (2\sigma_i^2)\bigr)}.
-  $$
-  Closer points get larger probability. The **perplexity** parameter controls how many effective neighbors each point has; the bandwidth in the formula is chosen so that this distribution has that perplexity. Then we symmetrize to get a symmetric probability that two points are neighbors in high-D:
-  $$
-  p_{ij} = \frac{p_{j \mid i} + p_{i \mid j}}{2n}.
-  $$
+**Perplexity** controls $\sigma_i$. It roughly corresponds to the effective number of neighbors. Small perplexity means focus on very local structure; large perplexity means look more globally. Typically you set perplexity between 5 and 50.
 
-- **Low-dimensional similarities.** In the 2D (or low-D) embedding, t-SNE uses a **Student-t distribution with one degree of freedom** (heavy tails) to define similarities between embedded points:
-  $$
-  q_{ij} = \frac{\bigl(1 + \|\mathbf{y}_i - \mathbf{y}_j\|^2\bigr)^{-1}}{\sum_{k \neq \ell} \bigl(1 + \|\mathbf{y}_k - \mathbf{y}_\ell\|^2\bigr)^{-1}}.
-  $$
-  Heavy tails mean that moderate distances in 2D do not get crushed to near zero; that helps keep clusters from crowding the center and pushes dissimilar points apart.
+Then we symmetrize:
 
-- **What we minimize.** t-SNE moves the low-D points to make the low-D similarities match the high-D ones. The cost function is the **Kullback–Leibler (KL) divergence** of the high-D distribution from the low-D distribution:
-  $$
-  \text{KL}(P \| Q) = \sum_{i \neq j} p_{ij} \log \frac{p_{ij}}{q_{ij}}.
-  $$
-  Minimizing KL penalizes pairs that are close in high-D but far in the embedding, and encourages the low-D layout to match the high-D neighbor structure.
+$$
+p_{ij} = \frac{p_{j \mid i} + p_{i \mid j}}{2n}.
+$$
 
-**Important caveats:**
+Now $p_{ij}$ is a symmetric joint probability that points $i$ and $j$ are neighbors in high-D. High-D space has been converted into a probability distribution over pairs. We are no longer thinking in geometry; we are thinking in information theory.
 
-- t-SNE is for **visualization only**. Do not use t-SNE output for clustering or downstream analysis; distances and cluster sizes in the plot can be distorted.
-- **Perplexity** controls how many neighbors each point considers (typically 5 to 50). Low perplexity = focus on very local structure; high perplexity = more global structure.
+**Low-dimensional similarities**
+
+In 2D we define:
+
+$$
+q_{ij} = \frac{\bigl(1 + \|\mathbf{y}_i - \mathbf{y}_j\|^2\bigr)^{-1}}{\sum_{k \neq \ell} \bigl(1 + \|\mathbf{y}_k - \mathbf{y}_\ell\|^2\bigr)^{-1}}.
+$$
+
+Notice what changed: we no longer use a Gaussian. We use a **Student-t distribution with one degree of freedom**. That heavy tail is critical. A Gaussian shrinks rapidly; moderate distances become almost zero probability, which causes crowding—everything piles into the center. The Student-t decays slowly, so moderately distant points still repel each other and clusters spread apart. This “heavy tail trick” is what makes t-SNE work.
+
+**The objective**
+
+We minimize the **Kullback–Leibler (KL) divergence** between the two distributions:
+
+$$
+\mathrm{KL}(P \| Q) = \sum_{i \neq j} p_{ij} \log \frac{p_{ij}}{q_{ij}}.
+$$
+
+KL measures how different two probability distributions are. What does minimizing it do? If $p_{ij}$ is large (points are close in high-D) and $q_{ij}$ is small (far in 2D), the term becomes large—big penalty. If $p_{ij}$ is tiny and $q_{ij}$ is moderate, the penalty is small. So t-SNE cares a lot about preserving **true neighbors**, and cares less about falsely making distant points somewhat close. That is why t-SNE preserves local clusters extremely well, but global distances between clusters can be distorted. It is intentionally biased toward getting neighborhoods right.
+
+**What t-SNE is actually doing**
+
+1. Convert high-D geometry into probabilities.
+2. Convert the 2D embedding into probabilities.
+3. Move points so the two probability distributions match.
+
+It is not preserving Euclidean structure; it is preserving neighbor likelihoods. Instead of “keep distances,” it says “keep who likes whom.”
+
+**Important caveats**
+
+- t-SNE does **not** preserve global scale. Distances between clusters in 2D are not reliable indicators of true separation in high-D. The algorithm optimizes neighborhood agreement, not metric fidelity. Do not interpret cluster spacing in t-SNE as meaningful geometry; it is a neighborhood map, not a ruler.
+- t-SNE is for **visualization only**. Do not use t-SNE output for clustering or downstream analysis.
+- **Perplexity** controls how many neighbors each point considers (typically 5 to 50). Low perplexity = very local structure; high perplexity = more global structure.
 - Results can vary between runs (random initialization). Use a fixed `random_state` for reproducibility.
 
 **Biological use:** t-SNE is widely used for single-cell RNA-seq, flow cytometry, and other high-dimensional data to visualize cell populations and identify clusters by eye.
