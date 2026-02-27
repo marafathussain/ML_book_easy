@@ -122,7 +122,27 @@ $$
 \mathcal{L}_i = -\log p(y = c_i \mid \mathbf{x}_i) = -\log \frac{e^{\mathbf{w}_{c_i}^\top \mathbf{x}_i}}{\sum_{k=1}^{C} e^{\mathbf{w}_k^\top \mathbf{x}_i}}.
 $$
 
-For $C = 2$, this reduces to the same form as the logistic regression loss (negative log-likelihood). So **softmax + negative log** is the natural extension of binary logistic regression to multiclass, and we still only have linear combinations $\mathbf{w}_c^\top \mathbf{x}_i$ plus one non-linear function (softmax).
+**Why this equals the logistic regression loss when $C = 2$**
+
+For two classes we have two weight vectors $\mathbf{w}_0$ and $\mathbf{w}_1$. The softmax gives:
+
+$$
+p(y = 1 \mid \mathbf{x}_i) = \frac{e^{\mathbf{w}_1^\top \mathbf{x}_i}}{e^{\mathbf{w}_0^\top \mathbf{x}_i} + e^{\mathbf{w}_1^\top \mathbf{x}_i}}, \qquad p(y = 0 \mid \mathbf{x}_i) = \frac{e^{\mathbf{w}_0^\top \mathbf{x}_i}}{e^{\mathbf{w}_0^\top \mathbf{x}_i} + e^{\mathbf{w}_1^\top \mathbf{x}_i}}.
+$$
+
+Divide numerator and denominator of $p(y = 1 \mid \mathbf{x}_i)$ by $e^{\mathbf{w}_0^\top \mathbf{x}_i}$:
+
+$$
+p(y = 1 \mid \mathbf{x}_i) = \frac{e^{(\mathbf{w}_1 - \mathbf{w}_0)^\top \mathbf{x}_i}}{1 + e^{(\mathbf{w}_1 - \mathbf{w}_0)^\top \mathbf{x}_i}} = \frac{1}{1 + e^{-(\mathbf{w}_1 - \mathbf{w}_0)^\top \mathbf{x}_i}} = \sigma\bigl((\mathbf{w}_1 - \mathbf{w}_0)^\top \mathbf{x}_i\bigr).
+$$
+
+So with a single vector $\mathbf{w} = \mathbf{w}_1 - \mathbf{w}_0$, we get $p(y = 1 \mid \mathbf{x}_i) = \sigma(\mathbf{w}^\top \mathbf{x}_i)$, which is exactly the logistic regression model. For the loss, when the true label is $c_i \in \{0, 1\}$, the negative log of the correct class probability is $-\log p(y = c_i \mid \mathbf{x}_i)$. For $c_i = 1$ that is $-\log \sigma(\mathbf{w}^\top \mathbf{x}_i)$; for $c_i = 0$ it is $-\log(1 - \sigma(\mathbf{w}^\top \mathbf{x}_i))$. So we get:
+
+$$
+\mathcal{L}_i = -\bigl( c_i \log \sigma(\mathbf{w}^\top \mathbf{x}_i) + (1 - c_i) \log\bigl(1 - \sigma(\mathbf{w}^\top \mathbf{x}_i)\bigr) \bigr),
+$$
+
+which is the **binary cross-entropy (negative log-likelihood)** used in logistic regression. So **softmax + negative log** for $C = 2$ is the same as logistic regression loss; for $C > 2$ it is the natural multiclass extension, and we still only have linear combinations $\mathbf{w}_c^\top \mathbf{x}_i$ plus one non-linear function (softmax).
 
 ---
 
