@@ -93,7 +93,7 @@ $$
 Biologically, we can think of the inputs as signals arriving at **dendrites**, the weights as **synaptic strengths**, and the weighted sum as the **cell body** combining them; the output (after a threshold or activation) travels along the **axon**. The figure below is a placeholder for an illustration of this analogy (axon, dendrites, and the flow of signals).
 
 <div class="figure">
-  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter6/figure2" alt="Perceptron and axon–dendrite analogy" />
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter6/figure2.jpg" alt="Perceptron and axon–dendrite analogy" />
   <p class="caption"><strong>Figure 6.2.</strong> Perceptron and axon–dendrite analogy. A single neuron: inputs (dendrites), weights (synapses), linear combination (cell body), and output (axon).</p>
 </div>
 
@@ -218,7 +218,7 @@ The depth (number of layers) and the width (number of units per layer) determine
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter6/figure5.jpg" alt="deep-learning" />
-  <p class="caption"><strong>Figure 6.4.</strong> Deep Neural Network.</p>
+  <p class="caption"><strong>Figure 6.5.</strong> Deep Neural Network.</p>
 </div>
 
 ---
