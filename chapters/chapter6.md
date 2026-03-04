@@ -56,7 +56,7 @@ $$
 where we treat $y_i = \mathbf{w}^\top \mathbf{x}_i$ as the score for sample $i$. The **objective** in the simplest binary linear classifier is to choose $\mathbf{w}$ so that $\mathrm{sign}(\mathbf{w}^\top \mathbf{x}_i)$ matches the true label (e.g. +1 for C1, −1 for C2). This is the **linear binary classifier**: one linear function, one boundary, and predictions by the sign of that function.
 
 <div class="figure">
-  <img src="figures/chapter6/figure1.jpg" alt="Perceptron and axon–dendrite analogy" />
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter6/figure1.jpg" alt="Perceptron and axon–dendrite analogy" />
   <p class="caption"><strong>Figure 6.1.</strong> A simple linear binary classifier.</p>
 </div>
 
@@ -93,7 +93,7 @@ $$
 Biologically, we can think of the inputs as signals arriving at **dendrites**, the weights as **synaptic strengths**, and the weighted sum as the **cell body** combining them; the output (after a threshold or activation) travels along the **axon**. The figure below is a placeholder for an illustration of this analogy (axon, dendrites, and the flow of signals).
 
 <div class="figure">
-  <img src="figures/chapter6/figure2" alt="Perceptron and axon–dendrite analogy" />
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter6/figure2" alt="Perceptron and axon–dendrite analogy" />
   <p class="caption"><strong>Figure 6.2.</strong> Perceptron and axon–dendrite analogy. A single neuron: inputs (dendrites), weights (synapses), linear combination (cell body), and output (axon).</p>
 </div>
 
@@ -176,7 +176,7 @@ $$
 where $\hat{\mathbf{w}} = \mathbf{W}^\top \mathbf{w}$. So the **combined** map from $\mathbf{x}$ to $y$ is still **one linear function** $\hat{\mathbf{w}}^\top \mathbf{x}$. Training $\mathbf{W}$ and $\mathbf{w}$ together is equivalent to training a single linear model in the original space: we do not get any extra expressiveness. The figure below is a placeholder for a diagram that shows: (1) two stages trained separately (x → z → y), and (2) the equivalent single linear map (x → y).
 
 <div class="figure">
-  <img src="figures/chapter6/figure3.jpg" alt="Two-stage linear model equivalent to one linear map" />
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter6/figure3.jpg" alt="Two-stage linear model equivalent to one linear map" />
   <p class="caption"><strong>Figure 6.3.</strong> Two-stage linear model (x → z → y) and the fact that $\mathbf{Y} = \mathbf{w}^T$ $\mathbf{Z} = \mathbf{w}^T$ (\mathbf{W} \mathbf{X}) = (\mathbf{W}^T \mathbf{w})^T \mathbf{X} is still a single linear map in \mathbf{x}.</p>
 </div>
 
@@ -195,7 +195,7 @@ $$
 So we replace the raw $\mathbf{z}$ by **activated** values $h(\mathbf{z})$ (element-wise: each component $z_j$ becomes $h(z_j)$). Common choices for $h$ are **ReLU** $h(z) = \max(0, z)$, **sigmoid** $h(z) = 1/(1+e^{-z})$, or **tanh**. Once we do this, the overall map from $\mathbf{x}$ to the next layer is **no longer linear** in $\mathbf{x}$, so we can represent more complicated boundaries and functions. So: **neurons (perceptrons) require an activation** $h$ to move beyond linearity.
 
 <div class="figure">
-  <img src="figures/chapter6/figure4.jpg" alt="activation" />
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter6/figure4.jpg" alt="activation" />
   <p class="caption"><strong>Figure 6.4.</strong> Introducing non-linear function as activation.</p>
 </div>
 
@@ -217,7 +217,7 @@ This is a **one-hidden-layer** network: one layer of hidden units $\mathbf{a} = 
 The depth (number of layers) and the width (number of units per layer) determine the capacity of the model. Training such a network requires a way to compute gradients with respect to all weights; that is **backpropagation**.
 
 <div class="figure">
-  <img src="figures/chapter6/figure5.jpg" alt="deep-learning" />
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter6/figure5.jpg" alt="deep-learning" />
   <p class="caption"><strong>Figure 6.4.</strong> Deep Neural Network.</p>
 </div>
 
