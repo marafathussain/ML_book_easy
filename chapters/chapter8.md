@@ -246,7 +246,7 @@ If the model has an **attention** mechanism (e.g., in a Transformer or an attent
 
 ## Further Reading
 
-- [Deep learning for biology (Nature, 2021)](https://www.nature.com/articles/d41586-018-02174-z).
+- [Deep learning for biology (Nature, 2018)](https://www.nature.com/articles/d41586-018-02174-z).
 - [BPNet (Avsec et al.)](https://www.nature.com/articles/s41592-021-01282-5), interpretable CNNs for TF binding with attribution.
 - [Understanding LSTM networks (colah’s blog)](https://colah.github.io/posts/2015-08-Understanding-LSTMs/), conceptual explanation of LSTMs with diagrams.
 - [PyTorch: Sequence models and LSTM](https://pytorch.org/tutorials/beginner/nlp/sequence_models_tutorial.html), RNN/LSTM in code.
