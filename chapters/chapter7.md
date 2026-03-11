@@ -147,15 +147,20 @@ The figure below illustrates 2D convolution: an input patch, a kernel, and the r
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter7/conv2d_demo.png" alt="2D convolution: input patch, kernel, and feature map" />
-  <p class="caption"><strong>Figure 7.2.</strong> Discrete 2D convolution. The kernel slides over the image (or feature map); at each position the overlapping patch is multiplied element-wise with the kernel and summed to give one value in the output feature map.</p>
+  <p class="caption"><strong>Figure 7.3.</strong> Discrete 2D convolution. The kernel slides over the image (or feature map); at each position the overlapping patch is multiplied element-wise with the kernel and summed to give one value in the output feature map.</p>
 </div>
 
 ---
 
 ### Padding and stride in 2D
 
-- **Padding:** Add rows/columns of zeros around the input. For example, “same” padding is chosen so that the output has the same height and width as the input (for a $3\times3$ kernel, we often add 1 pixel on each side).
+- **Padding:** Add rows/columns of zeros around the input. For example, “same” padding is chosen so that the output has the same height and width as the input (for a $3\times3$ kernel, we often add 1 pixel on each side). Other than zeros, neighboring values can also be used for padding (see Figure 7.4).
 - **Stride:** Step size when sliding. Stride 1 moves one pixel at a time; stride 2 halves the output size (approximately). So convolution can **downsample** the spatial dimensions.
+
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter7/2D_convolution_w_padding.gif" alt="2D convolution: input patch, kernel, and feature map" />
+  <p class="caption"><strong>Figure 7.4.</strong> Discrete 2D convolution with padding. Image source: https://commons.wikimedia.org/wiki/File:2D_Convolution_Animation.gif</p>
+</div>
 
 ---
 
