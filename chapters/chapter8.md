@@ -241,13 +241,12 @@ If the model has an **attention** mechanism (e.g., in a Transformer or an attent
 
 - **Transformers and attention** for sequences (e.g., BERT-style models for protein or DNA).
 - **Generative models** for sequences (e.g., language models for design).
-- **Labs:** Implementing a small 1D CNN for splice site or motif prediction and visualizing filters.
 
 ---
 
 ## Further Reading
 
-- [Deep learning for biology (Nature, 2021)](https://www.nature.com/articles/s41586-021-03814-9), overview including sequences and genomics.
+- [Deep learning for biology (Nature, 2021)](https://www.nature.com/articles/d41586-018-02174-z).
 - [BPNet (Avsec et al.)](https://www.nature.com/articles/s41592-021-01282-5), interpretable CNNs for TF binding with attribution.
 - [Understanding LSTM networks (colah’s blog)](https://colah.github.io/posts/2015-08-Understanding-LSTMs/), conceptual explanation of LSTMs with diagrams.
 - [PyTorch: Sequence models and LSTM](https://pytorch.org/tutorials/beginner/nlp/sequence_models_tutorial.html), RNN/LSTM in code.
