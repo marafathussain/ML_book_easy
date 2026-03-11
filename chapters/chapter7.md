@@ -55,14 +55,22 @@ $$
 
 This kernel $[1, 0, -1]$ is a simple **finite-difference** filter: it approximates the derivative (difference between “next” and “previous” sample). So 1D convolution can detect **edges** or **changes** in a 1D signal (e.g. a time series or a single row of an image).
 
-**Padding:** If we **zero-pad** the signal (e.g. add zeros at the ends) we can get an output that has the same length as the input, or control the output size. For example, with one zero on each side, $\mathbf{x}_{\text{padded}} = [0, 1, 2, 3, 4, 5, 0]$, we can compute more output positions. **Stride** is the step by which we move the kernel (stride 1 = move one position each time; stride 2 = skip one position).
-
 The figure below illustrates 1D convolution: a signal, a kernel, and the sliding window producing one output value.
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter7/1D_convolution.gif" alt="1D convolution: signal, kernel, and sliding window" />
   <p class="caption"><strong>Figure 7.1.</strong> Discrete 1D convolution. The kernel slides over the signal; at each position the overlapping elements are multiplied and summed to give one output value.</p>
 </div>
+
+**Padding:** If we **zero-pad** the signal (e.g. add zeros at the ends) we can get an output that has the same length as the input, or control the output size. For example, with one zero on each side, $\mathbf{x}_{\text{padded}} = [0, 1, 2, 3, 4, 5, 0]$, we can compute more output positions. **Stride** is the step by which we move the kernel (stride 1 = move one position each time; stride 2 = skip one position).
+
+The figure below illustrates 1D convolution with **zero-pad**.
+
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter7/1D_convolution_w_padding.gif" alt="1D convolution: signal, kernel, and sliding window" />
+  <p class="caption"><strong>Figure 7.2.</strong> Discrete 1D convolution with zero padding.</p>
+</div>
+
 
 ---
 
