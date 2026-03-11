@@ -1,8 +1,8 @@
-# Chapter 8: Sequences in Biology—Encoding, 1D CNNs, RNNs, and Interpretation
+# Chapter 8: Sequences in Biology, Encoding, 1D CNNs, RNNs, and Interpretation
 
 ## Introduction
 
-In Chapter 7 we used **convolutions** on **images** (2D grids). Many biological problems involve **sequences**: DNA, RNA, and proteins are long strings of letters (nucleotides or amino acids). Sequences have a **natural order** (position 1, 2, 3, …) but no “second dimension” like an image—so we treat them as **1D signals** and use **1D convolutions** and **recurrent** models. This chapter covers: (1) **encoding** DNA and protein sequences into numbers; (2) **1D CNNs** for detecting local patterns (e.g., motifs); (3) **RNNs and LSTMs** at a conceptual level; (4) **sequence classification** tasks (splice sites, binding, etc.); and (5) **basic model interpretation** so we can see what the model “looked at.”
+In Chapter 7 we used **convolutions** on **images** (2D grids). Many biological problems involve **sequences**: DNA, RNA, and proteins are long strings of letters (nucleotides or amino acids). Sequences have a **natural order** (position 1, 2, 3, …) but no “second dimension” like an image, so we treat them as **1D signals** and use **1D convolutions** and **recurrent** models. This chapter covers: (1) **encoding** DNA and protein sequences into numbers; (2) **1D convolutional neural networks (CNNs)** for detecting local patterns (e.g., motifs); (3) **recurrent neural networks (RNNs)** and **long short-term memory (LSTM)** networks at a conceptual level; (4) **sequence classification** tasks (splice sites, binding, etc.); and (5) **basic model interpretation** so we can see what the model “looked at.”
 
 You do not need a deep background in biology: we only assume that DNA has four letters (A, C, G, T), proteins have about 20 amino-acid letters, and that **motifs** are short, conserved patterns that often have a function (e.g., binding sites).
 
@@ -55,7 +55,7 @@ K-mers capture **local context** (e.g., “what triplets are common near splice 
 
 ---
 
-## 8.2 1D CNNs for Motif Detection
+## 8.2 1D convolutional neural networks (CNNs) for motif detection
 
 In Chapter 7 we defined **1D convolution**: a **kernel** (a short vector) slides over a **1D signal**, and at each position we compute the inner product of the kernel with the overlapping segment. For sequences, the “signal” is the **encoded sequence** (e.g., the $L \times 4$ matrix for DNA). We apply convolution **along the sequence dimension** (position 1, 2, …, L).
 
@@ -63,7 +63,7 @@ In Chapter 7 we defined **1D convolution**: a **kernel** (a short vector) slides
 
 Think of the **one-hot matrix** as having **4 channels** (one per nucleotide). At each position $i$ we have a 4-dimensional vector. A **1D convolutional kernel** that slides along the sequence can have width $k$ (e.g., $k=5$) and **depth 4** (one weight per channel at each of the $k$ positions). So the kernel is like a $k \times 4$ patch. At each position $i$, we take the $k \times 4$ block of the sequence matrix, multiply it element-wise with the kernel, sum everything, and get **one number**. That number is the **activation** of this filter at position $i$. So **one kernel** gives **one 1D feature map** of length (about) $L - k + 1$.
 
-**Interpretation:** The kernel is learning a **local pattern** of length $k$—a **motif**. High activation at position $i$ means “this motif is present around position $i$.” So 1D CNNs naturally do **motif detection**.
+**Interpretation:** The kernel is learning a **local pattern** of length $k$, a **motif**. High activation at position $i$ means “this motif is present around position $i$.” So 1D CNNs naturally do **motif detection**. (We use “CNN” for convolutional neural network throughout.)
 
 ### 8.2.2 Example: a tiny sequence and one kernel
 
@@ -74,7 +74,7 @@ So:
 - **Input:** sequence of length $L$, encoded as $L \times 4$ (DNA) or $L \times 20$ (protein).  
 - **1D conv:** several kernels (e.g., 32 or 64), each of width $k$ (e.g., 5–15).  
 - **Output:** one feature map per kernel; each map has length $\approx L - k + 1$ (depending on padding).  
-- Then we often add **ReLU** and **pooling** (e.g., max-pool) to reduce length and combine information.
+- Then we often add **rectified linear unit (ReLU)** and **pooling** (e.g., max-pool) to reduce length and combine information.
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/1dcnn_motif.png" alt="1D CNN sliding over a sequence for motif detection" />
@@ -86,7 +86,7 @@ So:
 For **sequence classification** (e.g., “is this region a splice site?” or “does this protein bind?”), we typically:
 
 1. Encode the sequence (e.g., one-hot).  
-2. Stack one or more **1D conv + ReLU (+ optional pooling)** layers to get a set of feature maps.  
+2. Stack one or more **1D convolution (conv) + ReLU (+ optional pooling)** layers to get a set of feature maps.  
 3. **Pool** over the whole sequence (e.g., global max-pool or average-pool) to get one vector per channel.  
 4. Pass that vector through **fully connected** layers to get the class (or score).
 
@@ -96,7 +96,9 @@ So the CNN **extracts local motifs**, and the global pool **summarizes** “whic
 
 ## 8.3 RNNs and LSTMs (Conceptual)
 
-**Recurrent neural networks (RNNs)** are designed for **sequences** where the **order** matters and where **long-range** dependencies can exist (e.g., the start of a gene affecting the end). Unlike a CNN, which has a **fixed-size** receptive field (the kernel width), an RNN can in principle use **all previous** positions.
+So far we used **1D CNNs** to detect **local** patterns (motifs) in DNA or protein sequences. In many biological problems, though, what matters is not only a short window but **long-range** context: for example, the beginning of a gene can influence splicing or folding much later, and the structure of an RNA molecule depends on base pairing between distant positions. **Recurrent neural networks (RNNs)** and **LSTMs** are sequence models built exactly for this, and they are widely used in machine learning (ML) for DNA, RNA, and protein tasks (e.g., splice site prediction, RNA secondary structure, and protein function). So they belong naturally in this chapter alongside 1D CNNs.
+
+**Recurrent neural networks (RNNs)** are designed for **sequences** where the **order** matters and where **long-range** dependencies can exist (e.g., the start of a gene affecting the end). Unlike a convolutional neural network (CNN), which has a **fixed-size** receptive field (the kernel width), an RNN can in principle use **all previous** positions.
 
 ### 8.3.1 The recurrence idea
 
@@ -132,7 +134,7 @@ Training RNNs with **simple** recurrence (e.g., $\mathbf{h}_t = \tanh(\mathbf{W}
 - **Input gate:** “How much of the new candidate update should we add to the cell?”  
 - **Output gate:** “How much of the cell state should we expose as the hidden state?”
 
-The **cell state** $\mathbf{c}_t$ is like a “conveyor belt” that can carry information across many time steps with less decay than in a simple RNN. So LSTMs (and later, **gated** variants like GRU) are the standard choice when we need **long-range** context in sequences.
+The **cell state** $\mathbf{c}_t$ is like a “conveyor belt” that can carry information across many time steps with less decay than in a simple RNN. So LSTMs (and later, **gated** variants like the **gated recurrent unit (GRU)**) are the standard choice when we need **long-range** context in sequences.
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/lstm_cell.png" alt="LSTM cell: gates and cell state" />
@@ -154,23 +156,23 @@ Here we give a few **concrete tasks** so you can see how encoding + 1D CNN (or R
 
 ### 8.4.1 Splice site prediction
 
-**Goal:** Given a short window of DNA (e.g., 100–400 nt) around a candidate **donor** or **acceptor** site, predict whether it is a true splice site.
+**Goal:** Given a short window of DNA (e.g., 100–400 nucleotides (nt)) around a candidate **donor** or **acceptor** site, predict whether it is a true splice site.
 
 - **Input:** Sequence window (e.g., A, C, G, T string).  
 - **Encoding:** One-hot (length × 4).  
 - **Model:** 1D CNN (several conv layers + global pool) or CNN + LSTM; output: binary (splice site vs not) or two classes (donor vs acceptor).  
-- **Label:** From annotations (known splice sites) or from RNA-seq.
+- **Label:** From annotations (known splice sites) or from RNA sequencing (RNA-seq).
 
 ### 8.4.2 Transcription factor binding (or motif presence)
 
-**Goal:** Predict whether a short DNA sequence (e.g., 100–500 nt) contains a binding site for a given transcription factor (TF).
+**Goal:** Predict whether a short DNA sequence (e.g., 100–500 nt) contains a binding site for a given **transcription factor (TF)**.
 
 - **Input:** Sequence.  
 - **Encoding:** One-hot or k-mers.  
 - **Model:** 1D CNN or a dedicated motif model; output: binding vs non-binding.  
-- **Label:** From ChIP-seq or similar experiments.
+- **Label:** From chromatin immunoprecipitation followed by sequencing (ChIP-seq) or similar experiments.
 
-The **learned conv filters** often look like **position weight matrices (PWMs)**—i.e., interpretable motifs.
+The **learned conv filters** often look like **position weight matrices (PWMs)**, i.e., interpretable motifs.
 
 ### 8.4.3 Protein secondary structure or function
 
@@ -179,14 +181,14 @@ The **learned conv filters** often look like **position weight matrices (PWMs)**
 - **Input:** Protein sequence (letters A, R, N, …).  
 - **Encoding:** One-hot (length × 20) or embedding.  
 - **Model:** 1D CNN (per-position or with global pool) or LSTM/Transformer.  
-- **Label:** From structure databases (DSSP, etc.) or functional annotations.
+- **Label:** From structure databases (e.g., the Dictionary of Secondary Structure in Proteins (DSSP)) or functional annotations.
 
 ### 8.4.4 Summary table
 
 | Task              | Input        | Typical encoding | Typical model        |
 |-------------------|-------------|------------------|-----------------------|
 | Splice site       | DNA window  | One-hot (L×4)    | 1D CNN or CNN+LSTM    |
-| TF binding        | DNA window  | One-hot / k-mer | 1D CNN                |
+| TF (transcription factor) binding | DNA window  | One-hot / k-mer | 1D CNN                |
 | Protein function  | Protein seq| One-hot (L×20)   | 1D CNN or LSTM        |
 | Secondary structure | Protein seq| One-hot / embed  | 1D CNN or RNN (per-position) |
 
@@ -194,17 +196,17 @@ The **learned conv filters** often look like **position weight matrices (PWMs)**
 
 ## 8.5 Basic Model Interpretation
 
-After training, we often want to know **what the model used** to make its decision—which positions or which motifs. This is **interpretability** for sequences.
+After training, we often want to know **what the model used** to make its decision, which positions or which motifs. This is **interpretability** for sequences.
 
 ### 8.5.1 Visualizing learned 1D conv filters as motifs
 
-The **weights** of a 1D convolutional kernel (over one-hot encoded DNA) can be reshaped into a $k \times 4$ matrix. Each row has four values (one per nucleotide). If we **normalize** each row to sum to 1, we get something like a **position weight matrix (PWM)**. Plotting it (e.g., as a **sequence logo**) shows which nucleotides the filter “prefers” at each position—i.e., the **learned motif**.
+The **weights** of a 1D convolutional kernel (over one-hot encoded DNA) can be reshaped into a $k \times 4$ matrix. Each row has four values (one per nucleotide). If we **normalize** each row to sum to 1, we get something like a **position weight matrix (PWM)**. Plotting it (e.g., as a **sequence logo**) shows which nucleotides the filter “prefers” at each position, i.e., the **learned motif**.
 
-So the first step of interpretation is: **inspect the first-layer conv filters** and turn them into logos or PWMs.
+So the first step of interpretation is: **inspect the first-layer convolution (conv) filters** and turn them into logos or position weight matrices (PWMs).
 
 ### 8.5.2 Saliency and gradient-based attribution
 
-**Saliency:** For a given input sequence and the model’s output (e.g., score for “splice site”), compute the **gradient** of that output with respect to the **input** (the one-hot or embedding matrix). The magnitude of the gradient at each position tells us how much a small change there would change the output—so “important” positions get large gradient magnitude. We can plot **saliency per position** along the sequence.
+**Saliency:** For a given input sequence and the model’s output (e.g., score for “splice site”), compute the **gradient** of that output with respect to the **input** (the one-hot or embedding matrix). The magnitude of the gradient at each position tells us how much a small change there would change the output, so “important” positions get large gradient magnitude. We can plot **saliency per position** along the sequence.
 
 **Limitation:** Gradients can be noisy. Smoothed or integrated variants (e.g., **integrated gradients**) are often used in practice.
 
@@ -229,9 +231,9 @@ If the model has an **attention** mechanism (e.g., in a Transformer or an attent
 
 - **Encoding:** DNA/protein sequences are turned into numbers by **one-hot encoding** (one row per position, 4 or 20 channels) or **index + embedding**. **K-mers** are an alternative for local context.
 - **1D CNNs:** A kernel slides along the encoded sequence; each kernel learns a **local pattern (motif)**. Stack conv + ReLU + pooling, then global pool + dense layers for **sequence classification** (e.g., splice site, TF binding).
-- **RNNs:** Recurrence: at each step, hidden state $\mathbf{h}_t$ depends on input $\mathbf{x}_t$ and previous $\mathbf{h}_{t-1}$. Good for **order** and **long-range** context; **LSTMs** (and GRUs) use gates to avoid vanishing gradients.
-- **Tasks:** Splice site prediction, TF binding, protein structure/function—all use encoded sequences and 1D CNN and/or RNN.
-- **Interpretation:** Visualize **conv filters** as motifs (PWM/logo); use **saliency** (gradient w.r.t. input) or **attention** to see which positions mattered.
+- **RNNs:** Recurrence: at each step, hidden state $\mathbf{h}_t$ depends on input $\mathbf{x}_t$ and previous $\mathbf{h}_{t-1}$. Good for **order** and **long-range** context; **LSTMs** (and gated recurrent units (GRUs)) use gates to avoid vanishing gradients.
+- **Tasks:** Splice site prediction, TF binding, protein structure/function, all use encoded sequences and 1D CNN and/or RNN.
+- **Interpretation:** Visualize **convolution (conv) filters** as motifs (e.g., position weight matrix (PWM) or sequence logo); use **saliency** (gradient w.r.t. input) or **attention** to see which positions mattered.
 
 ---
 
@@ -245,8 +247,8 @@ If the model has an **attention** mechanism (e.g., in a Transformer or an attent
 
 ## Further Reading
 
-- [Deep learning for biology (Nature, 2021)](https://www.nature.com/articles/s41586-021-03814-9) — overview including sequences and genomics.
-- [BPNet (Avsec et al.)](https://www.nature.com/articles/s41592-021-01282-5) — interpretable CNNs for TF binding with attribution.
-- [Understanding LSTM networks (colah’s blog)](https://colah.github.io/posts/2015-08-Understanding-LSTMs/) — conceptual explanation of LSTMs with diagrams.
-- [PyTorch: Sequence models and LSTM](https://pytorch.org/tutorials/beginner/nlp/sequence_models_tutorial.html) — RNN/LSTM in code.
-- [Kipoi: model zoo for genomics](https://kipoi.org/) — pretrained models for splice sites, TF binding, etc., with interpretation tools.
+- [Deep learning for biology (Nature, 2021)](https://www.nature.com/articles/s41586-021-03814-9), overview including sequences and genomics.
+- [BPNet (Avsec et al.)](https://www.nature.com/articles/s41592-021-01282-5), interpretable CNNs for TF binding with attribution.
+- [Understanding LSTM networks (colah’s blog)](https://colah.github.io/posts/2015-08-Understanding-LSTMs/), conceptual explanation of LSTMs with diagrams.
+- [PyTorch: Sequence models and LSTM](https://pytorch.org/tutorials/beginner/nlp/sequence_models_tutorial.html), RNN/LSTM in code.
+- [Kipoi: model zoo for genomics](https://kipoi.org/), pretrained models for splice sites, TF binding, etc., with interpretation tools.
