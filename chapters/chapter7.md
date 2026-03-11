@@ -183,6 +183,13 @@ A typical **CNN** for images has:
 3. **More conv + pool blocks** — Stack several such blocks so that early layers detect edges/textures and deeper layers detect higher-level patterns (parts, objects).
 4. **Flatten + fully connected** — At the end we flatten the feature maps and pass them through one or more fully connected (dense) layers for classification or regression.
 
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter7/CNN_demo.jpg" alt="2D convolution: input patch, kernel, and feature map" />
+  <p class="caption"><strong>Figure 7.5.</strong> An example of a convolutional neural network (CNN), designed for binary (i.e., 2-way) classification. </p>
+</div>
+
+
+
 **Examples of architectures:** LeNet, AlexNet, VGG, ResNet, EfficientNet. They differ in depth, kernel sizes, and use of skip connections. For **biological images** (microscopy, histology, radiology), the same idea applies: convolutions capture local structure; deeper layers capture more abstract features.
 
 ---
