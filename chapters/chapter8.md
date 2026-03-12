@@ -14,7 +14,7 @@ Raw sequences are **strings of symbols**. Machine learning models need **numeric
 
 ### 8.1.1 One-hot encoding (DNA and protein)
 
-**DNA** has four nucleotides: **A, C, G, T**. We assign each letter a **one-hot vector** of length 4:
+**DNA** has four nucleotides: **A**denine (**A**), **C**ytosine (**C**), **G**uanine (**G**), and **T**hymine (**T**). We assign each letter a **one-hot vector** of length 4:
 
 | Letter | One-hot |
 |--------|--------|
@@ -31,7 +31,36 @@ Raw sequences are **strings of symbols**. Machine learning models need **numeric
 
 So the **encoded matrix** has shape **length $\times$ 4**. For a sequence of length $L$, we get an $L \times 4$ matrix. Each row has exactly one 1; the rest are 0.
 
-**Proteins** use **20 amino acids** (letters like A, R, N, D, C, Q, E, …). The same idea: one letter → one vector of length 20 with a single 1. So one protein sequence of length $L$ becomes an $L \times 20$ matrix.
+**Proteins** use a larger alphabet: **20 standard amino acids**. Each one has a **name**, a **three-letter code**, and a **single-letter code** that scientists use when writing protein sequences.
+
+Here is the full set:
+
+| Amino Acid    | 3-Letter | 1-Letter |
+| ------------- | -------- | -------- |
+| Alanine       | Ala      | **A**    |
+| Arginine      | Arg      | **R**    |
+| Asparagine    | Asn      | **N**    |
+| Aspartic acid | Asp      | **D**    |
+| Cysteine      | Cys      | **C**    |
+| Glutamine     | Gln      | **Q**    |
+| Glutamic acid | Glu      | **E**    |
+| Glycine       | Gly      | **G**    |
+| Histidine     | His      | **H**    |
+| Isoleucine    | Ile      | **I**    |
+| Leucine       | Leu      | **L**    |
+| Lysine        | Lys      | **K**    |
+| Methionine    | Met      | **M**    |
+| Phenylalanine | Phe      | **F**    |
+| Proline       | Pro      | **P**    |
+| Serine        | Ser      | **S**    |
+| Threonine     | Thr      | **T**    |
+| Tryptophan    | Trp      | **W**    |
+| Tyrosine      | Tyr      | **Y**    |
+| Valine        | Val      | **V**    |
+
+A useful pattern: the one-letter codes are usually the **first letter of the name**, but when multiple amino acids start with the same letter, conventions differ—e.g. **K** for Lysine (because **L** is Leucine), **F** for Phenylalanine, and **W** for Tryptophan (whose structure suggests a double ring). So a protein sequence like `MKTFFVLLL` is shorthand for Methionine → Lysine → Threonine → Phenylalanine → Phenylalanine → Valine → Leucine → Leucine → Leucine. That string is a **biological sentence**: the cell’s ribosome reads it like a molecular printer, assembling amino acids into a chain that then folds into a working nanomachine—enzyme, receptor, or structural fiber. In modern computational biology, this 20-letter alphabet is often treated like **natural language**, which is why protein models borrow ideas from the same transformer architectures used in language models.
+
+For **one-hot encoding**, the same idea as DNA applies: one letter → one vector of length 20 with a single 1. So one protein sequence of length $L$ becomes an $L \times 20$ matrix.
 
 **Why one-hot?** It is simple, interpretable, and does not impose an order on the letters (unlike assigning A=1, C=2, …). The model can learn which positions and which letters matter.
 
