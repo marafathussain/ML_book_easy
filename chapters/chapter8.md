@@ -84,12 +84,19 @@ These vectors are **learned during training**: the network adjusts them to impro
 
 ### 8.1.3 K-mer encoding (optional)
 
-A **k-mer** is a contiguous substring of length $k$. For DNA, there are $4^k$ possible k-mers (e.g., $k=3$ gives 64 triplets: AAA, AAC, …, TTT). We can:
+A **k-mer** is a **contiguous substring of length $k$**. You get k-mers by sliding a window of size $k$ along the sequence. For example, if the DNA sequence is `ACGTGCA` and $k = 3$, the 3-mers (also called **triplets**) are:
 
-- **Count** how many times each k-mer appears in the sequence → a vector of length $4^k$ (bag-of-k-mers), or  
-- **Slide** along the sequence and encode each position by the k-mer starting there (so each position is one of $4^k$ classes, then one-hot or embed).
+- ACG, CGT, GTG, TGC, GCA
 
-K-mers capture **local context** (e.g., "what triplets are common near splice sites?"). For this chapter we will mostly use **one-hot (or index + embedding)** so that 1D convolutions can learn motifs directly from the raw encoding.
+Each is just a short chunk of the sequence.
+
+**Why $4^k$ possible k-mers?** DNA has four letters (A, C, G, T). In a substring of length $k$, each of the $k$ positions can be any of the four. So the number of possible k-mers is $4 \times 4 \times \cdots \times 4 = 4^k$. Examples: $k=1$ gives 4 possibilities (A, C, G, T); $k=2$ gives $4^2 = 16$ (AA, AC, AG, AT, …); $k=3$ gives $4^3 = 64$ (AAA, AAC, …, TTT).
+
+**How we use k-mers as features.** Two common strategies:
+
+**1. Bag-of-k-mers (counting).** As in bag-of-words in NLP, we build a vector of **counts**: how many times each possible k-mer appears in the sequence. For $k=2$ there are 16 possible dimers, so the sequence becomes a **16-dimensional vector** (e.g. AA: 3, AC: 1, AG: 0, AT: 5, …). This **ignores position** but captures **sequence composition** and is widely used for tasks like genome classification.
+
+**2. Sliding k-mer encoding (position-aware).** Here we keep the **order** of k-mers. At each position we have one k-mer, i.e. one of $4^k$ possible "tokens." We then represent each token by **one-hot** (a vector of length $4^k$) or by a **learned embedding**. So the sequence becomes a list of token vectors, one per position. This is the idea behind many modern genomic models that treat DNA like text: DNA letters play the role of characters, k-mers the role of words, and the genome the role of a sentence. Researchers build **DNA language models** using transformer-style architectures similar to those in natural language. For the rest of this chapter we will mostly use **one-hot or index+embedding at the single-letter level** so that 1D convolutions can learn motifs directly from the raw encoding; k-mers remain a useful alternative when you want to exploit this "sequence as language" view.
 
 ---
 
