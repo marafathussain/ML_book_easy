@@ -2,7 +2,7 @@
 
 ## Introduction
 
-In Chapter 7 we used **convolutions** on **images** (2D grids). Many biological problems involve **sequences**: DNA, RNA, and proteins are long strings of letters (nucleotides or amino acids). Sequences have a **natural order** (position 1, 2, 3, …) but no “second dimension” like an image, so we treat them as **1D signals** and use **1D convolutions** and **recurrent** models. This chapter covers: (1) **encoding** DNA and protein sequences into numbers; (2) **1D convolutional neural networks (CNNs)** for detecting local patterns (e.g., motifs); (3) **recurrent neural networks (RNNs)** and **long short-term memory (LSTM)** networks at a conceptual level; (4) **sequence classification** tasks (splice sites, binding, etc.); and (5) **basic model interpretation** so we can see what the model “looked at.”
+In Chapter 7 we used **convolutions** on **images** (2D grids). Many biological problems involve **sequences**: DNA, RNA, and proteins are long strings of letters (nucleotides or amino acids). Sequences have a **natural order** (position 1, 2, 3, …) but no "second dimension" like an image, so we treat them as **1D signals** and use **1D convolutions** and **recurrent** models. This chapter covers: (1) **encoding** DNA and protein sequences into numbers; (2) **1D convolutional neural networks (CNNs)** for detecting local patterns (e.g., motifs); (3) **recurrent neural networks (RNNs)** and **long short-term memory (LSTM)** networks at a conceptual level; (4) **sequence classification** tasks (splice sites, binding, etc.); and (5) **basic model interpretation** so we can see what the model "looked at."
 
 You do not need a deep background in biology: we only assume that DNA has four letters (A, C, G, T), proteins have about 20 amino-acid letters, and that **motifs** are short, conserved patterns that often have a function (e.g., binding sites).
 
@@ -58,7 +58,7 @@ Here is the full set:
 | Tyrosine      | Tyr      | **Y**    |
 | Valine        | Val      | **V**    |
 
-A useful pattern: the one-letter codes are usually the **first letter of the name**, but when multiple amino acids start with the same letter, conventions differ, e.g. **K** for Lysine (because **L** is Leucine), **F** for Phenylalanine, and **W** for Tryptophan (whose structure suggests a double ring). So a protein sequence like `MKTFFVLLL` is shorthand for Methionine → Lysine → Threonine → Phenylalanine → Phenylalanine → Valine → Leucine → Leucine → Leucine. That string is a **biological sentence**: the cell’s ribosome reads it like a molecular printer, assembling amino acids into a chain that then folds into a working nanomachine (enzyme, receptor, or structural fiber). In modern computational biology, this 20-letter alphabet is often treated like **natural language**, which is why protein models borrow ideas from the same transformer architectures used in language models.
+A useful pattern: the one-letter codes are usually the **first letter of the name**, but when multiple amino acids start with the same letter, conventions differ, e.g. **K** for Lysine (because **L** is Leucine), **F** for Phenylalanine, and **W** for Tryptophan (whose structure suggests a double ring). So a protein sequence like `MKTFFVLLL` is shorthand for Methionine → Lysine → Threonine → Phenylalanine → Phenylalanine → Valine → Leucine → Leucine → Leucine. That string is a **biological sentence**: the cell's ribosome reads it like a molecular printer, assembling amino acids into a chain that then folds into a working nanomachine (enzyme, receptor, or structural fiber). In modern computational biology, this 20-letter alphabet is often treated like **natural language**, which is why protein models borrow ideas from the same transformer architectures used in language models.
 
 For **one-hot encoding**, the same idea as DNA applies: one letter → one vector of length 20 with a single 1. So one protein sequence of length $L$ becomes an $L \times 20$ matrix.
 
@@ -69,9 +69,18 @@ For **one-hot encoding**, the same idea as DNA applies: one letter → one vecto
   <p class="caption"><strong>Figure 8.1.</strong> One-hot encoding of a short DNA sequence. Each nucleotide (A, C, G, T) is replaced by a row of four numbers with a single 1. The full sequence becomes a matrix of shape (sequence length) × 4.</p>
 </div>
 
-### 8.1.2 Index encoding (integer labels)
+### 8.1.2 Index encoding and learned embeddings
 
-Sometimes we only assign an **integer index** to each letter (e.g., A→0, C→1, G→2, T→3). The sequence then becomes a **vector of integers** of length $L$. To feed this into a neural network, we usually pass it through an **embedding layer** that maps each index to a learned vector. So we still get a matrix of size $L \times d$ (where $d$ is the embedding dimension). One-hot is a special case of “no learning” in the first layer; embedding lets the model learn a representation.
+Neural networks only process numbers, not letters. So we first turn each symbol into an **integer index**. For DNA we might assign A→0, C→1, G→2, T→3. The sequence `ACGTAG` then becomes the numeric vector $(0, 1, 2, 3, 0, 2)$ of length $L$. This is just **indexing**; no learning yet.
+
+If we fed these integers straight into the network, the model could wrongly treat them as ordered (e.g. 3 > 2 > 1 > 0), but biologically that order is meaningless: the numbers are only labels. So we use an **embedding layer**: a lookup table that maps each index to a **learned vector** of dimension $d$. For example, with $d=4$ and DNA, the layer might learn:
+
+- A (index 0) → $(0.21, -0.5, 0.8, 0.1)$
+- C (index 1) → $(-0.7, 0.2, 0.3, 0.6)$
+- G (index 2) → $(0.4, 0.9, -0.2, -0.1)$
+- T (index 3) → $(-0.3, 0.1, 0.7, 0.5)$
+
+These vectors are **learned during training**: the network adjusts them to improve prediction. The full sequence then becomes a matrix of size $L \times d$, one $d$-dimensional vector per position. So we still get a matrix we can feed to 1D conv or RNN layers. One-hot is a special case where the first layer is fixed (no learning); embedding lets the model learn a representation that suits the task.
 
 ### 8.1.3 K-mer encoding (optional)
 
@@ -80,28 +89,28 @@ A **k-mer** is a contiguous substring of length $k$. For DNA, there are $4^k$ po
 - **Count** how many times each k-mer appears in the sequence → a vector of length $4^k$ (bag-of-k-mers), or  
 - **Slide** along the sequence and encode each position by the k-mer starting there (so each position is one of $4^k$ classes, then one-hot or embed).
 
-K-mers capture **local context** (e.g., “what triplets are common near splice sites?”). For this chapter we will mostly use **one-hot (or index + embedding)** so that 1D convolutions can learn motifs directly from the raw encoding.
+K-mers capture **local context** (e.g., "what triplets are common near splice sites?"). For this chapter we will mostly use **one-hot (or index + embedding)** so that 1D convolutions can learn motifs directly from the raw encoding.
 
 ---
 
 ## 8.2 1D convolutional neural networks (CNNs) for motif detection
 
-In Chapter 7 we defined **1D convolution**: a **kernel** (a short vector) slides over a **1D signal**, and at each position we compute the inner product of the kernel with the overlapping segment. For sequences, the “signal” is the **encoded sequence** (e.g., the $L \times 4$ matrix for DNA). We apply convolution **along the sequence dimension** (position 1, 2, …, L).
+In Chapter 7 we defined **1D convolution**: a **kernel** (a short vector) slides over a **1D signal**, and at each position we compute the inner product of the kernel with the overlapping segment. For sequences, the "signal" is the **encoded sequence** (e.g., the $L \times 4$ matrix for DNA). We apply convolution **along the sequence dimension** (position 1, 2, …, L).
 
 ### 8.2.1 One channel: sequence as a 1D signal per channel
 
 Think of the **one-hot matrix** as having **4 channels** (one per nucleotide). At each position $i$ we have a 4-dimensional vector. A **1D convolutional kernel** that slides along the sequence can have width $k$ (e.g., $k=5$) and **depth 4** (one weight per channel at each of the $k$ positions). So the kernel is like a $k \times 4$ patch. At each position $i$, we take the $k \times 4$ block of the sequence matrix, multiply it element-wise with the kernel, sum everything, and get **one number**. That number is the **activation** of this filter at position $i$. So **one kernel** gives **one 1D feature map** of length (about) $L - k + 1$.
 
-**Interpretation:** The kernel is learning a **local pattern** of length $k$, a **motif**. High activation at position $i$ means “this motif is present around position $i$.” So 1D CNNs naturally do **motif detection**. (We use “CNN” for convolutional neural network throughout.)
+**Interpretation:** The kernel is learning a **local pattern** of length $k$, a **motif**. High activation at position $i$ means "this motif is present around position $i$." So 1D CNNs naturally do **motif detection**. (We use "CNN" for convolutional neural network throughout.)
 
 ### 8.2.2 Example: a tiny sequence and one kernel
 
-**Sequence (length 8):** encoded as 8×4 one-hot. Suppose we have one kernel of **width 3** and depth 4 (total 12 weights). The kernel slides to positions 0, 1, …, 5 (output length $8-3+1=6$). At each position we compute the dot product of the 3×4 window with the kernel. If the kernel has learned “G in the middle, A and T on the sides,” then we get a **peak** in the feature map where that pattern appears in the sequence.
+**Sequence (length 8):** encoded as 8×4 one-hot. Suppose we have one kernel of **width 3** and depth 4 (total 12 weights). The kernel slides to positions 0, 1, …, 5 (output length $8-3+1=6$). At each position we compute the dot product of the 3×4 window with the kernel. If the kernel has learned "G in the middle, A and T on the sides," then we get a **peak** in the feature map where that pattern appears in the sequence.
 
 So:
 
 - **Input:** sequence of length $L$, encoded as $L \times 4$ (DNA) or $L \times 20$ (protein).  
-- **1D conv:** several kernels (e.g., 32 or 64), each of width $k$ (e.g., 5–15).  
+- **1D conv:** several kernels (e.g., 32 or 64), each of width $k$ (e.g., 5 to 15).  
 - **Output:** one feature map per kernel; each map has length $\approx L - k + 1$ (depending on padding).  
 - Then we often add **rectified linear unit (ReLU)** and **pooling** (e.g., max-pool) to reduce length and combine information.
 
@@ -112,14 +121,14 @@ So:
 
 ### 8.2.3 From motif detection to classification
 
-For **sequence classification** (e.g., “is this region a splice site?” or “does this protein bind?”), we typically:
+For **sequence classification** (e.g., "is this region a splice site?" or "does this protein bind?"), we typically:
 
 1. Encode the sequence (e.g., one-hot).  
 2. Stack one or more **1D convolution (conv) + ReLU (+ optional pooling)** layers to get a set of feature maps.  
 3. **Pool** over the whole sequence (e.g., global max-pool or average-pool) to get one vector per channel.  
 4. Pass that vector through **fully connected** layers to get the class (or score).
 
-So the CNN **extracts local motifs**, and the global pool **summarizes** “which motifs appeared anywhere in the sequence” into a fixed-size vector for the classifier.
+So the CNN **extracts local motifs**, and the global pool **summarizes** "which motifs appeared anywhere in the sequence" into a fixed-size vector for the classifier.
 
 ---
 
@@ -144,7 +153,7 @@ $$
 
 So the same function $f$ and the same weights $\mathbf{W}$ are applied at every step. The hidden state $\mathbf{h}_t$ is a **summary of the sequence so far** (from position 1 to $t$). We can use $\mathbf{h}_t$ to predict a label at step $t$, or use the **last** hidden state $\mathbf{h}_L$ for a single label for the whole sequence.
 
-**Intuition:** The RNN “walks” along the sequence and updates its internal memory ($\mathbf{h}$) at each step. That memory carries information from the past into the future.
+**Intuition:** The RNN "walks" along the sequence and updates its internal memory ($\mathbf{h}$) at each step. That memory carries information from the past into the future.
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/rnn_unfold.png" alt="RNN unfolded in time" />
@@ -153,17 +162,17 @@ So the same function $f$ and the same weights $\mathbf{W}$ are applied at every 
 
 ### 8.3.2 Vanishing gradient and long-range dependence
 
-Training RNNs with **simple** recurrence (e.g., $\mathbf{h}_t = \tanh(\mathbf{W}_{xh} \mathbf{x}_t + \mathbf{W}_{hh} \mathbf{h}_{t-1} + \mathbf{b})$) runs into the **vanishing gradient** problem: when the sequence is long, gradients from the loss at the end of the sequence shrink to almost zero when they are backpropagated to the beginning. So the model has trouble learning **long-range** dependencies (e.g., “position 5 matters for the label at position 100”).
+Training RNNs with **simple** recurrence (e.g., $\mathbf{h}_t = \tanh(\mathbf{W}_{xh} \mathbf{x}_t + \mathbf{W}_{hh} \mathbf{h}_{t-1} + \mathbf{b})$) runs into the **vanishing gradient** problem: when the sequence is long, gradients from the loss at the end of the sequence shrink to almost zero when they are backpropagated to the beginning. So the model has trouble learning **long-range** dependencies (e.g., "position 5 matters for the label at position 100").
 
 ### 8.3.3 LSTM: a conceptual overview
 
 **Long Short-Term Memory (LSTM)** networks fix this by adding a **cell state** $\mathbf{c}_t$ (in addition to the hidden state $\mathbf{h}_t$) and **gates** that control how much information is **forgotten**, **updated**, and **output** at each step. You do not need the full equations here; the main ideas are:
 
-- **Forget gate:** “How much of the old cell state should we keep?”  
-- **Input gate:** “How much of the new candidate update should we add to the cell?”  
-- **Output gate:** “How much of the cell state should we expose as the hidden state?”
+- **Forget gate:** "How much of the old cell state should we keep?"  
+- **Input gate:** "How much of the new candidate update should we add to the cell?"  
+- **Output gate:** "How much of the cell state should we expose as the hidden state?"
 
-The **cell state** $\mathbf{c}_t$ is like a “conveyor belt” that can carry information across many time steps with less decay than in a simple RNN. So LSTMs (and later, **gated** variants like the **gated recurrent unit (GRU)**) are the standard choice when we need **long-range** context in sequences.
+The **cell state** $\mathbf{c}_t$ is like a "conveyor belt" that can carry information across many time steps with less decay than in a simple RNN. So LSTMs (and later, **gated** variants like the **gated recurrent unit (GRU)**) are the standard choice when we need **long-range** context in sequences.
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/lstm_cell.png" alt="LSTM cell: gates and cell state" />
@@ -185,7 +194,7 @@ Here we give a few **concrete tasks** so you can see how encoding + 1D CNN (or R
 
 ### 8.4.1 Splice site prediction
 
-**Goal:** Given a short window of DNA (e.g., 100–400 nucleotides (nt)) around a candidate **donor** or **acceptor** site, predict whether it is a true splice site.
+**Goal:** Given a short window of DNA (e.g., 100 to 400 nucleotides (nt)) around a candidate **donor** or **acceptor** site, predict whether it is a true splice site.
 
 - **Input:** Sequence window (e.g., A, C, G, T string).  
 - **Encoding:** One-hot (length × 4).  
@@ -194,7 +203,7 @@ Here we give a few **concrete tasks** so you can see how encoding + 1D CNN (or R
 
 ### 8.4.2 Transcription factor binding (or motif presence)
 
-**Goal:** Predict whether a short DNA sequence (e.g., 100–500 nt) contains a binding site for a given **transcription factor (TF)**.
+**Goal:** Predict whether a short DNA sequence (e.g., 100 to 500 nt) contains a binding site for a given **transcription factor (TF)**.
 
 - **Input:** Sequence.  
 - **Encoding:** One-hot or k-mers.  
@@ -229,19 +238,19 @@ After training, we often want to know **what the model used** to make its decisi
 
 ### 8.5.1 Visualizing learned 1D conv filters as motifs
 
-The **weights** of a 1D convolutional kernel (over one-hot encoded DNA) can be reshaped into a $k \times 4$ matrix. Each row has four values (one per nucleotide). If we **normalize** each row to sum to 1, we get something like a **position weight matrix (PWM)**. Plotting it (e.g., as a **sequence logo**) shows which nucleotides the filter “prefers” at each position, i.e., the **learned motif**.
+The **weights** of a 1D convolutional kernel (over one-hot encoded DNA) can be reshaped into a $k \times 4$ matrix. Each row has four values (one per nucleotide). If we **normalize** each row to sum to 1, we get something like a **position weight matrix (PWM)**. Plotting it (e.g., as a **sequence logo**) shows which nucleotides the filter "prefers" at each position, i.e., the **learned motif**.
 
 So the first step of interpretation is: **inspect the first-layer convolution (conv) filters** and turn them into logos or position weight matrices (PWMs).
 
 ### 8.5.2 Saliency and gradient-based attribution
 
-**Saliency:** For a given input sequence and the model’s output (e.g., score for “splice site”), compute the **gradient** of that output with respect to the **input** (the one-hot or embedding matrix). The magnitude of the gradient at each position tells us how much a small change there would change the output, so “important” positions get large gradient magnitude. We can plot **saliency per position** along the sequence.
+**Saliency:** For a given input sequence and the model's output (e.g., score for "splice site"), compute the **gradient** of that output with respect to the **input** (the one-hot or embedding matrix). The magnitude of the gradient at each position tells us how much a small change there would change the output, so "important" positions get large gradient magnitude. We can plot **saliency per position** along the sequence.
 
 **Limitation:** Gradients can be noisy. Smoothed or integrated variants (e.g., **integrated gradients**) are often used in practice.
 
 ### 8.5.3 Attention (if the model uses it)
 
-If the model has an **attention** mechanism (e.g., in a Transformer or an attention layer on top of an RNN), the **attention weights** tell us which positions the model “attended to” when making the prediction. We can plot attention over positions for a given sequence. This is a direct way to see **where** the model looked.
+If the model has an **attention** mechanism (e.g., in a Transformer or an attention layer on top of an RNN), the **attention weights** tell us which positions the model "attended to" when making the prediction. We can plot attention over positions for a given sequence. This is a direct way to see **where** the model looked.
 
 ### 8.5.4 In practice
 
@@ -251,7 +260,7 @@ If the model has an **attention** mechanism (e.g., in a Transformer or an attent
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/interpretation_logo.png" alt="Learned conv filter as sequence logo" />
-  <p class="caption"><strong>Figure 8.5.</strong> A learned 1D convolutional filter (first layer) converted into a sequence logo. Height at each position indicates how much the filter “prefers” each nucleotide; this is the model’s learned motif.</p>
+  <p class="caption"><strong>Figure 8.5.</strong> A learned 1D convolutional filter (first layer) converted into a sequence logo. Height at each position indicates how much the filter "prefers" each nucleotide; this is the model's learned motif.</p>
 </div>
 
 ---
@@ -277,6 +286,6 @@ If the model has an **attention** mechanism (e.g., in a Transformer or an attent
 
 - [Deep learning for biology (Nature, 2018)](https://www.nature.com/articles/d41586-018-02174-z).
 - [BPNet (Avsec et al.)](https://www.nature.com/articles/s41592-021-01282-5), interpretable CNNs for TF binding with attribution.
-- [Understanding LSTM networks (colah’s blog)](https://colah.github.io/posts/2015-08-Understanding-LSTMs/), conceptual explanation of LSTMs with diagrams.
+- [Understanding LSTM networks (colah's blog)](https://colah.github.io/posts/2015-08-Understanding-LSTMs/), conceptual explanation of LSTMs with diagrams.
 - [PyTorch: Sequence models and LSTM](https://pytorch.org/tutorials/beginner/nlp/sequence_models_tutorial.html), RNN/LSTM in code.
 - [Kipoi: model zoo for genomics](https://kipoi.org/), pretrained models for splice sites, TF binding, etc., with interpretation tools.
