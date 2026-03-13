@@ -112,9 +112,45 @@ Think of the **one-hot matrix** as having **4 channels** (one per nucleotide). A
 
 ### 8.2.2 Example: a tiny sequence and one kernel
 
-**Sequence (length 8):** encoded as 8×4 one-hot. Suppose we have one kernel of **width 3** and depth 4 (total 12 weights). The kernel slides to positions 0, 1, …, 5 (output length $8-3+1=6$). At each position we compute the dot product of the 3×4 window with the kernel. If the kernel has learned "G in the middle, A and T on the sides," then we get a **peak** in the feature map where that pattern appears in the sequence.
+The kernel does not "learn letters." It learns **numbers that react strongly when certain letters appear in certain positions**. Walking through one convolution step makes this clear.
 
-So:
+**Step 1: Encode the sequence.** Recall one-hot: A → $(1,0,0,0)$, C → $(0,1,0,0)$, G → $(0,0,1,0)$, T → $(0,0,0,1)$. So the sequence
+
+A  C  G  T  A  G  C  T
+
+becomes an **8 × 4 matrix** (one row per position). Row 1 is $(1,0,0,0)$, row 2 is $(0,1,0,0)$, and so on.
+
+**Step 2: Define the kernel.** Take a kernel with **width 3** and **depth 4**: a **3 × 4 matrix** of learnable weights (12 numbers in total). At first these are random; training will adjust them. For illustration, suppose the kernel rows are:
+
+- Position 1: $(0.8, -0.2, -0.1, 1.2)$  
+- Position 2: $(-0.3, 0.5, 1.7, -0.4)$  
+- Position 3: $(1.1, -0.6, -0.3, 0.9)$  
+
+**Step 3: First window (positions 1 to 3).** The window is A, C, G. The encoded 3×4 block is:
+
+- Row 1 (A): $(1, 0, 0, 0)$  
+- Row 2 (C): $(0, 1, 0, 0)$  
+- Row 3 (G): $(0, 0, 1, 0)$  
+
+We take the **element-wise product** of this block with the kernel and **sum all 12 entries**. Because the input is one-hot, only **one value per row contributes**:
+
+- Row 1: $(1,0,0,0) \cdot (0.8,-0.2,-0.1,1.2) = 0.8$  
+- Row 2: $(0,1,0,0) \cdot (-0.3,0.5,1.7,-0.4) = 0.5$  
+- Row 3: $(0,0,1,0) \cdot (1.1,-0.6,-0.3,0.9) = -0.3$  
+
+Sum: $0.8 + 0.5 - 0.3 = 1.0$. That number is the **feature map value** at this position. The kernel then slides to the next window (positions 2 to 4), and we repeat; we get 6 values in total (output length $8 - 3 + 1 = 6$).
+
+**Step 4: What training does.** Gradient descent updates those 12 kernel weights so that the output is **large when useful patterns appear** and small otherwise. Suppose the task is to detect the motif **T G A**. Training might push the kernel toward something like:
+
+- Position 1: large weight on the **T** channel (fourth column)  
+- Position 2: large weight on the **G** channel (third column)  
+- Position 3: large weight on the **A** channel (first column)  
+
+When the sequence has T at position 1, G at 2, and A at 3, the dot product is large. When other bases appear, the other (e.g. negative) weights reduce the score. So the kernel has learned a **motif detector**. The kernel never stores letters; it stores **weights aligned with the one-hot channels** (channel 1 = A, 2 = C, 3 = G, 4 = T). A large weight on the G channel in the middle row means "activate strongly when the middle base is G." Biologists will recognize this: such kernels often resemble **position weight matrices (PWMs)**, the same objects used to describe transcription-factor binding motifs. So "G in the middle, A and T on the sides" is exactly the kind of pattern one kernel might learn.
+
+**Zooming out:** A typical genomic CNN might use **64 kernels** of **width 10**. Each kernel can learn a different motif (e.g. promoter-like, splice-site-like, GC-rich, repeat-like). The feature maps then tell the network **where** those motifs appear. Convolution on DNA is effectively a **motif discovery machine**: evolution wrote the patterns; gradient descent learns to notice them.
+
+Summary of dimensions:
 
 - **Input:** sequence of length $L$, encoded as $L \times 4$ (DNA) or $L \times 20$ (protein).  
 - **1D conv:** several kernels (e.g., 32 or 64), each of width $k$ (e.g., 5 to 15).  
