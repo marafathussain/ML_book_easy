@@ -98,6 +98,11 @@ Each is just a short chunk of the sequence.
 
 **2. Sliding k-mer encoding (position-aware).** Here we keep the **order** of k-mers. At each position we have one k-mer, i.e. one of $4^k$ possible "tokens." We then represent each token by **one-hot** (a vector of length $4^k$) or by a **learned embedding**. So the sequence becomes a list of token vectors, one per position. This is the idea behind many modern genomic models that treat DNA like text: DNA letters play the role of characters, k-mers the role of words, and the genome the role of a sentence. Researchers build **DNA language models** using transformer-style architectures similar to those in natural language. For the rest of this chapter we will mostly use **one-hot or index+embedding at the single-letter level** so that 1D convolutions can learn motifs directly from the raw encoding; k-mers remain a useful alternative when you want to exploit this "sequence as language" view.
 
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/2-mer.jpg" alt="One-hot encoded table for 2-mers" />
+  <p class="caption"><strong>Figure 8.2.</strong> One-hot encoding for 2-mers (dimers). Each 2-mer (e.g., AA, AC, …, TT) is represented by a row of length $4^2 = 16$ with a single 1 in the column for that dimer.</p>
+</div>
+
 ---
 
 ## 8.2 1D convolutional neural networks (CNNs) for motif detection
@@ -159,7 +164,7 @@ Summary of dimensions:
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/1dcnn_motif.png" alt="1D CNN sliding over a sequence for motif detection" />
-  <p class="caption"><strong>Figure 8.2.</strong> A 1D convolutional kernel (motif detector) slides over the encoded sequence. Each position yields one activation; high activation indicates presence of the learned pattern (motif) at that position.</p>
+  <p class="caption"><strong>Figure 8.3.</strong> A 1D convolutional kernel (motif detector) slides over the encoded sequence. Each position yields one activation; high activation indicates presence of the learned pattern (motif) at that position.</p>
 </div>
 
 ### 8.2.3 From motif detection to classification
@@ -200,7 +205,7 @@ So the same function $f$ and the same weights $\mathbf{W}$ are applied at every 
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/rnn_unfold.png" alt="RNN unfolded in time" />
-  <p class="caption"><strong>Figure 8.3.</strong> An RNN unfolded in time. At each step $t$, the model takes input $\mathbf{x}_t$ and the previous hidden state $\mathbf{h}_{t-1}$, and outputs a new hidden state $\mathbf{h}_t$. The same weights are reused at every step.</p>
+  <p class="caption"><strong>Figure 8.4.</strong> An RNN unfolded in time. At each step $t$, the model takes input $\mathbf{x}_t$ and the previous hidden state $\mathbf{h}_{t-1}$, and outputs a new hidden state $\mathbf{h}_t$. The same weights are reused at every step.</p>
 </div>
 
 ### 8.3.2 Vanishing gradient and long-range dependence
@@ -219,7 +224,7 @@ The **cell state** $\mathbf{c}_t$ is like a "conveyor belt" that can carry infor
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/lstm_cell.png" alt="LSTM cell: gates and cell state" />
-  <p class="caption"><strong>Figure 8.4.</strong> LSTM cell (conceptual). The cell state $\mathbf{c}$ is updated by forget and input gates; the hidden state $\mathbf{h}$ is filtered by the output gate. This allows the network to retain information over many steps.</p>
+  <p class="caption"><strong>Figure 8.5.</strong> LSTM cell (conceptual). The cell state $\mathbf{c}$ is updated by forget and input gates; the hidden state $\mathbf{h}$ is filtered by the output gate. This allows the network to retain information over many steps.</p>
 </div>
 
 ### 8.3.4 When to use CNN vs RNN for sequences
@@ -319,7 +324,7 @@ If the model has an **attention** mechanism (e.g., in a Transformer or an attent
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/interpretation_logo.png" alt="Learned conv filter as sequence logo" />
-  <p class="caption"><strong>Figure 8.5.</strong> A learned 1D convolutional filter (first layer) converted into a sequence logo. Height at each position indicates how much the filter "prefers" each nucleotide; this is the model's learned motif.</p>
+  <p class="caption"><strong>Figure 8.6.</strong> A learned 1D convolutional filter (first layer) converted into a sequence logo. Height at each position indicates how much the filter "prefers" each nucleotide; this is the model's learned motif.</p>
 </div>
 
 ---
