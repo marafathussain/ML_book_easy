@@ -163,7 +163,7 @@ Summary of dimensions:
 - Then we often add **rectified linear unit (ReLU)** and **pooling** (e.g., max-pool) to reduce length and combine information.
 
 <div class="figure">
-  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/1dcnn_motif.png" alt="1D CNN sliding over a sequence for motif detection" />
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/1dcnn_motif.gif" alt="1D CNN sliding over a sequence for motif detection" />
   <p class="caption"><strong>Figure 8.3.</strong> A 1D convolutional kernel (motif detector) slides over the encoded sequence. Each position yields one activation; high activation indicates presence of the learned pattern (motif) at that position.</p>
 </div>
 
