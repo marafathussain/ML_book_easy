@@ -178,6 +178,11 @@ For **sequence classification** (e.g., "is this region a splice site?" or "does 
 
 So the CNN **extracts local motifs**, and the global pool **summarizes** "which motifs appeared anywhere in the sequence" into a fixed-size vector for the classifier.
 
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/cnn.jpg" alt="Simple 1D CNN for sequence classification" />
+  <p class="caption"><strong>Figure 8.4.</strong> A simple 1D CNN for sequence classification. Input is one-hot encoded sequence; one layer of convolution + ReLU and one layer of max pooling extract and reduce features; two fully connected layers then produce the predicted probability.</p>
+</div>
+
 ---
 
 ## 8.3 RNNs and LSTMs (Conceptual)
@@ -205,7 +210,7 @@ So the same function $f$ and the same weights $\mathbf{W}$ are applied at every 
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/rnn_unfold.png" alt="RNN unfolded in time" />
-  <p class="caption"><strong>Figure 8.4.</strong> An RNN unfolded in time. At each step $t$, the model takes input $\mathbf{x}_t$ and the previous hidden state $\mathbf{h}_{t-1}$, and outputs a new hidden state $\mathbf{h}_t$. The same weights are reused at every step.</p>
+  <p class="caption"><strong>Figure 8.5.</strong> An RNN unfolded in time. At each step $t$, the model takes input $\mathbf{x}_t$ and the previous hidden state $\mathbf{h}_{t-1}$, and outputs a new hidden state $\mathbf{h}_t$. The same weights are reused at every step.</p>
 </div>
 
 ### 8.3.2 Vanishing gradient and long-range dependence
@@ -224,7 +229,7 @@ The **cell state** $\mathbf{c}_t$ is like a "conveyor belt" that can carry infor
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/lstm_cell.png" alt="LSTM cell: gates and cell state" />
-  <p class="caption"><strong>Figure 8.5.</strong> LSTM cell (conceptual). The cell state $\mathbf{c}$ is updated by forget and input gates; the hidden state $\mathbf{h}$ is filtered by the output gate. This allows the network to retain information over many steps.</p>
+  <p class="caption"><strong>Figure 8.6.</strong> LSTM cell (conceptual). The cell state $\mathbf{c}$ is updated by forget and input gates; the hidden state $\mathbf{h}$ is filtered by the output gate. This allows the network to retain information over many steps.</p>
 </div>
 
 ### 8.3.4 When to use CNN vs RNN for sequences
@@ -324,7 +329,7 @@ If the model has an **attention** mechanism (e.g., in a Transformer or an attent
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/interpretation_logo.png" alt="Learned conv filter as sequence logo" />
-  <p class="caption"><strong>Figure 8.6.</strong> A learned 1D convolutional filter (first layer) converted into a sequence logo. Height at each position indicates how much the filter "prefers" each nucleotide; this is the model's learned motif.</p>
+  <p class="caption"><strong>Figure 8.7.</strong> A learned 1D convolutional filter (first layer) converted into a sequence logo. Height at each position indicates how much the filter "prefers" each nucleotide; this is the model's learned motif.</p>
 </div>
 
 ---
