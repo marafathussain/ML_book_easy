@@ -4,15 +4,15 @@ Personal notes on selected topics.
 
 ---
 
-## S4 (Structured State Space for Sequence modeling) / State Space Models — Sections 2.2–2.4 and Section 3 (Gu et al., 2022)
+## S4 (Structured State Space for Sequence modeling) / State Space Models , Sections 2.2-2.4 and Section 3 (Gu et al., 2022)
 
-Reference: *Efficiently Modeling Long Sequences with Structured State Spaces*, Gu et al., arXiv:2111.00396v3. The following summarizes Sections 2.2–2.4 (background on SSMs, HiPPO, discrete recurrence, convolutional view) and Section 3 (S4 parameterization: how to compute the convolution kernel efficiently).
+Reference: *Efficiently Modeling Long Sequences with Structured State Spaces*, Gu et al., arXiv:2111.00396v3. The following summarizes Sections 2.2-2.4 (background on SSMs, HiPPO, discrete recurrence, convolutional view) and Section 3 (S4 parameterization: how to compute the convolution kernel efficiently).
 
 The diagram below shows the three equivalent views: continuous SSM → discretize to recurrence → unroll to convolution.
 
 <div class="figure">
   <img src="figures/misc/ssm_three_views.svg" alt="Three views of an SSM: continuous, discrete recurrent, and convolution" />
-  <p class="caption">Three views of an SSM (Sections 2.2–2.4): continuous time, discrete recurrence, and convolution.</p>
+  <p class="caption">Three views of an SSM (Sections 2.2-2.4): continuous time, discrete recurrence, and convolution.</p>
 </div>
 
 ---
@@ -32,7 +32,7 @@ Think of $x(t)$ as a memory that evolves over time from its past and the current
 
 ---
 
-## Section 2.2 — Long-Range Dependencies and HiPPO
+## Section 2.2 , Long-Range Dependencies and HiPPO
 
 Why do we care about the choice of $A$?
 
@@ -56,7 +56,7 @@ Above the diagonal, the scaling encodes how to project past inputs into a basis 
 Rough picture of the HiPPO $A$ structure (lower-triangular, with a specific pattern):
 
 ```
-HiPPO A (N×N) — lower triangular
+HiPPO A (N×N) , lower triangular
 [  1    0    0   ... ]
 [ -√3   2    0   ... ]
 [ -√15 -√7   3  ... ]
@@ -67,7 +67,7 @@ A random $A$ would mix dimensions in an unstructured way; HiPPO spreads informat
 
 ---
 
-## Section 2.3 — Discrete-Time SSM: Recurrent View
+## Section 2.3 , Discrete-Time SSM: Recurrent View
 
 The continuous-time SSM is discretized for sequences $u_0, u_1, u_2, \ldots$.
 
@@ -92,11 +92,11 @@ x_2 &= A^2 B u_0 + A B u_1 + B u_2
 \end{aligned}
 $$
 
-So the current state is a weighted sum of all past inputs — exactly the structure of an RNN, but with weights coming from the SSM matrices.
+So the current state is a weighted sum of all past inputs , exactly the structure of an RNN, but with weights coming from the SSM matrices.
 
 ---
 
-## Section 2.4 — Training SSMs: Convolutional View
+## Section 2.4 , Training SSMs: Convolutional View
 
 The same recurrence can be written as a convolution, which is the key to efficient training.
 
@@ -139,17 +139,17 @@ The rest of the paper (e.g. S4) is about choosing a structured $A$ so that this 
 
 ---
 
-## Section 3 — S4 Parameterization: Computing the Kernel Efficiently
+## Section 3 , S4 Parameterization: Computing the Kernel Efficiently
 
 Section 2.4 showed that the SSM output is a convolution with kernel $K$, where $K[\ell] = C \bar{A}^{\ell-1} B$. So to run the model we need this kernel. The problem: computing it the obvious way is too expensive for long sequences.
 
 ### The bottleneck
 
-To get $K$ we need the sequence $C\bar{B},\, C\bar{A}\bar{B},\, C\bar{A}^2\bar{B},\, \ldots,\, C\bar{A}^{L-1}\bar{B}$. Doing that with a general $N \times N$ matrix $\bar{A}$ means $L$ matrix–vector products, which costs $O(N^2 L)$ time and $O(NL)$ space. For long sequences (e.g. $L = 10{,}000$) and moderate $N$, that is prohibitive. We want something closer to $O(N + L)$.
+To get $K$ we need the sequence $C\bar{B},\, C\bar{A}\bar{B},\, C\bar{A}^2\bar{B},\, \ldots,\, C\bar{A}^{L-1}\bar{B}$. Doing that with a general $N \times N$ matrix $\bar{A}$ means $L$ matrix-vector products, which costs $O(N^2 L)$ time and $O(NL)$ space. For long sequences (e.g. $L = 10{,}000$) and moderate $N$, that is prohibitive. We want something closer to $O(N + L)$.
 
 ### Change of basis (conjugation)
 
-A key fact: the input–output map $u \mapsto y$ does not change if we replace $(A, B, C)$ by a “conjugated” version. For any invertible matrix $V$:
+A key fact: the input-output map $u \mapsto y$ does not change if we replace $(A, B, C)$ by a “conjugated” version. For any invertible matrix $V$:
 
 $$
 (A, B, C) \quad \sim \quad (V^{-1} A V,\; V^{-1} B,\; C V)
@@ -165,7 +165,7 @@ $$
 \bar{K}[\ell] = C \bar{A}^{\ell} B = \sum_{n=0}^{N-1} C_n \bar{A}_n^{\ell} B_n
 $$
 
-This is exactly one row–vector product where the “matrix” has columns of the form $(1, \bar{A}_n, \bar{A}_n^2, \ldots, \bar{A}_n^{L-1})$. That matrix is a Vandermonde matrix: its columns are powers of the $\bar{A}_n$. Vandermonde structure is well studied: we can compute this in $\widetilde{O}(N+L)$ time and $O(N+L)$ space (or a simple $O(NL)$ implementation that still avoids materializing the full $N \times L$ matrix). So diagonal SSMs give a fast way to compute $K$.
+This is exactly one row-vector product where the “matrix” has columns of the form $(1, \bar{A}_n, \bar{A}_n^2, \ldots, \bar{A}_n^{L-1})$. That matrix is a Vandermonde matrix: its columns are powers of the $\bar{A}_n$. Vandermonde structure is well studied: we can compute this in $\widetilde{O}(N+L)$ time and $O(N+L)$ space (or a simple $O(NL)$ implementation that still avoids materializing the full $N \times L$ matrix). So diagonal SSMs give a fast way to compute $K$.
 
 Rough picture:
 
@@ -174,12 +174,12 @@ Diagonal Ā  →  K = [row] × [Vandermonde matrix]
                         (1, Ā₀, Ā₀², ...)
                         (1, Ā₁, Ā₁², ...)
                         ...
-                   →  one structured matrix–vector product, Õ(N+L)
+                   →  one structured matrix-vector product, Õ(N+L)
 ```
 
 ### Why not use a diagonal A from the start?
 
-HiPPO (Section 2.2) gives an $A$ that is great for long-range memory, but the HiPPO matrix is not diagonal — it is lower triangular with a specific pattern. So we cannot directly use the “diagonal = Vandermonde” trick on the raw HiPPO matrix.
+HiPPO (Section 2.2) gives an $A$ that is great for long-range memory, but the HiPPO matrix is not diagonal , it is lower triangular with a specific pattern. So we cannot directly use the “diagonal = Vandermonde” trick on the raw HiPPO matrix.
 
 ### S4’s idea: diagonal + low-rank (DPLR)
 
@@ -201,7 +201,7 @@ So S4 keeps the benefits of HiPPO (long-range dependencies) but makes the convol
 
 | Step | Idea |
 |------|------|
-| 1 | Computing $K$ naively is $O(N^2 L)$ — too slow for long $L$. |
+| 1 | Computing $K$ naively is $O(N^2 L)$ , too slow for long $L$. |
 | 2 | Conjugation: we can change basis so $A$ has a “nice” form without changing $u \mapsto y$. |
 | 3 | If $A$ (hence $\bar{A}$) were diagonal, $K$ would be a Vandermonde product → $\widetilde{O}(N+L)$. |
 | 4 | HiPPO’s $A$ is not diagonal; S4 writes it as diagonal + low-rank (DPLR). |

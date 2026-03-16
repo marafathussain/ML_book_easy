@@ -56,7 +56,7 @@ $$
 where we treat $y_i = \mathbf{w}^\top \mathbf{x}_i$ as the score for sample $i$. The **objective** in the simplest binary linear classifier is to choose $\mathbf{w}$ so that $\mathrm{sign}(\mathbf{w}^\top \mathbf{x}_i)$ matches the true label (e.g. +1 for C1, −1 for C2). This is the **linear binary classifier**: one linear function, one boundary, and predictions by the sign of that function.
 
 <div class="figure">
-  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter6/figure1.jpg" alt="Perceptron and axon–dendrite analogy" />
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter6/figure1.jpg" alt="Perceptron and axon-dendrite analogy" />
   <p class="caption"><strong>Figure 6.1.</strong> A simple linear binary classifier.</p>
 </div>
 
@@ -93,8 +93,8 @@ $$
 Biologically, we can think of the inputs as signals arriving at **dendrites**, the weights as **synaptic strengths**, and the weighted sum as the **cell body** combining them; the output (after a threshold or activation) travels along the **axon**. The figure below is a placeholder for an illustration of this analogy (axon, dendrites, and the flow of signals).
 
 <div class="figure">
-  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter6/figure2.jpg" alt="Perceptron and axon–dendrite analogy" />
-  <p class="caption"><strong>Figure 6.2.</strong> Perceptron and axon–dendrite analogy. A single neuron: inputs (dendrites), weights (synapses), linear combination (cell body), and output (axon).</p>
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter6/figure2.jpg" alt="Perceptron and axon-dendrite analogy" />
+  <p class="caption"><strong>Figure 6.2.</strong> Perceptron and axon-dendrite analogy. A single neuron: inputs (dendrites), weights (synapses), linear combination (cell body), and output (axon).</p>
 </div>
 
 So the **perceptron** is exactly the same as our linear model plus an activation (sign or sigmoid): one “neuron” that computes $\mathbf{w}^\top \mathbf{x}$ and then applies a non-linear function. The next step is to go from **one output** (binary) to **many outputs** (multiclass).
@@ -282,10 +282,10 @@ So we get **update rules** for $\mathbf{w}^{(2)}$ and $\mathbf{W}^{(1)}$ by desc
 
 In the next class we will study:
 
-- **Convolutions, kernels, and feature maps** — how convolutional layers work.
-- **CNN architectures** — typical designs for image (and other grid) data.
-- **Transfer learning for biological images** — reusing pretrained networks.
-- **Data augmentation** — increasing effective data size for better generalization.
+- **Convolutions, kernels, and feature maps** , how convolutional layers work.
+- **CNN architectures** , typical designs for image (and other grid) data.
+- **Transfer learning for biological images** , reusing pretrained networks.
+- **Data augmentation** , increasing effective data size for better generalization.
 
 ---
 

@@ -490,7 +490,7 @@ Based on Steps 1 to 3, decide:
 
 ## 2.7 Normalization and Scaling
 
-Different features often live on different scales (e.g. sepal length 4–8 cm, petal length 1–7 cm). Many ML algorithms care about scale: features with larger numbers can dominate. **Normalization** or **scaling** puts features on a comparable scale.
+Different features often live on different scales (e.g. sepal length 4-8 cm, petal length 1-7 cm). Many ML algorithms care about scale: features with larger numbers can dominate. **Normalization** or **scaling** puts features on a comparable scale.
 
 - **MinMax scaling:** Map values to a range, usually [0, 1].  
   Formula: `(value - min) / (max - min)`

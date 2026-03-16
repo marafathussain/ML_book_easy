@@ -178,10 +178,10 @@ After convolution we often apply a **non-linearity** (e.g., ReLU) and sometimes 
 
 A typical **CNN** for images has:
 
-1. **Convolutional layers** — Convolve with learned kernels; add many feature maps (e.g., 32, 64, 128). After each conv we usually apply ReLU and sometimes batch normalization.
-2. **Pooling layers** — Reduce spatial size (e.g., max-pool $2\times2$) to get translation invariance and smaller feature maps.
-3. **More conv + pool blocks** — Stack several such blocks so that early layers detect edges/textures and deeper layers detect higher-level patterns (parts, objects).
-4. **Flatten + fully connected** — At the end we flatten the feature maps and pass them through one or more fully connected (dense) layers for classification or regression.
+1. **Convolutional layers** , Convolve with learned kernels; add many feature maps (e.g., 32, 64, 128). After each conv we usually apply ReLU and sometimes batch normalization.
+2. **Pooling layers** , Reduce spatial size (e.g., max-pool $2\times2$) to get translation invariance and smaller feature maps.
+3. **More conv + pool blocks** , Stack several such blocks so that early layers detect edges/textures and deeper layers detect higher-level patterns (parts, objects).
+4. **Flatten + fully connected** , At the end we flatten the feature maps and pass them through one or more fully connected (dense) layers for classification or regression.
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter7/CNN_demo.jpg" alt="2D convolution: input patch, kernel, and feature map" />

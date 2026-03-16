@@ -2,7 +2,7 @@
 
 ## Introduction
 
-In Chapters 7 and 8 we worked with **images** (2D grids) and **sequences** (DNA, protein). Many biological questions are about **cell types** and **cell states**: which cells are T cells, neurons, or tumor cells, and how do they differ in gene expression? **Single-cell RNA sequencing (scRNA-seq)** measures the abundance of messenger RNA (mRNA) in **individual cells**, so we get a **profile** of which genes are turned on or off in each cell. That gives a matrix: **cells × genes**. The number of cells can be thousands to millions; the number of genes is typically tens of thousands. This data is **high-dimensional** and **sparse** (many zeros, because not every gene is expressed in every cell). In this chapter we cover: (1) **what single-cell data looks like** and how it is stored; (2) the **Scanpy workflow**—normalization, highly variable genes (HVGs), neighborhood graph, and UMAP; (3) **clustering and marker genes** to discover and name cell populations; (4) **integrating scRNA with machine learning** so we can treat the data as a feature matrix for classifiers; and (5) **using ML for cell-type prediction** (e.g., training a classifier on labeled cells and predicting labels for new cells or new datasets).
+In Chapters 7 and 8 we worked with **images** (2D grids) and **sequences** (DNA, protein). Many biological questions are about **cell types** and **cell states**: which cells are T cells, neurons, or tumor cells, and how do they differ in gene expression? **Single-cell RNA sequencing (scRNA-seq)** measures the abundance of messenger RNA (mRNA) in **individual cells**, so we get a **profile** of which genes are turned on or off in each cell. That gives a matrix: **cells × genes**. The number of cells can be thousands to millions; the number of genes is typically tens of thousands. This data is **high-dimensional** and **sparse** (many zeros, because not every gene is expressed in every cell). In this chapter we cover: (1) **what single-cell data looks like** and how it is stored; (2) the **Scanpy workflow**,normalization, highly variable genes (HVGs), neighborhood graph, and UMAP; (3) **clustering and marker genes** to discover and name cell populations; (4) **integrating scRNA with machine learning** so we can treat the data as a feature matrix for classifiers; and (5) **using ML for cell-type prediction** (e.g., training a classifier on labeled cells and predicting labels for new cells or new datasets).
 
 You do not need prior experience with single-cell data: we introduce the **AnnData** object, the standard Python container for such data, and walk through a typical analysis pipeline step by step.
 
@@ -35,7 +35,7 @@ Single-cell data in Python is usually stored in an **AnnData** object (from the 
 - **`X`:** The main matrix (cells × genes). Can be raw counts or normalized/log-transformed values.
 - **`obs`:** **Observations** = rows = cells. A DataFrame with **cell-level metadata** (e.g., batch, donor, total counts, number of genes detected).
 - **`var`:** **Variables** = columns = genes. A DataFrame with **gene-level metadata** (e.g., gene name, whether it is a highly variable gene).
-- **`obsm`:** Multi-dimensional **annotations** for observations (e.g., PCA coordinates, UMAP coordinates)—one array per key.
+- **`obsm`:** Multi-dimensional **annotations** for observations (e.g., PCA coordinates, UMAP coordinates),one array per key.
 - **`uns`:** Unstructured **metadata** (e.g., parameters used for PCA or UMAP).
 
 This structure is similar to **Pandas** (rows and columns with metadata) but optimized for large matrices and for the Scanpy ecosystem. Saving to disk gives an **`.h5ad`** file, which can hold millions of cells efficiently.
@@ -71,7 +71,7 @@ Gene expression is often **multiplicative** (e.g., “twice as many transcripts�
 
 ### 9.2.4 Highly variable genes (HVGs)
 
-Not all genes are informative for **separating cell types**. Many genes are lowly expressed or similar across cells. We **select a subset of genes** that vary a lot across cells—**highly variable genes (HVGs)**—and use only those for dimensionality reduction and clustering. That reduces noise and computation and focuses on biology.
+Not all genes are informative for **separating cell types**. Many genes are lowly expressed or similar across cells. We **select a subset of genes** that vary a lot across cells,**highly variable genes (HVGs)**,and use only those for dimensionality reduction and clustering. That reduces noise and computation and focuses on biology.
 
 **Idea:** For each gene, we compute (e.g.) **mean** expression across cells and **dispersion** (variance/mean or similar). Genes that are both expressed enough and variable (e.g., high dispersion for their mean) are marked as HVGs. Scanpy can use methods like **Seurat** or **Seurat v3** to select a few thousand HVGs.
 
@@ -167,8 +167,8 @@ Single-cell data, after preprocessing, is a **matrix**: cells (samples) × genes
 - **X** (or a layer like `adata.layers['log1p']`) = the numeric matrix we feed to a model.
 
 So we have:
-- **X:** shape (n_cells, n_genes) — the “design matrix.”
-- **y:** labels, if we have them — e.g., `adata.obs['cell_type']` or `adata.obs['leiden']`.
+- **X:** shape (n_cells, n_genes) , the “design matrix.”
+- **y:** labels, if we have them , e.g., `adata.obs['cell_type']` or `adata.obs['leiden']`.
 
 We must be careful about **train/test split**: if we split **randomly**, we might leak information (same donor or batch in both sets). Often we split by **batch** or **donor** so the model is evaluated on “unseen” batches. We also need to handle **missing labels**: many cells have no annotation until we run clustering and manual annotation; we can train on a **labeled subset** and predict on the rest.
 

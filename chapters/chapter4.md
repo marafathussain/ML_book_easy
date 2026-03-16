@@ -7,7 +7,7 @@ In Chapter 3, you learned to build and evaluate classifiers using **accuracy** a
 This chapter covers four topics that are essential for evaluating and improving classifiers when the class distribution is uneven or when you care more about one class than the other:
 
 1. **Precision, recall, and F1-score**, metrics that break down performance into "how many positives did we catch?" and "when we said positive, how often were we right?"
-2. **Precision–Recall (PR) curves**, a curve that shows the trade-off between precision and recall as you change the decision threshold, especially useful when positives are rare.
+2. **Precision-Recall (PR) curves**, a curve that shows the trade-off between precision and recall as you change the decision threshold, especially useful when positives are rare.
 3. **Class weighting vs. oversampling (SMOTE)**, two ways to handle imbalanced data during training: adjust the cost of errors per class, or create synthetic minority samples.
 4. **Calibration curves**, how to check whether the model’s predicted probabilities (e.g., "70% chance of virginica") match the actual frequencies in the data.
 
@@ -559,7 +559,7 @@ If specificity is low, healthy people receive positive predictions and may under
 
 **Iris example:** If there are 40 non-virginica flowers in the test set and we correctly predict 36 of them as non-virginica, then TN = 36, FP = 4, and Specificity = 36/40 = 0.90 (90%).
 
-### 4.5.5 The precision–recall trade-off
+### 4.5.5 The precision-recall trade-off
 
 Often, **increasing recall** (catching more positives) means lowering the decision threshold, so we predict "positive" more often. That can **increase false positives** and thus **lower precision**. So we usually have a trade-off: we can be more cautious (high precision, lower recall) or more aggressive (high recall, lower precision). The choice depends on the application.
 
@@ -602,9 +602,9 @@ cm = confusion_matrix(y_true, y_pred)  # [[TN, FP], [FN, TP]]
 
 ---
 
-## 4.6 Precision–Recall Curves
+## 4.6 Precision-Recall Curves
 
-So far we have assumed a **fixed** decision threshold (e.g., predict "positive" if predicted probability > 0.5). In practice, you can **vary the threshold**: a lower threshold means we predict "positive" more often (higher recall, usually lower precision); a higher threshold means we are stricter (higher precision, usually lower recall). A **Precision–Recall (PR) curve** shows this trade-off.
+So far we have assumed a **fixed** decision threshold (e.g., predict "positive" if predicted probability > 0.5). In practice, you can **vary the threshold**: a lower threshold means we predict "positive" more often (higher recall, usually lower precision); a higher threshold means we are stricter (higher precision, usually lower recall). A **Precision-Recall (PR) curve** shows this trade-off.
 
 **What is a PR curve?** For each possible threshold, we compute precision and recall on the test set. We then plot **Recall** on the x-axis and **Precision** on the y-axis. Each point on the curve corresponds to one threshold. A good classifier has high precision and high recall, so the curve stays near the top-right corner. The **area under the PR curve (AUPRC** or **AP)** summarizes overall performance; higher is better (maximum 1.0).
 
@@ -614,7 +614,7 @@ So far we have assumed a **fixed** decision threshold (e.g., predict "positive" 
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter4/pr_curve_iris.png" alt="Precision-Recall curve for Iris" />
-  <p class="caption"><strong>Figure 4.7.</strong> Precision–Recall curve for an Iris classifier (virginica vs non-virginica). Each point corresponds to a different decision threshold. The area under the curve (AUPRC) summarizes performance; a curve that stays high and to the right is better.</p>
+  <p class="caption"><strong>Figure 4.7.</strong> Precision-Recall curve for an Iris classifier (virginica vs non-virginica). Each point corresponds to a different decision threshold. The area under the curve (AUPRC) summarizes performance; a curve that stays high and to the right is better.</p>
 </div>
 
 **How to compute in Python:**
@@ -745,7 +745,7 @@ That is a conditional probability: given that the model outputs $p$, the true ev
 
 A **calibration curve** (or **reliability diagram**) is a plot that helps you check this:
 
-1. **X-axis:** Predicted probability (often binned, e.g., [0–0.1], [0.1–0.2], …).
+1. **X-axis:** Predicted probability (often binned, e.g., [0,0.1], [0.1,0.2], …).
 2. **Y-axis:** **Actual fraction of positives** in each bin (the observed frequency of the positive class in that bin).
 
 If the model is perfectly calibrated, the curve lies along the **diagonal** (predicted = actual). If the curve is **above** the diagonal in a region, the model is **underconfident** there (actual positive rate higher than predicted). If the curve is **below** the diagonal, the model is **overconfident** (actual positive rate lower than predicted).
@@ -790,7 +790,7 @@ frac_of_positives, mean_predicted_value = calibration_curve(y_true, y_prob, n_bi
 - **Specificity** = TN / (TN + FP): of all actual negatives, how many did we correctly reject? Use when avoiding false alarms in negatives is important.
 - **F1** = harmonic mean of precision and recall; balances both.
 
-**Precision–Recall curve:** Plot precision vs recall as the decision threshold changes. Area under the curve (AUPRC) summarizes performance. Especially useful when the positive class is rare.
+**Precision-Recall curve:** Plot precision vs recall as the decision threshold changes. Area under the curve (AUPRC) summarizes performance. Especially useful when the positive class is rare.
 
 **Imbalanced data:**
 - **Class weighting:** Give higher loss weight to the minority class (e.g., `class_weight='balanced'`). No new data; easy to use.
