@@ -240,8 +240,8 @@ The figure below shows one image and several common augmentations in a subplot l
 
 ## Topics for the Next Class
 
-- Recurrent and attention-based models for sequences (e.g., RNA, time series).
-- Or further practice with CNNs and biological image analysis.
+- **Chapter 8:** Encoding DNA and protein sequences; 1D CNNs for motif detection; RNNs and LSTMs for sequence data.
+- **Chapter 9:** Single-cell RNA-seq, Scanpy workflow (normalization, HVGs, UMAP), clustering and marker genes, and ML for cell-type prediction.
 
 ---
 

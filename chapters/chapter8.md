@@ -346,8 +346,8 @@ If the model has an **attention** mechanism (e.g., in a Transformer or an attent
 
 ## Topics for the Next Class
 
-- **Transformers and attention** for sequences (e.g., BERT-style models for protein or DNA).
-- **Generative models** for sequences (e.g., language models for design).
+- **Chapter 9:** Single-cell RNA-seq data, Scanpy workflow (normalization, HVGs, neighbors, UMAP), clustering and marker genes, and integrating scRNA with machine learning for cell-type prediction.
+- **Later:** Transformers and attention for sequences (e.g., BERT-style models for protein or DNA); generative models for sequences.
 
 ---
 
