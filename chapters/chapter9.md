@@ -2,7 +2,7 @@
 
 ## Introduction
 
-In Chapters 7 and 8 we worked with **images** (2D grids) and **sequences** (DNA, protein). Many biological questions are about **cell types** and **cell states**: which cells are T cells, neurons, or tumor cells, and how do they differ in gene expression? **Single-cell RNA sequencing (scRNA-seq)** measures the abundance of messenger RNA (mRNA) in **individual cells**, so we get a **profile** of which genes are turned on or off in each cell. That gives a matrix: **cells × genes**. The number of cells can be thousands to millions; the number of genes is typically tens of thousands. This data is **high-dimensional** and **sparse** (many zeros, because not every gene is expressed in every cell). In this chapter we cover: (1) **what single-cell data looks like** and how it is stored; (2) the **Scanpy workflow**,normalization, highly variable genes (HVGs), neighborhood graph, and UMAP; (3) **clustering and marker genes** to discover and name cell populations; (4) **integrating scRNA with machine learning** so we can treat the data as a feature matrix for classifiers; and (5) **using ML for cell-type prediction** (e.g., training a classifier on labeled cells and predicting labels for new cells or new datasets).
+In Chapters 7 and 8 we worked with **images** (2D grids) and **sequences** (DNA, protein). Many biological questions are about **cell types** and **cell states**: which cells are T cells, neurons, or tumor cells, and how do they differ in gene expression? **Single-cell RNA sequencing (scRNA-seq)** measures the abundance of messenger RNA (mRNA) in **individual cells**, so we get a **profile** of which genes are turned on or off in each cell. That gives a matrix: **cells × genes**. The number of cells can be thousands to millions; the number of genes is typically tens of thousands. This data is **high-dimensional** and **sparse** (many zeros, because not every gene is expressed in every cell). In this chapter we cover: (1) **what single-cell data looks like** and how it is stored; (2) the **Scanpy workflow**: normalization, highly variable genes (HVGs), neighborhood graph, and UMAP; (3) **clustering and marker genes** to discover and name cell populations; (4) **integrating scRNA with machine learning** so we can treat the data as a feature matrix for classifiers; and (5) **using ML for cell-type prediction** (e.g., training a classifier on labeled cells and predicting labels for new cells or new datasets).
 
 You do not need prior experience with single-cell data: we introduce the **AnnData** object, the standard Python container for such data, and walk through a typical analysis pipeline step by step.
 
@@ -35,12 +35,39 @@ Single-cell data in Python is usually stored in an **AnnData** object (from the 
 - **`X`:** The main matrix (cells × genes). Can be raw counts or normalized/log-transformed values.
 - **`obs`:** **Observations** = rows = cells. A DataFrame with **cell-level metadata** (e.g., batch, donor, total counts, number of genes detected).
 - **`var`:** **Variables** = columns = genes. A DataFrame with **gene-level metadata** (e.g., gene name, whether it is a highly variable gene).
-- **`obsm`:** Multi-dimensional **annotations** for observations (e.g., PCA coordinates, UMAP coordinates),one array per key.
+- **`obsm`:** Multi-dimensional **annotations** for observations (e.g., PCA coordinates, UMAP coordinates), one array per key.
 - **`uns`:** Unstructured **metadata** (e.g., parameters used for PCA or UMAP).
 
 This structure is similar to **Pandas** (rows and columns with metadata) but optimized for large matrices and for the Scanpy ecosystem. Saving to disk gives an **`.h5ad`** file, which can hold millions of cells efficiently.
 
 **Example (conceptual):** After loading a dataset, you might have `adata` with `adata.X` of shape (3000, 20000), `adata.obs['n_genes_by_counts']` (how many genes per cell), and `adata.var['gene_ids']` (gene identifiers). Scanpy functions take `adata`, modify it in place (e.g., add normalized values, PCA, UMAP), and you keep working with the same object.
+
+### 9.1.4 Droplet-based scRNA-seq chemistry: GEM bead, barcode, UMI, and cDNA
+
+Many popular single-cell RNA-seq protocols are **droplet-based** (for example, 10x Genomics). A droplet contains a single cell (ideally) and a bead inside a GEM (Gel Bead-in-Emulsion). The bead carries many copies of the same oligo, which acts like a capture probe with multiple parts:
+
+- **Primer handle**: a known DNA sequence that enables PCR amplification later.
+- **Cell barcode**: a sequence shared across all oligos on that bead, so sequencing reads can be assigned back to the correct cell.
+- **UMI (Unique Molecular Identifier)**: a short random sequence attached to each captured molecule, so PCR duplicates can be collapsed to estimate true molecule counts.
+- **`poly(dT)` tail**: a stretch of T’s that binds the **poly(A) tail** of mRNA, so mainly mRNA is captured, and reverse transcription starts near the 3' end in common 3' protocols.
+
+Step-by-step intuition:
+
+1. A cell is lysed inside the GEM and releases its mRNA molecules.
+2. The mRNA poly(A) tail hybridizes to `poly(dT)` on bead oligos.
+3. Reverse transcription converts each captured RNA molecule into **cDNA** while attaching the **cell barcode** and **UMI** so the molecule is labeled with “which cell” and “which original molecule”.
+4. Droplets are broken and all cDNA is pooled together. PCR amplification uses the primer handle to make enough DNA for sequencing.
+5. In sequencing, **Read 1** provides the cell barcode plus UMI, and **Read 2** provides the cDNA sequence that is mapped back to a gene.
+
+In bioinformatics we then:
+
+- Group reads by **cell barcode** to reconstruct a per-cell profile.
+- Deduplicate using **UMIs** to remove PCR duplicates.
+- Aggregate unique UMIs per gene per cell to form the final **cells × genes** count matrix.
+
+Important clarification about “same bead”: in standard 3' droplet protocols, the barcode is not there because different oligos capture different parts of the same mRNA. Instead, the bead captures many different mRNA molecules (often from different genes) from the same cell. The **barcode** identifies the cell origin, and the **UMI** identifies each original captured molecule.
+
+QC note: if a droplet captures more than one cell (a **doublet**), barcodes and UMIs mix across cells, which can create misleading profiles. This is one reason QC filtering is essential before running Scanpy.
 
 ---
 
@@ -71,7 +98,7 @@ Gene expression is often **multiplicative** (e.g., “twice as many transcripts�
 
 ### 9.2.4 Highly variable genes (HVGs)
 
-Not all genes are informative for **separating cell types**. Many genes are lowly expressed or similar across cells. We **select a subset of genes** that vary a lot across cells,**highly variable genes (HVGs)**,and use only those for dimensionality reduction and clustering. That reduces noise and computation and focuses on biology.
+Not all genes are informative for **separating cell types**. Many genes are lowly expressed or similar across cells. We **select a subset of genes** that vary a lot across cells, **highly variable genes (HVGs)**, and use only those for dimensionality reduction and clustering. That reduces noise and computation and focuses on biology.
 
 **Idea:** For each gene, we compute (e.g.) **mean** expression across cells and **dispersion** (variance/mean or similar). Genes that are both expressed enough and variable (e.g., high dispersion for their mean) are marked as HVGs. Scanpy can use methods like **Seurat** or **Seurat v3** to select a few thousand HVGs.
 
@@ -167,8 +194,8 @@ Single-cell data, after preprocessing, is a **matrix**: cells (samples) × genes
 - **X** (or a layer like `adata.layers['log1p']`) = the numeric matrix we feed to a model.
 
 So we have:
-- **X:** shape (n_cells, n_genes) , the “design matrix.”
-- **y:** labels, if we have them , e.g., `adata.obs['cell_type']` or `adata.obs['leiden']`.
+- **X:** shape (n_cells, n_genes), the “design matrix.”
+- **y:** labels, if we have them, e.g., `adata.obs['cell_type']` or `adata.obs['leiden']`.
 
 We must be careful about **train/test split**: if we split **randomly**, we might leak information (same donor or batch in both sets). Often we split by **batch** or **donor** so the model is evaluated on “unseen” batches. We also need to handle **missing labels**: many cells have no annotation until we run clustering and manual annotation; we can train on a **labeled subset** and predict on the rest.
 
