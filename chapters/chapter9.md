@@ -14,35 +14,111 @@ You do not need prior experience with single-cell data: we introduce the **AnnDa
 
 In **bulk RNA-seq**, we take a tissue or a population of cells, extract all RNA, and sequence it. The result is an **average** gene expression over many cells. We lose information about **which cell** expressed which gene. In **single-cell RNA-seq**, we isolate **individual cells** (or nuclei), capture their RNA, and sequence each cell separately. So we get one **expression profile** per cell: a vector of (typically) thousands of gene counts.
 
-**Example:** Suppose we have 3,000 cells and 20,000 genes. The **raw count matrix** has shape **3,000 × 20,000**: rows = cells, columns = genes. Entry $(i, j)$ is the number of RNA molecules (or reads) assigned to gene $j$ in cell $i$. These counts are **non-negative integers** and are often **sparse**: many genes have zero counts in many cells, because only a subset of genes is active in any given cell.
+**End-to-end flowchart (from one cell to the expression matrix):**
 
-<div class="figure">
-  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter9/count_matrix.png" alt="Single-cell count matrix: cells × genes" />
-  <p class="caption"><strong>Figure 9.1.</strong> The single-cell count matrix. Rows are cells (observations), columns are genes (features). Each entry is a raw count; the matrix is sparse (many zeros).</p>
-</div>
+```text
+[1] SINGLE CELL (one genome / DNA)
+        |
+        |  Transcription (different genes expressed)
+        v
+[2] mRNA POOL inside the cell
+    - mRNA from Gene A
+    - mRNA from Gene B
+    - mRNA from Gene C
+    (all from SAME DNA, different genes)
+        |
+        |  Cell is encapsulated in droplet (GEM)
+        v
+[3] GEM (Gel Bead-in-Emulsion)
+    Contains:
+      - One cell
+      - One bead with MANY identical oligos
+        |
+        |  Cell lysis -> mRNA released
+        v
+[4] OLIGO CAPTURE (on bead)
 
-### 9.1.2 Why is the data challenging?
+Each oligo structure:
+[Primer handle] - [Cell Barcode] - [UMI] - [Poly(dT)]
 
-- **High dimension:** Tens of thousands of genes → each cell is a point in a very high-dimensional space. We need **dimensionality reduction** and **feature selection** to visualize and cluster.
-- **Sparsity:** Many genes have zero counts in many cells (dropouts, or true absence of expression). Models and distances must handle zeros sensibly.
-- **Library size:** Different cells have different total counts (different sequencing depth). We **normalize** so that cells are comparable.
-- **Batch effects:** Cells from different experiments, donors, or batches can cluster by technical origin rather than biology. **Batch correction** or **integration** is often needed when combining datasets.
+        |
+        +-- Poly(dT) binds -> mRNA poly(A) tail
+        |
+        +-- Different oligos capture different mRNAs:
+        |     Oligo 1 -> Gene A mRNA
+        |     Oligo 2 -> Gene B mRNA
+        |     Oligo 3 -> Gene A mRNA (another copy)
+        |
+        v
+[5] REVERSE TRANSCRIPTION -> cDNA (KEY STEP)
 
-### 9.1.3 The AnnData object
+Each captured mRNA becomes:
 
-Single-cell data in Python is usually stored in an **AnnData** object (from the `anndata` package). Think of it as a **table with extra layers**:
+cDNA molecule with:
+    - Cell barcode (same for all in this GEM)
+    - UMI (unique per molecule)
+    - Gene-specific sequence
 
-- **`X`:** The main matrix (cells × genes). Can be raw counts or normalized/log-transformed values.
-- **`obs`:** **Observations** = rows = cells. A DataFrame with **cell-level metadata** (e.g., batch, donor, total counts, number of genes detected).
-- **`var`:** **Variables** = columns = genes. A DataFrame with **gene-level metadata** (e.g., gene name, whether it is a highly variable gene).
-- **`obsm`:** Multi-dimensional **annotations** for observations (e.g., PCA coordinates, UMAP coordinates), one array per key.
-- **`uns`:** Unstructured **metadata** (e.g., parameters used for PCA or UMAP).
+THIS is where RNA -> cDNA happens
 
-This structure is similar to **Pandas** (rows and columns with metadata) but optimized for large matrices and for the Scanpy ecosystem. Saving to disk gives an **`.h5ad`** file, which can hold millions of cells efficiently.
+        |
+        v
+[6] BREAK DROPLETS + POOL ALL cDNA
 
-**Example (conceptual):** After loading a dataset, you might have `adata` with `adata.X` of shape (3000, 20000), `adata.obs['n_genes_by_counts']` (how many genes per cell), and `adata.var['gene_ids']` (gene identifiers). Scanpy functions take `adata`, modify it in place (e.g., add normalized values, PCA, UMAP), and you keep working with the same object.
+Now:
+- cDNA from ALL cells are mixed together
+- But labels preserve identity:
+    - Cell barcode -> which cell
+    - UMI -> which molecule
 
-### 9.1.4 Droplet-based scRNA-seq chemistry: GEM bead, barcode, UMI, and cDNA
+        |
+        v
+[7] PCR AMPLIFICATION
+
+- Uses primer handle
+- Amplifies cDNA
+- Creates duplicates (important later for UMI correction)
+
+        |
+        v
+[8] SEQUENCING
+
+Each molecule generates reads:
+
+Read 1:
+    -> Cell Barcode + UMI
+
+Read 2:
+    -> cDNA sequence (maps to gene)
+
+        |
+        v
+[9] BIOINFORMATICS PROCESSING
+
+Step 1: Group by CELL BARCODE
+    -> reconstruct each cell
+
+Step 2: Map Read 2 to genes
+    -> identify Gene A, B, C...
+
+Step 3: Collapse UMIs
+    -> remove PCR duplicates
+    -> count TRUE molecules
+
+        |
+        v
+[10] FINAL OUTPUT: GENE EXPRESSION MATRIX
+
+            Cell 1   Cell 2   Cell 3
+Gene A        10        2        0
+Gene B         5        8        1
+Gene C         0        3        7
+
+Each value = number of UNIQUE UMIs
+(true mRNA molecules per gene per cell)
+```
+
+### 9.1.2 Droplet-based scRNA-seq chemistry: GEM bead, barcode, UMI, and cDNA
 
 Many popular single-cell RNA-seq protocols are **droplet-based** (for example, 10x Genomics). A droplet contains a single cell (ideally) and a bead inside a GEM (Gel Bead-in-Emulsion). The bead carries many copies of the same oligo, which acts like a capture probe with multiple parts:
 
@@ -68,6 +144,37 @@ In bioinformatics we then:
 Important clarification about “same bead”: in standard 3' droplet protocols, the barcode is not there because different oligos capture different parts of the same mRNA. Instead, the bead captures many different mRNA molecules (often from different genes) from the same cell. The **barcode** identifies the cell origin, and the **UMI** identifies each original captured molecule.
 
 QC note: if a droplet captures more than one cell (a **doublet**), barcodes and UMIs mix across cells, which can create misleading profiles. This is one reason QC filtering is essential before running Scanpy.
+
+
+**Example:** Suppose we have 3,000 cells and 20,000 genes. The **raw count matrix** has shape **3,000 × 20,000**: rows = cells, columns = genes. Entry $(i, j)$ is the number of RNA molecules (or reads) assigned to gene $j$ in cell $i$. These counts are **non-negative integers** and are often **sparse**: many genes have zero counts in many cells, because only a subset of genes is active in any given cell.
+
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter9/count_matrix.png" alt="Single-cell count matrix: cells × genes" />
+  <p class="caption"><strong>Figure 9.1.</strong> The single-cell count matrix. Rows are cells (observations), columns are genes (features). Each entry is a raw count; the matrix is sparse (many zeros).</p>
+</div>
+
+
+
+### 9.1.3 Why is the data challenging?
+
+- **High dimension:** Tens of thousands of genes → each cell is a point in a very high-dimensional space. We need **dimensionality reduction** and **feature selection** to visualize and cluster.
+- **Sparsity:** Many genes have zero counts in many cells (dropouts, or true absence of expression). Models and distances must handle zeros sensibly.
+- **Library size:** Different cells have different total counts (different sequencing depth). We **normalize** so that cells are comparable.
+- **Batch effects:** Cells from different experiments, donors, or batches can cluster by technical origin rather than biology. **Batch correction** or **integration** is often needed when combining datasets.
+
+### 9.1.4 The AnnData object
+
+Single-cell data in Python is usually stored in an **AnnData** object (from the `anndata` package). Think of it as a **table with extra layers**:
+
+- **`X`:** The main matrix (cells × genes). Can be raw counts or normalized/log-transformed values.
+- **`obs`:** **Observations** = rows = cells. A DataFrame with **cell-level metadata** (e.g., batch, donor, total counts, number of genes detected).
+- **`var`:** **Variables** = columns = genes. A DataFrame with **gene-level metadata** (e.g., gene name, whether it is a highly variable gene).
+- **`obsm`:** Multi-dimensional **annotations** for observations (e.g., PCA coordinates, UMAP coordinates), one array per key.
+- **`uns`:** Unstructured **metadata** (e.g., parameters used for PCA or UMAP).
+
+This structure is similar to **Pandas** (rows and columns with metadata) but optimized for large matrices and for the Scanpy ecosystem. Saving to disk gives an **`.h5ad`** file, which can hold millions of cells efficiently.
+
+**Example (conceptual):** After loading a dataset, you might have `adata` with `adata.X` of shape (3000, 20000), `adata.obs['n_genes_by_counts']` (how many genes per cell), and `adata.var['gene_ids']` (gene identifiers). Scanpy functions take `adata`, modify it in place (e.g., add normalized values, PCA, UMAP), and you keep working with the same object.
 
 ---
 
