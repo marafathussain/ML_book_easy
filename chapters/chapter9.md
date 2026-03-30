@@ -12,7 +12,7 @@ You do not need prior experience with single-cell data: we introduce the **AnnDa
 
 ### 9.1.1 What is single-cell RNA-seq?
 
-In **bulk RNA-seq**, we take a tissue or a population of cells, extract all RNA, and sequence it. The result is an **average** gene expression over many cells. We lose information about **which cell** expressed which gene. In **single-cell RNA-seq**, we isolate **individual cells** (or nuclei), capture their RNA, and sequence each cell separately. So we get one **expression profile** per cell: a vector of (typically) thousands of gene counts.
+In **bulk RNA-seq**, we take a tissue or a population of cells, extract all RNA, and sequence it. The result is an **average** gene expression over many cells. We lose information about **which cell** expressed which gene. In **single-cell RNA-seq**, we isolate **individual cells** (or nuclei), capture their RNA, and sequence each cell separately. So we get one **expression profile** (UMI count ≈ number of original mRNA molecules ≈ gene expression level; see the flowchart below) per cell: a vector of (typically) thousands of gene counts.
 
 **End-to-end flowchart (from one cell to the expression matrix):**
 
@@ -145,6 +145,9 @@ Important clarification about “same bead”: in standard 3' droplet protocols,
 
 QC note: if a droplet captures more than one cell (a **doublet**), barcodes and UMIs mix across cells, which can create misleading profiles. This is one reason QC filtering is essential before running Scanpy.
 
+**Why is it called “10x”?**
+The name comes from the company 10x Genomics, and it reflects their original mission: *To enable ~10× improvements (“ten-fold”) in biological measurement throughput and resolution.*
+
 
 **Example:** Suppose we have 3,000 cells and 20,000 genes. The **raw count matrix** has shape **3,000 × 20,000**: rows = cells, columns = genes. Entry $(i, j)$ is the number of RNA molecules (or reads) assigned to gene $j$ in cell $i$. These counts are **non-negative integers** and are often **sparse**: many genes have zero counts in many cells, because only a subset of genes is active in any given cell.
 
@@ -159,7 +162,27 @@ QC note: if a droplet captures more than one cell (a **doublet**), barcodes and 
 
 - **High dimension:** Tens of thousands of genes → each cell is a point in a very high-dimensional space. We need **dimensionality reduction** and **feature selection** to visualize and cluster.
 - **Sparsity:** Many genes have zero counts in many cells (dropouts, or true absence of expression). Models and distances must handle zeros sensibly.
-- **Library size:** Different cells have different total counts (different sequencing depth). We **normalize** so that cells are comparable.
+- **Library size:** Different cells have different total counts (different sequencing depth). We **normalize** so that cells are comparable. “Higher total counts” means the **sum of UMIs (or reads) across genes** varies by cell. If $x_{ij}$ is the count for gene $j$ in cell $i$ (rows = cells, columns = genes in `adata.X`), then
+
+  $$
+  T_i \;=\; \sum_{j} x_{ij}
+  $$
+
+  is the **total count** (library size / sequencing depth) for cell $i$. For example, two cells can have the same **relative** split across genes but very different totals (Cell 2 is sequenced “deeper” in this toy case):
+
+  | Cell   | Gene A | Gene B | Gene C | **Total UMIs** |
+  | ------ | ------ | ------ | ------ | -------------- |
+  | Cell 1 | 10     | 5      | 5      | **20**         |
+  | Cell 2 | 50     | 25     | 25     | **100**        |
+
+  Here Gene A is half of each cell’s total ($10/20 = 50/100$), but raw counts are five times larger in Cell 2. Technical factors (capture efficiency, RT, PCR, uneven sequencing) and biology (cell size, transcriptional activity) can all change $T_i$. Comparing raw counts without adjustment can make high-$T_i$ cells look “brighter” for every gene; **normalization** rescales so cells are comparable—often proportional to $x_{ij}/T_i$, then scaling to a target sum and $\log(1+x)$:
+
+  $$
+  \text{normalized}_{ij} \;\propto\; \frac{x_{ij}}{T_i}
+  $$
+
+  (e.g. multiply by $10^4$ before $\log$ in Scanpy’s typical pipeline). Same *relative* expression can yield very different raw counts if $T_i$ differs.
+
 - **Batch effects:** Cells from different experiments, donors, or batches can cluster by technical origin rather than biology. **Batch correction** or **integration** is often needed when combining datasets.
 
 ### 9.1.4 The AnnData object
