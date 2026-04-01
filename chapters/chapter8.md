@@ -69,6 +69,11 @@ For **one-hot encoding**, the same idea as DNA applies: one letter → one vecto
   <p class="caption"><strong>Figure 8.1.</strong> One-hot encoding of a short DNA sequence. Each nucleotide (A, C, G, T) is replaced by a row of four numbers with a single 1. The full sequence becomes a matrix of shape (sequence length) × 4.</p>
 </div>
 
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/Genetic-Code.png" alt="Genetic code table mapping mRNA codons to amino acids and stop signals" />
+  <p class="caption"><strong>Figure 8.2.</strong> Standard codon table mapping mRNA triplets to amino acids or translation stop signals. Source: <a href="https://slcc.pressbooks.pub/collegebiology1/chapter/the-genetic-code/">SLCC College Biology I, The Genetic Code</a>.</p>
+</div>
+
 ### 8.1.2 Index encoding and learned embeddings
 
 Neural networks only process numbers, not letters. So we first turn each symbol into an **integer index**. For DNA we might assign A→0, C→1, G→2, T→3. The sequence `ACGTAG` then becomes the numeric vector $(0, 1, 2, 3, 0, 2)$ of length $L$. This is just **indexing**; no learning yet.
@@ -100,7 +105,7 @@ Each is just a short chunk of the sequence.
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/2-mer.jpg" alt="One-hot encoded table for 2-mers" />
-  <p class="caption"><strong>Figure 8.2.</strong> One-hot encoding for 2-mers (dimers). Each 2-mer (e.g., AA, AC, …, TT) is represented by a row of length $4^2 = 16$ with a single 1 in the column for that dimer.</p>
+  <p class="caption"><strong>Figure 8.3.</strong> One-hot encoding for 2-mers (dimers). Each 2-mer (e.g., AA, AC, …, TT) is represented by a row of length $4^2 = 16$ with a single 1 in the column for that dimer.</p>
 </div>
 
 ---
@@ -164,7 +169,7 @@ Summary of dimensions:
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/1dcnn_motif.gif" alt="1D CNN sliding over a sequence for motif detection" />
-  <p class="caption"><strong>Figure 8.3.</strong> A 1D convolutional kernel (motif detector) slides over the encoded sequence. Each position yields one activation; high activation indicates presence of the learned pattern (motif) at that position.</p>
+  <p class="caption"><strong>Figure 8.4.</strong> A 1D convolutional kernel (motif detector) slides over the encoded sequence. Each position yields one activation; high activation indicates presence of the learned pattern (motif) at that position.</p>
 </div>
 
 ### 8.2.3 From motif detection to classification
@@ -180,7 +185,7 @@ So the CNN **extracts local motifs**, and the global pool **summarizes** "which 
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/cnn.jpg" alt="Simple 1D CNN for sequence classification" />
-  <p class="caption"><strong>Figure 8.4.</strong> A simple 1D CNN for sequence classification. Input is one-hot encoded sequence; one layer of convolution + ReLU and one layer of max pooling extract and reduce features; two fully connected layers then produce the predicted probability.</p>
+  <p class="caption"><strong>Figure 8.5.</strong> A simple 1D CNN for sequence classification. Input is one-hot encoded sequence; one layer of convolution + ReLU and one layer of max pooling extract and reduce features; two fully connected layers then produce the predicted probability.</p>
 </div>
 
 ---
@@ -210,7 +215,7 @@ So the same function $f$ and the same weights $\mathbf{W}$ are applied at every 
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/rnn_unfold.png" alt="RNN unfolded in time" />
-  <p class="caption"><strong>Figure 8.5.</strong> An RNN unfolded in time. At each step $t$, the model takes input $\mathbf{x}_t$ and the previous hidden state $\mathbf{h}_{t-1}$, and outputs a new hidden state $\mathbf{h}_t$. The same weights are reused at every step.</p>
+  <p class="caption"><strong>Figure 8.6.</strong> An RNN unfolded in time. At each step $t$, the model takes input $\mathbf{x}_t$ and the previous hidden state $\mathbf{h}_{t-1}$, and outputs a new hidden state $\mathbf{h}_t$. The same weights are reused at every step.</p>
 </div>
 
 ### 8.3.2 Vanishing gradient and long-range dependence
@@ -229,7 +234,7 @@ The **cell state** $\mathbf{c}_t$ is like a "conveyor belt" that can carry infor
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/lstm_cell.png" alt="LSTM cell: gates and cell state" />
-  <p class="caption"><strong>Figure 8.6.</strong> LSTM cell (conceptual). The cell state $\mathbf{c}$ is updated by forget and input gates; the hidden state $\mathbf{h}$ is filtered by the output gate. This allows the network to retain information over many steps.</p>
+  <p class="caption"><strong>Figure 8.7.</strong> LSTM cell (conceptual). The cell state $\mathbf{c}$ is updated by forget and input gates; the hidden state $\mathbf{h}$ is filtered by the output gate. This allows the network to retain information over many steps.</p>
 </div>
 
 ### 8.3.4 When to use CNN vs RNN for sequences
@@ -244,6 +249,11 @@ In practice, **hybrid** models (e.g., 1D CNN to extract motifs, then LSTM on top
 ## 8.4 Sequence Classification Tasks
 
 Here we give a few **concrete tasks** so you can see how encoding + 1D CNN (or RNN) fit together.
+
+<div class="figure">
+  <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/DNA-to-mRNA.png" alt="From DNA through pre-mRNA and mRNA to protein during transcription and translation" />
+  <p class="caption"><strong>Figure 8.8.</strong> Transcription and translation in outline: DNA is transcribed into <strong>pre-mRNA</strong>, which is processed into mature <strong>mRNA</strong>; the ribosome then reads the mRNA in codons and assembles a polypeptide. The illustration shows three successive mRNA triplets and the three amino acids they specify. To look up how any three consecutive nucleotides in mRNA map to an amino acid or a stop signal, use the standard genetic code in <strong>Figure 8.2</strong>.</p>
+</div>
 
 ### 8.4.0 Exons and introns: why genes are not continuous
 
@@ -329,7 +339,7 @@ If the model has an **attention** mechanism (e.g., in a Transformer or an attent
 
 <div class="figure">
   <img src="https://marafathussain.github.io/ML_book_easy/figures/chapter8/interpretation_logo.png" alt="Learned conv filter as sequence logo" />
-  <p class="caption"><strong>Figure 8.7.</strong> A learned 1D convolutional filter (first layer) converted into a sequence logo. Height at each position indicates how much the filter "prefers" each nucleotide; this is the model's learned motif.</p>
+  <p class="caption"><strong>Figure 8.9.</strong> A learned 1D convolutional filter (first layer) converted into a sequence logo. Height at each position indicates how much the filter "prefers" each nucleotide; this is the model's learned motif.</p>
 </div>
 
 ---
